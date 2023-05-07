@@ -1,0 +1,7 @@
+S = "l" LoopLeft | "r" LoopRight | "a" LoopLeftA | "c" LoopRightC;
+LoopLeft = @empty | LoopLeft "l";
+LoopRight = @empty | "r" LoopRight;
+LoopLeftA = @empty | LoopLeftB "a";
+LoopLeftB = @empty | LoopLeftA "b";
+LoopRightC = @empty | "c" LoopRightD;
+LoopRightD = @empty | "d" LoopRightC;

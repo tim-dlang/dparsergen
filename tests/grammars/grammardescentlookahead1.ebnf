@@ -1,0 +1,11 @@
+// TODO
+// EXCLUDE_VARIANT: optdescent
+/*
+GENERATOR_OUTPUT(optdescent):
+---
+Warning: Parse conflict in state 7
+---
+*/
+S = repeat2(A) "a";
+repeat2(e) = e | repeat2(e) e;
+A = "a";

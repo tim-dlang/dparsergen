@@ -1,0 +1,36 @@
+S = <FuncDecl | <VarDecl;
+
+FuncDecl
+    = Type Identifier @lookahead Parameters "{" "}"
+    | Type Identifier @lookahead TemplateParameters Parameters "{" "}"
+    ;
+VarDecl
+    = Type Identifier ";"
+    | Type Identifier "=" Identifier ";"
+    | Type Identifier @lookahead TemplateParameters "=" Identifier ";"
+    ;
+
+Parameters = "(" ParameterArray? ")";
+TemplateParameters = "(" TemplateParameterArray? ")";
+
+Parameter
+    = Type Identifier
+    | Type
+    ;
+ParameterArray @array
+    = Parameter
+    | ParameterArray "," Parameter
+    ;
+TemplateParameter
+    = Identifier
+    ;
+TemplateParameterArray @array
+    = TemplateParameter
+    | TemplateParameterArray "," TemplateParameter
+    ;
+
+token Identifier = "i";
+
+Type = "int" | Identifier;
+
+token Space @ignoreToken = [ \n\r\t]+;

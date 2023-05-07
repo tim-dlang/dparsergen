@@ -1,0 +1,67 @@
+name: DParserGen tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  main:
+    strategy:
+      fail-fast: false
+
+      matrix:
+        platform: [ linux64, win64, win32 ]
+        dc: [ dmd-latest ]
+
+        include:
+          - platform: linux64
+            os: ubuntu-22.04
+            model: 64
+
+          - platform: win64
+            os: windows-2022
+            model: 64
+
+          - platform: win32
+            os: windows-2022
+            model: 32mscoff
+            extra_args: --skip-slow-examples
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        persist-credentials: false
+
+    - name: Install D compiler
+      uses: dlang-community/setup-dlang@v1
+      with:
+        compiler: ${{ matrix.dc }}
+
+    - name: Checkout DMD
+      if: ${{ matrix.extra_args != 'win32' }}
+      uses: actions/checkout@v3
+      with:
+        path: dmd
+        repository: dlang/dmd
+        ref: v2.103.0
+        persist-credentials: false
+
+    - name: Checkout JSONTestSuite
+      if: ${{ matrix.platform != 'win32' }}
+      uses: actions/checkout@v3
+      with:
+        path: JSONTestSuite
+        repository: nst/JSONTestSuite
+        ref: d64aefb55228d9584d3e5b2433f720ea8fd00c82
+        persist-credentials: false
+
+    - name: 'Build & Test'
+      run: |
+        ${{ env.DC }} -run runtests.d --compiler ${{ env.DC }} -m${{ matrix.model }} --json-test-dir JSONTestSuite/test_parsing --dmd-dir dmd --avoid-parallel-memory-usage --github ${{ matrix.extra_args }}

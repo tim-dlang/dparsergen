@@ -1,0 +1,8 @@
+// GENPASER_OPTS: --optempty
+S = A? B?;
+A = "@" "a";
+B = "@" "b";
+
+
+token Space @ignoreToken = [ \n\r\t]+;
+

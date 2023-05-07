@@ -1,0 +1,24 @@
+S = BinaryExpression;
+
+BinaryExpression @directUnwrap
+	= <UnaryExpression
+	| BinaryExpression "!" "is" UnaryExpression
+	| BinaryExpression "!" "in" UnaryExpression
+	;
+
+UnaryExpression @directUnwrap
+	= <PostfixExpression
+	| "~" UnaryExpression
+	;
+
+PostfixExpression @directUnwrap
+	= <PrimaryExpression
+	| PostfixExpression "!" "(" ")"
+	| PostfixExpression "!" PrimaryExpression
+	;
+
+PrimaryExpression @directUnwrap
+	= "i"
+	;
+
+token Space @ignoreToken = [ \n\r\t]+;

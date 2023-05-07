@@ -1,0 +1,78 @@
+S
+    = <EnumDeclaration
+    | <VarDeclarations
+    ;
+
+EnumDeclaration
+    = "enum" IdentifierExpression ":" PostfixType EnumBody
+    | <EnumVarDeclaration
+    ;
+
+EnumBody
+    = "{" "}"
+    ;
+
+EnumVarDeclaration
+    = "enum" PostfixType @rejectTag(Bitfield) Declarators ";"
+    ;
+
+VarDeclarations
+    = PostfixType @inheritTag(Bitfield) Declarators ";"
+    ;
+
+Declarators @array @regArray
+    = @inheritTag(Bitfield) DeclaratorInitializer
+    | @inheritTag(Bitfield) DeclaratorInitializer "," @inheritTag(Bitfield) DeclaratorIdentifierList
+    ;
+
+DeclaratorInitializer @directUnwrap
+    = <VarDeclarator
+    | <BitfieldDeclarator
+    ;
+
+DeclaratorIdentifierList @array @regArray
+    = @inheritTag(Bitfield) DeclaratorIdentifier
+    | @inheritTag(Bitfield) DeclaratorIdentifier "," @inheritTag(Bitfield) DeclaratorIdentifierList
+    ;
+
+DeclaratorIdentifier
+    = Identifier
+    | <BitfieldDeclarator
+    ;
+
+BitfieldDeclarator
+    = ":" ConditionalExpression @tag(Bitfield)
+    | Identifier ":" ConditionalExpression @tag(Bitfield)
+    ;
+
+VarDeclarator
+    = <IdentifierExpression
+    ;
+
+PostfixType @directUnwrap
+    = <IdentifierExpression
+    | PostfixType "*"
+    ;
+
+IdentifierExpression
+    = Identifier
+    ;
+
+ConditionalExpression @directUnwrap
+    = <MulExpression
+    ;
+
+MulExpression @directUnwrap
+    = <UnaryExpression
+    | MulExpression "*" UnaryExpression
+    ;
+
+UnaryExpression @directUnwrap
+    = <IdentifierExpression
+    | "*" UnaryExpression
+    ;
+
+token Identifier @lowPrio = [a-zA-Z_] [a-zA-Z_0-9]*;
+
+token Space @ignoreToken = [ \n\r\t]+;
+

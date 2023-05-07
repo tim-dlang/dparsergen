@@ -1,0 +1,9 @@
+/*
+GENERATOR_OUTPUT:
+---
+Warning: Using undefined symbol Undefined
+---
+*/
+S = X | Y;
+X = "x";
+Y = "y" Undefined;

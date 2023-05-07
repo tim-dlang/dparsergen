@@ -1,0 +1,10 @@
+S @directUnwrap = <A | <B;
+
+A = "a";
+B @backtrack = <C | <D;
+
+C = "b" XC "y" "c";
+D = "b" XD "y" "d";
+
+XC = "x";
+XD = "x";

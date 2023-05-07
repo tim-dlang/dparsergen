@@ -1,0 +1,5 @@
+
+		S = "a" | "b" | S "a" | S "b";
+
+token Space @ignoreToken = [ \n\r\t]+;
+

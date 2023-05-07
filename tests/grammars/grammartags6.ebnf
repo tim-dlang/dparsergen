@@ -1,0 +1,6 @@
+
+S = "1" @needTag(T) X | "2" @rejectTag(T) X | "3" X;
+
+X = "x" @inheritTag(T) Y;
+
+Y = "y1" @tag(T) | "y2";

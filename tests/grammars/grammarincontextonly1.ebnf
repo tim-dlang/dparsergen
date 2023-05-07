@@ -1,0 +1,18 @@
+// EXCLUDE_VARIANT: glr
+/*
+GENERATOR_OUTPUT(lexer):
+---
+Warning: Token Identifier could be empty
+---
+*/
+S = Normal | Special;
+Normal = WS Token*;
+Token = "<" | ">" | Identifier;
+Special = WS "#include" SysStringPart WS;
+SysStringPart @enableToken(SysString) = WS SysString;
+token SysString @inContextOnly
+    = "<" [^>]* ">"
+    ;
+token Identifier = [0-9a-zA-Z]*;
+
+WS = " "*;

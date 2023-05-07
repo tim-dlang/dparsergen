@@ -1,0 +1,11 @@
+S = Lines;
+Lines @array = @empty | Lines Line;
+Line = NormalLine | Block;
+NormalLine = WS "l" WS ^LineEnd;
+Block = BeginLine Lines EndLine;
+BeginLine = WS "begin" WS ^LineEnd;
+EndLine = WS "end" WS ^LineEnd;
+WS @string = WSX !" ";
+WSX @string = @empty | WSX " ";
+EOF @string = !anytoken @empty;
+LineEnd @string = "\n" | EOF;

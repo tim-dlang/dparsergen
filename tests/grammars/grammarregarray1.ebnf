@@ -1,0 +1,33 @@
+S = L1 | ^"2" L2 | ^"3" L3 | ^"4" L4| "5" L5;
+L1 @array @regArray = As | ABs | BCs | X;
+L2 @array @regArray = Ys;
+L3 @array @regArray = m | M | L3 Comma m | L3 Comma M;
+L4 @array @regArray = m | M | m Comma L4 | M Comma L4;
+L5 @array @regArray = m | M | L5 Comma r | L5 Comma R | l Comma L5 | L Comma L5;
+
+As @array @regArray = @empty | As A;
+ABs @array @regArray = @empty | ABs AB;
+BCs @array @regArray = @empty | BCs BC;
+Ys @array @regArray = @empty | Ys Y;
+X @array @regArray = As D As;
+
+Y @directUnwrap = <E | Y "y";
+
+AB @directUnwrap = <A | <B;
+BC @directUnwrap = <B | <C;
+
+A="a";
+B="b";
+C="c";
+D="d";
+
+E="e";
+
+m="m";
+M="M";
+Comma=",";
+
+r="r";
+R="R";
+l="l";
+L="L";

@@ -1,0 +1,19 @@
+S = <X | <Y;
+
+X @backtrack = X1 | X2;
+X1 @backtrack = X11 | X12;
+X2 @backtrack = X21 | X22;
+
+X11 = "x" "1" "1";
+X12 = "x" "1" "2";
+X21 = "x" "2" "1";
+X22 = "x" "2" "2";
+
+Y @backtrack = Y1 | Y2;
+Y1 @backtrack = "y" Y11 | "y" Y12;
+Y2 @backtrack = "y" Y21 | "y" Y22;
+
+Y11 = "1" "1";
+Y12 = "1" "2";
+Y21 = "2" "1";
+Y22 = "2" "2";

@@ -1,0 +1,40 @@
+option startTokenID = 1111;
+option startNonterminalID = 2222;
+option startProductionID = 3333;
+
+S
+	= ^"e1 " Empty1
+	| ^"e2 " Empty2
+	| ^"m1 " NonEmpty1
+	| ^"m2 " NonEmpty2
+	| ^"o1 " Opt1?
+	| ^"o2 " Opt2?
+	| ^"o3 " Opt3?
+	| ^"s1 " String1
+	| ^"s2 " String2
+	| ^"s3 " String3
+	| ^"a1 " Array1
+	| ^"a2 " Array2
+	| ^"a3 " Array3
+	;
+
+Empty1 = @empty;
+Empty2 = ^"empty2";
+
+NonEmpty1 = "nonempty1";
+NonEmpty2 = <NonEmpty2A;
+NonEmpty2A = "nonempty2a";
+
+Opt1 = "opt1";
+Opt2 = <"opt2";
+Opt3 @string = "opt3";
+
+String1 = <"string1";
+String2 = <"string2" | @empty;
+String3 @string = "string3";
+
+Array1 @array = @empty | Array1 "array1";
+Array2M = "array2m";
+Array2 @array = @empty | Array2 Array2M;
+Array3M = "array3m";
+Array3 @array = @empty | Array3 Array3M | Array3 "array3";

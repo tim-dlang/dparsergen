@@ -1,0 +1,26 @@
+S = Xs;
+
+Xs @array = X | Xs X;
+X = DecimalFloat | DecimalInteger | "..";
+
+token DecimalFloat
+    // Exception from maximal munch algorithm: A .. embedded inside 
+    // what looks like two floating point literals, as in 1..2, is
+    // interpreted as if the .. was separated by a space from the first integer.
+    // See https://dlang.org/spec/lex.html
+    = DecimalDigits "." !"."
+    | DecimalDigits "." DecimalDigits
+    | "." DecimalInteger
+    ;
+
+token DecimalInteger
+    = DecimalDigits
+    ;
+
+fragment Decimal = [0-9];
+fragment DecimalDigits
+    = Decimal
+    | DecimalDigits Decimal
+    ;
+
+token Space @ignoreToken = [ \n\r\t]+;

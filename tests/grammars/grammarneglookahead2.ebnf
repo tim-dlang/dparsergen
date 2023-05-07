@@ -1,0 +1,31 @@
+/*
+GENERATOR_OUTPUT(normal, optdescent):
+---
+Warning: Parse conflict in state 14
+---
+*/
+S = <Test1 | <Test2 | <Test3;
+
+Test1 = !"+" !"*" Operator | "+";
+Operator = "+" | "-" | "*";
+
+
+Test2 = !IfStatement !ForStatement Statement | IfStatement;
+Statement = IfStatement | WhileStatement | ForStatement;
+IfStatement = "if";
+WhileStatement = "while";
+ForStatement = "for";
+
+Test3 = !A !C !D !E X
+	| Z
+	| X "suffix"
+	| A
+	| Y;
+X = A | B | C | D | E;
+Y = D;
+Z = !A !B !C !D X;
+A = "A";
+B = "B";
+C = "C";
+D = "D";
+E = "E";

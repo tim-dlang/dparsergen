@@ -1,0 +1,26 @@
+{
+    "name": "example_json",
+    "description": "Example JSON for DParserGen",
+    "authors": ["Tim Schendekehl"],
+    "license": "BSL-1.0",
+    "targetType": "executable",
+    "dependencies": {
+        "dparsergen:core": {
+            "version": "*",
+            "path": "../.."
+        },
+        "dparsergen:generator": {
+            "version": "*",
+            "path": "../.."
+        }
+    },
+    "sourceFiles": [
+        "testgrammarjson.d",
+        "grammarjson.d",
+        "grammarjson_lexer.d"
+    ],
+    "preBuildCommands": [
+        "\"$DUB\" run --root=../../ :generator -- grammarjson.ebnf -o grammarjson.d --lexer grammarjson_lexer.d"
+    ],
+    "buildRequirements": ["allowWarnings"]
+}

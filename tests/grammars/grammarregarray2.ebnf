@@ -1,0 +1,23 @@
+S = <Variable | <Class;
+
+Variable = VariableAttrs Type Identifier;
+Class = ClassAttrs "class" Identifier;
+
+VariableAttrs @array @regArray
+    = @empty
+    | VariableAttrs Const
+    ;
+
+ClassAttrs @array @regArray
+    = @empty
+    | ClassAttrs Const
+    | ClassAttrs Final
+    ;
+
+Const = "const";
+Final = "final";
+
+token Type = "int";
+token Identifier @lowPrio = [a-zA-Z_] [a-zA-Z_0-9]*;
+
+token Space @ignoreToken = [ \n\r\t]+;

@@ -1,0 +1,15 @@
+// GENPASER_OPTS: --optempty
+S = Stmts;
+
+Label = "i" ":" @eager Stmt?;
+
+DeclOrExpr @backtrack = @rejectTag(Bitfield) <Decl | <Expr;
+Expr = "i" ";";
+Decl
+    = "i" "i" ";"
+    | "i" ":" "2" ";" @tag(Bitfield)
+    | "i" "i" ":" "2" ";" @tag(Bitfield);
+
+Stmt = <Label | <DeclOrExpr;
+
+Stmts @array = @empty | Stmts Stmt;

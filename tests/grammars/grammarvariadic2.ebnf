@@ -1,0 +1,28 @@
+S
+	= <TestAB
+	| <TestBC
+	| <TestCD
+	| <TestA
+	| <TestB
+	| <TestN
+	;
+
+A = "a";
+B = "b";
+C = "c";
+D = "d";
+
+TestAB = listof(A, B);
+TestBC = listof(B, C);
+TestCD = listof(C, D);
+TestA = listof(A);
+TestB = listof(B);
+TestN = listof();
+
+or(e) = <e;
+or(e, e2, r...) = <e | <or(e2, r...);
+
+listof() @array = @empty;
+listof(e, r...) @array = listof(e, r...) or(e, r...) | listof2(t(), e, r...);
+listof2(done, e) @array = listof(done...) e;
+listof2(done, e, e2, r...) @array = listof(done..., e2, r...) e | listof2(t(done..., e), e2, r...);

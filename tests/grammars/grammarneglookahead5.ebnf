@@ -1,0 +1,12 @@
+// EXCLUDE_VARIANT: glr
+/*
+GENERATOR_OUTPUT(normal, optdescent):
+---
+Warning: Parse conflict in state 6
+---
+*/
+S = A | !X B;
+A = "a" | Y;
+B = "b" | Y;
+Y = X | "y";
+X = "x";

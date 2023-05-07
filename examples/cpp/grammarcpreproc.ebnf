@@ -1,0 +1,250 @@
+import "grammarcppcommon.ebnf";
+
+option startTokenID = 11000;
+option startNonterminalID = 12000;
+option startProductionID = 13000;
+
+// Section cpp
+PreprocessingFile
+    = Group?
+    ;
+Group @array
+    = GroupPart
+    | Group GroupPart
+    ;
+
+TokenList @start
+    = WSC repeatOrNone(Token)
+    ;
+
+GroupPart 
+    = <Conditional
+    | <ControlLine
+    | <TextLine
+    | <EmptyLine
+    ;
+
+Conditional
+    = ConditionalStart repeatOrNone(GroupPart) ConditionalNext
+    ;
+ConditionalStart = <PPIf | <PPIfDef | <PPIfNDef;
+ConditionalNext = <ConditionalElif | <ConditionalElse  | <PPEndif;
+ConditionalElif = PPElif repeatOrNone(GroupPart) ConditionalNext;
+ConditionalElse = PPElse repeatOrNone(GroupPart) PPEndif;
+
+PPIf     = WSC "#" WSC Identifier>>"if"      WSC repeatOrNone(Token) ^NewLine;
+PPIfDef  = WSC "#" WSC Identifier>>"ifdef"   WSC Token               ^NewLine;
+PPIfNDef = WSC "#" WSC Identifier>>"ifndef"  WSC Token               ^NewLine;
+PPElif   = WSC "#" WSC Identifier>>"elif"    WSC repeatOrNone(Token) ^NewLine;
+PPElse   = WSC "#" WSC Identifier>>"else"    WSC                     ^NewLine;
+PPEndif  = WSC "#" WSC Identifier>>"endif"   WSC                     ^NewLine;
+
+ControlLine
+    = <Include
+    | <IncludeNext
+    | <VarDefine
+    | <FuncDefine
+    | <Undef
+    | <LineAnnotation
+    | <PPError
+    | <PPWarning
+    | <Pragma
+    | <EmptyDirective
+    ;
+
+Include     = WSC "#" WSC Identifier>>"include"      HeaderPart WSC ^NewLine;
+IncludeNext = WSC "#" WSC Identifier>>"include_next" HeaderPart WSC ^NewLine;
+VarDefine   = WSC "#" WSC Identifier>>"define"       WSC VarDefineName WSC repeatOrNone(Token) ^NewLine;
+FuncDefine  = WSC "#" WSC Identifier>>"define"       WSC Identifier "(" FuncParams ")" WSC repeatOrNone(TokenInFunc) ^NewLine;
+Undef       = WSC "#" WSC Identifier>>"undef"        WSC Identifier WSC ^NewLine;
+PPError     = WSC "#" WSC Identifier>>"error"        WSC repeatOrNone(Token) ^NewLine;
+PPWarning   = WSC "#" WSC Identifier>>"warning"      WSC repeatOrNone(Token) ^NewLine;
+Pragma      = WSC "#" WSC Identifier>>"pragma"       WSC repeatOrNone(Token) ^NewLine;
+EmptyDirective = WSC "#" WSC ^NewLine;
+LineAnnotation
+    = WSC "#" WSC line:PpNumber WSC ^NewLine
+    | WSC "#" WSC line:PpNumber WSC filename:StringLiteral WSC repeatOrNone(Token) ^NewLine
+    | WSC "#" WSC Identifier>>"line" WSC line:PpNumber WSC ^NewLine
+    | WSC "#" WSC Identifier>>"line" WSC line:PpNumber WSC filename:StringLiteral WSC repeatOrNone(Token) ^NewLine
+    ;
+
+HeaderPart @enableToken(HeaderNameSys)
+    = WSC HeaderName
+    ;
+
+TextLine
+    = WSC !"#" repeat(Token) NewLine
+    ;
+EmptyLine
+    = NL
+    | WSC2 NewLine
+    ;
+TokenX @string
+    = AllOperators
+    | StringLiteral
+    | CharacterLiteral
+    | PpNumber
+    | Identifier
+    | "#"
+    // | HasInclude
+    ;
+Token
+    = TokenX WSC
+    ;
+TokenXInFunc @string
+    = Operator
+    | "("
+    | ")"
+    | ","
+    | StringLiteral
+    | CharacterLiteral
+    | PpNumber
+    | Identifier
+    ;
+TokenInFunc
+    = TokenXInFunc WSC
+    | <ParamExpansion
+    ;
+ParamExpansion
+    = "#" WSC Identifier WSC
+    ;
+
+VarDefineName @string = Identifier !"(";
+
+FuncParam
+    = WSC Identifier WSC
+    | WSC Operator>>"..." WSC
+    | WSC
+    ;
+FuncParams @array = list(FuncParam, ",");
+
+NewLine @string = NL | EOF;
+token NL = "\r"? "\n";
+EOF @string = @empty !anytoken;
+
+WSC @array
+    = WSC2 !WS !BlockComment !LineComment !EscapedNewline
+    | @empty !WS !BlockComment !LineComment !EscapedNewline
+    ;
+WSC2 @array
+    = repeat(WSCElem) !WS !BlockComment !LineComment !EscapedNewline
+    ;
+
+WSCElem @string = BlockComment | LineComment | WS | EscapedNewline;
+
+token Operator
+    = "{"
+    | "}"
+    | "["
+    | "]"
+//    | "#"
+    | "##"
+//    | "("
+//    | ")"
+    | "<:"
+    | ":>"
+    | "<%"
+    | "%>"
+    | "%:"
+    | "%:%:"
+    | ";"
+    | ":"
+    | "..."
+    | "new"
+    | "delete"
+    | "?"
+    | "::"
+    | "."
+    | ".*"
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "^"
+    | "&"
+    | "|"
+    | "~"
+    | "!"
+    | "="
+    | "<"
+    | ">"
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "%="
+    | "^="
+    | "&="
+    | "|="
+    | "<<"
+    | ">>"
+    | "<<="
+    | ">>="
+    | "=="
+    | "!="
+    | "<="
+    | ">="
+    | "&&"
+    | "||"
+    | "++"
+    | "--"
+//    | ","
+    | "->*"
+    | "->"
+    | "and"
+    | "and_eq"
+    | "bitand"
+    | "bitor"
+    | "compl"
+    | "not"
+    | "not_eq"
+    | "or"
+    | "or_eq"
+    | "xor"
+    | "xor_eq"
+    | "@" // Needed for Objective-C
+    ;
+AllOperators @string = Operator | "(" | ")" | ",";
+
+// Section lex.header
+HeaderName
+    = HeaderNameSys
+    | StringLiteral
+    | Identifier
+    ;
+
+token HeaderNameSys @inContextOnly
+    = "<" [^>\n]* ">"
+    ;
+
+// Section lex.ppnumber
+token PpNumber
+    = Digit
+    | "." Digit
+    | PpNumber Digit
+    | PpNumber IdentifierNondigit
+    | PpNumber "'" IdentifierNondigit
+    | PpNumber [eE] [+\-]
+    | PpNumber "."
+    ;
+
+token BlockComment @minimalMatch
+    = "/*" [^]*  "*/"
+    | "/\\\n*" [^]* "*/"
+    ;
+
+token LineComment
+    = "//" [^\n\r]*;
+
+token WS
+    = [ \r\t\f]+
+    ;
+
+token EscapedNewline
+    = "\\\n" | "\\\r\n"
+    ;
+
+repeat(e) @array = repeat(e) e | e;
+repeatOrNone(e) @array = repeatOrNone(e) e | @empty;
+list(e, s) @array = e | list(e, s) s e;

@@ -1,0 +1,26 @@
+{
+    "name": "example_calc",
+    "description": "Example calc for DParserGen",
+    "authors": ["Tim Schendekehl"],
+    "license": "BSL-1.0",
+    "targetType": "executable",
+    "dependencies": {
+        "dparsergen:core": {
+            "version": "*",
+            "path": "../.."
+        },
+        "dparsergen:generator": {
+            "version": "*",
+            "path": "../.."
+        }
+    },
+    "sourceFiles": [
+        "testgrammarcalc.d",
+        "grammarcalc.d",
+        "grammarcalc_lexer.d"
+    ],
+    "preBuildCommands": [
+        "\"$DUB\" run --root=../../ :generator -- grammarcalc.ebnf -o grammarcalc.d --lexer grammarcalc_lexer.d"
+    ],
+    "buildRequirements": ["allowWarnings"]
+}

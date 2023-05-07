@@ -1,0 +1,34 @@
+S
+	= @lookahead A "a"
+	| @lookahead B "b"
+	;
+
+A = Expr;
+B = Expr;
+
+Expr = <Cmp | <And;
+
+And = Cmp "&&" Cmp
+	| And "&&" Cmp
+	;
+
+Cmp = <Add
+	| Add "==" Add
+	| Add "!=" Add
+	;
+
+Add
+	= <Mul
+	| Add "+" Mul
+	;
+Mul
+	= <Unary
+	| Mul "*" Unary
+	;
+
+Unary
+	= Identifier
+	| "-" Unary
+	;
+
+token Identifier = "i";

@@ -1,0 +1,53 @@
+
+option startTokenID = 1000;
+option startNonterminalID = 2000;
+option startProductionID = 3000;
+
+StmtOrExpr @lookahead = <Stmt | <S | ^"expr" <S;
+Stmt = <ReturnStmt
+	| <IfStmt
+	| <IfElseStmt
+	| <Declaration;
+
+ReturnStmt = ^"return" S ^";";
+IfStmt = ^"if" ^"(" S ^")" StmtOrExpr !"else";
+IfElseStmt = ^"if" ^"(" S ^")" StmtOrExpr ^"else" StmtOrExpr;
+
+Declaration = Type Identifier ^";";
+Type = <SimpleType | <ArrayType | <PointerType;
+SimpleType = Identifier;
+ArrayType = Type ^"[" Z ^"]";
+PointerType = Type ^"*";
+
+S = <P | S "+" P;
+P = <F | P ^"*" F;
+F = <C | <Z | "(" S ")" @uiae | ^"forward" ^"(" <S ^")";
+C = <V | V "(" Params? ")" | ForwardString | <Null | V "[" S "]"
+    | "[" listo(S, ",") "]"
+    | "{" ArrElemsX "}"
+    | "<" ArrElemsY ">";
+
+Z = Number;
+V = Identifier;
+
+Null = ^"null";
+ForwardString = ^"forward" <Identifier;
+
+token Identifier @lowPrio = [a-zA-Z] [a-zA-Z0-9]*;
+
+token Number = [1-9] [0-9]* | "0";
+
+list(e,s) @array = e | list(e,s) ^s e;
+listo(e,s) @array = list(e,s) | list(e,s) ^s | @empty;
+
+ArrElemsX = list(S, ",");
+
+ArrElemsY @array = S | S ^"," ArrElemsY;
+
+Params = list(S, ",");
+
+match "(" ")";
+match "[" "]";
+match "{" "}";
+
+token Space @ignoreToken = [ \n\r\t]+;

@@ -1,0 +1,35 @@
+S = Args;
+
+Args = "(" TypeOrExprs2 ")";
+
+TypeOrExprs @array
+	= TypeOrExpr
+	| TypeOrExprs "," TypeOrExpr
+	;
+TypeOrExprs2 @array
+	= @empty
+	| TypeOrExprs
+	| TypeOrExprs ","
+	;
+
+TypeOrExpr @backtrack = <Type | <Expr;
+
+Type = Id | <ArrayType | <PointerType;
+ArrayType = Type "[" "]";
+PointerType = Type "*";
+
+Expr = <MulExpr;
+MulExpr
+	= <UnaryExpr
+	| MulExpr "*" UnaryExpr
+	;
+UnaryExpr
+	= <PrimaryExpr
+	| "*" UnaryExpr
+	;
+PrimaryExpr
+	= Id
+	| "[" "]"
+	;
+
+token Id = "id";

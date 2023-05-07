@@ -1,0 +1,8 @@
+/*
+GENERATOR_OUTPUT(lexer):
+---
+not regular
+---
+*/
+S = T;
+token T = "1" | "(" T ")";

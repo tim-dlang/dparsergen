@@ -1,0 +1,7 @@
+S @directUnwrap = <A | <B;
+A @directUnwrap = <X | <Y;
+B @directUnwrap = <Y | <Z;
+
+X = "x";
+Y = "y";
+Z = "z";

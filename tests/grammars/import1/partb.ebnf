@@ -1,0 +1,4 @@
+
+B = "b" | <C;
+
+import "partc.ebnf";

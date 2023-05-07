@@ -1,0 +1,1692 @@
+import "grammarcppcommon.ebnf";
+
+option startTokenID = 1000;
+option startNonterminalID = 2000;
+option startProductionID = 3000;
+
+// Section basic.link
+TranslationUnit @noOptEmpty
+    = DeclarationSeq
+    ;
+
+// Section expr.prim.general
+PrimaryExpression @directUnwrap
+    = <LiteralS
+    | "this"
+    | "(" Expression ")"
+    | <IdExpression
+    | <LambdaExpression
+    | <StatementExpression
+    | <FoldExpression
+    ;
+StatementExpression // gcc extension: https://gcc.gnu.org/onlinedocs/gcc-5.3.0/gcc/Statement-Exprs.html
+    = "(" CompoundStatement ")"
+    ;
+IdExpression @directUnwrap
+    = <UnqualifiedId
+    | <QualifiedId
+    ;
+UnqualifiedId @directUnwrap
+    = <NameIdentifier
+    | <OperatorFunctionId
+    | <ConversionFunctionId
+    | LiteralOperatorId
+    | "~" ClassName
+    | "~" DecltypeSpecifier
+    | <TemplateId
+    ;
+NameIdentifier @directUnwrap
+    = Identifier
+    ;
+QualifiedId
+    = NestedNameSpecifier "template"? UnqualifiedId
+    //| "::" NameIdentifier
+    | "::" OperatorFunctionId
+    | "::" LiteralOperatorId
+    | "::" TemplateId
+    ;
+NestedNameSpecifier
+    = "::" @tag(NestedNameSpecifierStart)
+    | TypeName "::"
+    //| NamespaceName "::"
+    | DecltypeSpecifier "::"
+    | @inheritTag(NestedNameSpecifierStart) NestedNameSpecifier NameIdentifier "::"
+    | @inheritTag(NestedNameSpecifierStart) NestedNameSpecifier "template"? SimpleTemplateId "::"
+    ;
+
+// Section expr.prim.lambda
+LambdaExpression
+    = LambdaIntroducer LambdaDeclarator? CompoundStatement
+    ;
+LambdaIntroducer
+    = "[" LambdaCapture? "]"
+    ;
+LambdaCapture
+    = <CaptureDefault
+    | CaptureList
+    | CaptureDefault "," CaptureList
+    ;
+CaptureDefault
+    = "&"
+    | "="
+    ;
+CaptureList @array
+    = Capture "..."?
+    | CaptureList "," Capture "..."?
+    ;
+Capture
+    = <SimpleCapture
+    | <InitCapture
+    ;
+SimpleCapture
+    = Identifier
+    | "&" Identifier
+    | "this"
+    ;
+InitCapture
+    = Identifier Initializer
+    | "&" Identifier Initializer
+    ;
+LambdaDeclarator
+    = "(" ParameterDeclarationClause ")" "mutable"? ExceptionSpecification? AttributeSpecifierSeq TrailingReturnType?
+    ;
+
+// Section expr.prim.fold
+FoldExpression
+    = "(" CastExpression FoldOperator "..." ")"
+    | "(" "..." FoldOperator CastExpression ")"
+    | "(" CastExpression FoldOperator "..." FoldOperator CastExpression ")"
+    ;
+FoldOperator
+    = "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "^"
+    | "&"
+    | "|"
+    | "<<"
+    | ">" ">"
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "%="
+    | "^="
+    | "&="
+    | "|="
+    | "<<="
+    | ">>="
+    | "="
+    | "=="
+    | "!="
+    | "<"
+    | ">"
+    | "<="
+    | ">="
+    | "&&"
+    | "||"
+    | ","
+    | ".*"
+    | "->*"
+    ;
+
+// Section expr.post
+PostfixExpression @directUnwrap
+    = <PrimaryExpression
+    | PostfixExpression "[" Expression "]"
+    | PostfixExpression "[" BracedInitList? "]"
+    | TypeOrPostfixExpression "(" ExpressionList? ")"
+    | SimpleTypeSpecifier BracedInitList
+    | TypenameSpecifier BracedInitList
+    | PostfixExpression "." "template"? !"~" IdExpression
+    | PostfixExpression "->" "template"? !"~" IdExpression
+    | PostfixExpression "." PseudoDestructorName
+    | PostfixExpression "->" PseudoDestructorName
+    | PostfixExpression "++"
+    | PostfixExpression "--"
+    | "dynamic_cast" "<" TypeId ">" "(" Expression ")"
+    | "static_cast" "<" TypeId ">" "(" Expression ")"
+    | "reinterpret_cast" "<" TypeId ">" "(" Expression ")"
+    | "const_cast" "<" TypeId ">" "(" Expression ")"
+    | "typeid" "(" Expression ")"
+    | "typeid" "(" TypeId ")"
+    ;
+TypeOrPostfixExpression = <TypeOrPostfixExpression2;
+TypeOrPostfixExpression2 @directUnwrap
+    = <PostfixExpression
+    | <SimpleTypeSpecifier
+    | <TypenameSpecifier
+    ;
+ExpressionList @array
+    = <InitializerList
+    ;
+PseudoDestructorName
+    = NestedNameSpecifier? TypeName "::" "~" TypeName
+    | NestedNameSpecifier "template" SimpleTemplateId "::" "~" TypeName
+    | NestedNameSpecifier? "~" TypeName
+    | "~" DecltypeSpecifier
+    ;
+
+// Section expr.unary
+UnaryExpression
+    = <PostfixExpression
+    | "++" CastExpression
+    | "--" CastExpression
+    | "~" CastExpression
+    | "__extension__" CastExpression
+    | "+" CastExpression
+    | "-" CastExpression
+    | "!" CastExpression
+    | "*" CastExpression
+    | "&" CastExpression
+    | "sizeof" UnaryExpression
+    | "sizeof" "(" TypeId ")"
+    | "sizeof" "..." "(" Identifier ")"
+    | "alignof" "(" TypeId ")"
+    | <NoexceptExpression
+    | <NewExpression
+    | <DeleteExpression
+    | "__alignof__" "(" TypeId ")" // http://gcc.gnu.org/onlinedocs/gcc-3.2.2/gcc/Alignment.html
+    | "__alignof__" "(" Expression ")" // http://gcc.gnu.org/onlinedocs/gcc-3.2.2/gcc/Alignment.html
+    | "__builtin_offsetof" "(" TypeId "," Identifier ")" // https://gcc.gnu.org/onlinedocs/gcc-4.5.3/gcc/Offsetof.html
+    | "__builtin_va_arg" "(" Expression "," TypeId ")"
+    | "__builtin_va_start" "(" Expression "," Expression ")"
+    | "__builtin_va_end" "(" Expression ")"
+    | "__builtin_va_copy" "(" Expression "," Expression ")"
+    ;
+
+// Section expr.new
+NewExpression
+    = "::"? "new" NewPlacement? NewTypeId NewInitializer?
+    | "::"? "new" NewPlacement? "(" TypeId ")" NewInitializer?
+    ;
+NewPlacement
+    = "(" ExpressionList ")"
+    ;
+NewTypeId
+    = TypeSpecifierSeq NewDeclarator?
+    ;
+NewDeclarator
+    = PtrOperator innerDeclarator:NewDeclarator?
+    | <NoptrNewDeclarator
+    ;
+NoptrNewDeclarator
+    = "[" Expression "]" AttributeSpecifierSeq
+    | innerDeclarator:NoptrNewDeclarator "[" ConstantExpression "]" AttributeSpecifierSeq
+    ;
+NewInitializer
+    = "(" ExpressionList? ")"
+    | <BracedInitList
+    ;
+
+// Section expr.delete
+DeleteExpression
+    = "::"? "delete" CastExpression
+    | "::"? "delete" "[" "]" CastExpression
+    ;
+
+// Section expr.unary.noexcept
+NoexceptExpression
+    = "noexcept" "(" Expression ")"
+    ;
+
+// Section expr.cast
+CastExpression
+    = <UnaryExpression
+    | "(" TypeId ")" CastExpression
+    | <CompoundLiteralExpression // https://en.cppreference.com/w/c/language/compound_literal
+    ;
+CompoundLiteralExpression
+    = "(" TypeId ")" BracedInitList
+    ;
+
+// Section expr.mptr.oper
+PmExpression
+    = <CastExpression
+    | PmExpression ".*" CastExpression
+    | PmExpression "->*" CastExpression
+    ;
+
+// Section expr.mul
+MultiplicativeExpression @directUnwrap
+    = <PmExpression
+    | MultiplicativeExpression "*" PmExpression
+    | MultiplicativeExpression "/" PmExpression
+    | MultiplicativeExpression "%" PmExpression
+    ;
+
+// Section expr.add
+AdditiveExpression @directUnwrap
+    = <MultiplicativeExpression
+    | AdditiveExpression "+" MultiplicativeExpression
+    | AdditiveExpression "-" MultiplicativeExpression
+    ;
+
+// Section expr.shift
+ShiftExpression @directUnwrap
+    = <AdditiveExpression
+    | ShiftExpression "<<" AdditiveExpression
+    | ShiftExpression ">" ">" AdditiveExpression
+    ;
+
+// Section expr.rel
+RelationalExpression @directUnwrap
+    = <ShiftExpression
+    | RelationalExpression "<" ShiftExpression
+    | RelationalExpression ">" ShiftExpression
+    | RelationalExpression "<=" ShiftExpression
+    | RelationalExpression ">=" ShiftExpression
+    ;
+
+// Section expr.eq
+EqualityExpression @directUnwrap
+    = <RelationalExpression
+    | EqualityExpression "==" RelationalExpression
+    | EqualityExpression "!=" RelationalExpression
+    ;
+
+// Section expr.bit.and
+AndExpression @directUnwrap
+    = <EqualityExpression
+    | AndExpression "&" EqualityExpression
+    ;
+
+// Section expr.xor
+ExclusiveOrExpression @directUnwrap
+    = <AndExpression
+    | ExclusiveOrExpression "^" AndExpression
+    ;
+
+// Section expr.or
+InclusiveOrExpression @directUnwrap
+    = <ExclusiveOrExpression
+    | InclusiveOrExpression "|" ExclusiveOrExpression
+    ;
+
+// Section expr.log.and
+LogicalAndExpression @directUnwrap
+    = <InclusiveOrExpression
+    | LogicalAndExpression "&&" InclusiveOrExpression
+    ;
+
+// Section expr.log.or
+LogicalOrExpression @directUnwrap
+    = <LogicalAndExpression
+    | LogicalOrExpression "||" LogicalAndExpression
+    ;
+
+// Section expr.cond
+ConditionalExpression @directUnwrap
+    = <LogicalOrExpression
+    | LogicalOrExpression "?" Expression ":" AssignmentExpression
+    ;
+
+// Section expr.ass
+AssignmentExpression @directUnwrap
+    = <ConditionalExpression
+    | LogicalOrExpression AssignmentOperator InitializerClause
+    | <ThrowExpression
+    ;
+AssignmentOperator
+    = "="
+    | "*="
+    | "/="
+    | "%="
+    | "+="
+    | "-="
+    | ">>="
+    | "<<="
+    | "&="
+    | "^="
+    | "|="
+    ;
+
+// Section expr.comma
+Expression @start
+    = <AssignmentExpression
+    | <CommaExpression
+    ;
+CommaExpression
+    = Expression "," AssignmentExpression
+    ;
+
+// Section expr.const
+ConstantExpression @directUnwrap
+    = <ConditionalExpression
+    ;
+
+// Section stmt.stmt
+Statement
+    = <LabelStatement
+    | EmptyStatement
+    | AttributeSpecifierSeq ExpressionStatement
+    | AttributeSpecifierSeq CompoundStatement
+    | AttributeSpecifierSeq SelectionStatement
+    | AttributeSpecifierSeq IterationStatement
+    | AttributeSpecifierSeq JumpStatement
+    | <DeclarationStatement
+    | AttributeSpecifierSeq TryBlock
+    ;
+EmptyStatement
+    = ";"
+    ;
+
+// Section stmt.label
+LabelStatement
+    = AttributeSpecifierSeq Identifier ":"
+    | AttributeSpecifierSeq "case" ConstantExpression ":"
+    | AttributeSpecifierSeq "default" ":"
+    ;
+
+// Section stmt.expr
+ExpressionStatement
+    = Expression ";"
+    ;
+
+// Section stmt.block
+CompoundStatement
+    = "{" StatementSeq "}"
+    ;
+StatementSeq @array
+    = @empty
+    | StatementSeq Statement
+    ;
+
+// Section stmt.select
+SelectionStatement
+    = "if" "(" Condition ")" Statement !"else"
+    | "if" "(" Condition ")" Statement "else" Statement
+    | "if" "constexpr" "(" Condition ")" Statement !"else"
+    | "if" "constexpr" "(" Condition ")" Statement "else" Statement
+    | "switch" "(" Condition ")" Statement
+    ;
+Condition
+    = <Expression
+    | declSeq:DeclSpecifierSeq declarators:Declarator "=" InitializerClause
+    | declSeq:DeclSpecifierSeq declarators:Declarator BracedInitList
+    ;
+
+// Section stmt.iter
+IterationStatement
+    = "while" "(" Condition ")" Statement
+    | DoWhileStatement ";"
+    | "for" "(" ForInitStatement Condition? ";" Expression? ")" Statement
+    | "for" "(" ForRangeDeclaration ":" ForRangeInitializer ")" Statement
+    ;
+DoWhileStatement
+    = "do" Statement "while" "(" Expression ")"
+    ;
+ForInitStatement
+    = <ExpressionStatement
+    | <SimpleDeclaration1
+    | <EmptyStatement
+    ;
+ForRangeDeclaration
+    = AttributeSpecifierSeq TypeSpecifierSeq Declarator
+    ;
+ForRangeInitializer
+    = Expression
+    | BracedInitList
+    ;
+
+// Section stmt.jump
+JumpStatement
+    = JumpStatement2 ";"
+    ;
+JumpStatement2
+    = "break"
+    | "continue"
+    | "return" Expression?
+    | "return" BracedInitList
+    | "goto" Identifier
+    ;
+
+// Section stmt.dcl
+DeclarationStatement
+    = <BlockDeclaration
+    ;
+
+// Section dcl.dcl
+DeclarationSeq @array @noOptEmpty
+    = @empty
+    | DeclarationSeq Declaration
+    | DeclarationSeq LinkageSpecification
+    ;
+Declaration
+    = <BlockDeclaration
+    | <SimpleDeclaration2
+    | <FunctionDefinitionGlobal
+    | <TemplateDeclaration
+    | <ExplicitInstantiation
+    | <ExplicitSpecialization
+    | <NamespaceDefinition
+    | <EmptyDeclaration
+    | <AttributeDeclaration
+    ;
+Declaration2
+    = <Declaration
+    | LinkageSpecification
+    ;
+BlockDeclaration
+    = <SimpleDeclaration1
+//    | <AsmDefinition
+    | <NamespaceAliasDefinition
+    | <UsingDeclaration
+    | <UsingDirective
+    | <StaticAssertDeclaration
+    | <AliasDeclaration
+    | <OpaqueEnumDeclaration
+    ;
+AliasDeclaration
+    = "using" Identifier AttributeSpecifierSeq? "=" TypeId ";"
+    ;
+SimpleDeclaration1
+    = <SimpleDeclaration3
+    | declSeq:DeclSpecifierSeq declarators:InitDeclaratorList ";"
+    | declSeq:DeclSpecifierSeqStructuredBinding RefQualifier? "[" IdentifierList "]" Initializer ";"
+    ;
+SimpleDeclaration3
+    = declSeq:DeclSpecifierSeq ";"
+    ;
+SimpleDeclaration2
+    = declarators:InitDeclaratorList ";"
+    ;
+StaticAssertDeclaration
+    = StaticAssertDeclarationX ";"
+    ;
+StaticAssertDeclarationX
+    = "static_assert" "(" ConstantExpression "," StringLiteral ")"
+    | "static_assert" "(" ConstantExpression ")"
+    | "_Static_assert" "(" ConstantExpression "," StringLiteral ")"
+    | "_Static_assert" "(" ConstantExpression ")"
+    ;
+EmptyDeclaration
+    = ";"
+    ;
+AttributeDeclaration
+    = AttributeSpecifierSeqPlus ";"
+    ;
+
+// Section dcl.spec
+DeclSpecifier @directUnwrap
+    = <StorageClassSpecifier
+
+    //| <TypeSpecifier
+    //| <TypeKeyword
+    //| <SimpleTypeSpecifierNoKeyword
+    //| <ElaboratedTypeSpecifier
+    //| <TypenameSpecifier
+    | <CvQualifier
+    //| <ClassSpecifier
+    //| <EnumSpecifier
+
+    | <FunctionSpecifier
+    | "friend"
+    | "constexpr"
+    | "__extension__"
+    | "__cdecl"
+
+    | <AttributeSpecifier
+    ;
+DeclSpecifierTypedef
+    = "typedef"
+    ;
+DeclSpecifierAll @directUnwrap
+    = <DeclSpecifier
+    | <DeclSpecifierTypedef
+    ;
+DeclSpecifierTypeKeyword @directUnwrap
+    = <DeclSpecifierAll
+    | <TypeKeyword
+    ;
+DeclSpecifierSeq
+    = DeclSpecifierSeqArr
+    ;
+DeclSpecifierSeqArr @array @regArray
+    = DeclSpecifier+
+    | DeclSpecifierTypeKeyword* DeclSpecifierAll DeclSpecifierTypeKeyword* TypeKeyword DeclSpecifierTypeKeyword*
+    | DeclSpecifierTypeKeyword* TypeKeyword DeclSpecifierTypeKeyword* DeclSpecifierAll DeclSpecifierTypeKeyword*
+    | TypeKeyword+
+    | DeclSpecifierAll* SimpleTypeSpecifierNoKeyword DeclSpecifierAll*
+    | DeclSpecifierAll* ElaboratedTypeSpecifier DeclSpecifierAll*
+    | DeclSpecifierAll* ClassSpecifier DeclSpecifierAll*
+    | DeclSpecifierAll* EnumSpecifier DeclSpecifierAll*
+    | DeclSpecifierAll* TypenameSpecifier DeclSpecifierAll*
+    | DeclSpecifierAll* TypeofTypeSpecifier DeclSpecifierAll*
+    ;
+DeclSpecifierSeqStructuredBinding
+    = DeclSpecifierSeqStructuredBindingArr
+    ;
+DeclSpecifierSeqStructuredBindingArr @array @regArray
+    = CvQualifierOrStorageClassSpecifier* Auto CvQualifierOrStorageClassSpecifier*
+    ;
+Auto
+    = "auto"
+    ;
+
+// Section dcl.stc
+StorageClassSpecifier
+    = "register"
+    | "static"
+    | "thread_local"
+    | "__thread"
+    | "extern"
+    | "mutable"
+    | "__extern_inline"
+    ;
+
+// Section dcl.fct.spec
+FunctionSpecifier
+    = "inline"
+    | "__inline"
+    | "__inline__"
+    | "virtual"
+    | "explicit"
+    ;
+
+// Section dcl.typedef
+//TypedefName
+//    = Identifier
+//    ;
+
+// Section dcl.type
+TypeSpecifier
+    = <TrailingTypeSpecifier
+    | <ClassSpecifier
+    | <EnumSpecifier
+    ;
+TrailingTypeSpecifier
+//    = <SimpleTypeSpecifier
+    = <ElaboratedTypeSpecifier
+    | <TypenameSpecifier
+//     | <CvQualifier
+    ;
+CvQualifierOrTypeKeyword
+    = <CvQualifier
+    | <TypeKeyword
+    ;
+CvQualifierOrStorageClassSpecifier
+    = <CvQualifier
+    | <StorageClassSpecifier
+    ;
+TypeSpecifierSeq @array @regArray
+    = CvQualifier* TypeSpecifier CvQualifier* AttributeSpecifierSeq?
+    | CvQualifier* SimpleTypeSpecifierNoKeyword CvQualifier* AttributeSpecifierSeq?
+    | CvQualifierOrTypeKeyword+ AttributeSpecifierSeq?
+    ;
+TrailingTypeSpecifierSeq @array @regArray
+    = CvQualifier* TrailingTypeSpecifier CvQualifier* AttributeSpecifierSeq?
+    | CvQualifier* SimpleTypeSpecifierNoKeyword CvQualifier* AttributeSpecifierSeq?
+    | CvQualifierOrTypeKeyword+ AttributeSpecifierSeq?
+    ;
+
+// Section dct.type.simple
+SimpleTypeSpecifier @directUnwrap
+    = <TypeKeyword
+    | <SimpleTypeSpecifierNoKeyword
+    ;
+SimpleTypeSpecifierNoKeyword @directUnwrap
+    = <TypeName
+    | nestedName:NestedNameSpecifier TypeName
+    | nestedName:NestedNameSpecifier "template" SimpleTemplateId
+    | <DecltypeSpecifier
+    ;
+TypeKeyword
+    = "char"
+    | "char16_t"
+    | "char32_t"
+    | "wchar_t"
+    | "bool"
+    | "_Bool" // C99
+    | "short"
+    | "int"
+    | "long"
+    | "signed"
+    | "unsigned"
+    | "float"
+    | "double"
+    | "void"
+    | "auto"
+    | "__builtin_va_list"
+    | BuiltinInt
+    ;
+token BuiltinInt
+    = "__builtin_" {"" | "u"} "int" {"8" | "16" | "32" | "64" | "max"} "_t"
+    | "__builtin_size_t"
+    | "__builtin_ssize_t"
+    | "__builtin_ptrdiff_t"
+    | "__builtin_intptr_t"
+    | "__builtin_uintptr_t"
+    | "__builtin_wchar_t"
+    | "__builtin_char8_t"
+    | "__builtin_char16_t"
+    | "__builtin_char32_t"
+    | "__" "int" {"8" | "16" | "32" | "64" | "128"} // Microsoft: https://docs.microsoft.com/de-de/cpp/cpp/data-type-ranges?view=msvc-160
+    ;
+TypeName @directUnwrap
+    = <ClassName
+    //| <EnumName
+    //| <TypedefName
+    //| <SimpleTemplateId // is in ClassName
+    ;
+DecltypeSpecifier
+    = "decltype" "(" Expression ")"
+    | "decltype" "(" "auto" ")" // Used in /usr/include/c++/10.2.0/bits/stl_function.h
+    | "__decltype" "(" Expression ")"
+    ;
+
+// Section dcl.type.elab
+ElaboratedTypeSpecifier
+    = ClassKey attr:AttributeSpecifierSeq NestedNameSpecifier? name:Identifier
+    | ClassKey NestedNameSpecifier? "template"? attr:AttributeSpecifierSeq SimpleTemplateId
+    | "enum" NestedNameSpecifier? name:Identifier
+    ;
+
+// Section dcl.enum
+//EnumName
+//    = Identifier
+//    ;
+EnumSpecifier
+    = EnumHead "{" EnumeratorList? "}"
+    | EnumHead "{" EnumeratorList "," "}"
+    ;
+EnumHead
+    = EnumKey AttributeSpecifierSeq EnumBase?
+    | EnumKey AttributeSpecifierSeq name:Identifier EnumBase?
+    | EnumKey AttributeSpecifierSeq NestedNameSpecifier name:Identifier EnumBase?
+    ;
+OpaqueEnumDeclaration
+    = EnumKey AttributeSpecifierSeq Identifier EnumBase? ";"
+    ;
+EnumKey
+    = "enum"
+    | "enum" "class"
+    | "enum" "struct"
+    ;
+EnumBase
+    = ":" TypeSpecifierSeq
+    ;
+EnumeratorList @array
+    = Enumerator
+    | EnumeratorList "," Enumerator
+    ;
+Enumerator
+    = Identifier EnumeratorInitializer?
+    ;
+EnumeratorInitializer
+    = "=" ConstantExpression
+    ;
+
+// Section namespace.def
+NamespaceName
+    = <OriginalNamespaceName
+    //| <NamespaceAlias
+    ;
+OriginalNamespaceName
+    = Identifier
+    ;
+NamespaceDefinition
+    = <NamedNamespaceDefinition
+    | <UnnamedNamespaceDefinition
+    | <NestedNamespaceDefinition
+    ;
+NamedNamespaceDefinition
+    = <OriginalNamespaceDefinition
+//    | <ExtensionNamespaceDefinition
+    ;
+OriginalNamespaceDefinition
+    = "inline"? "namespace" Identifier
+                AttributeSpecifierSeq
+                "{" NamespaceBody "}"
+    ;
+/*ExtensionNamespaceDefinition
+    = "inline"? "namespace" OriginalNamespaceName "{" NamespaceBody "}"
+    ;*/
+UnnamedNamespaceDefinition
+    = "inline"? "namespace" "{" NamespaceBody "}"
+    ;
+NestedNamespaceDefinition
+    = "namespace" EnclosingNamespaceSpecifier "::" Identifier "{" NamespaceBody "}"
+    ;
+EnclosingNamespaceSpecifier
+    = Identifier
+    | EnclosingNamespaceSpecifier "::" Identifier
+    ;
+NamespaceBody
+    = DeclarationSeq
+    ;
+
+// Section namespace.alias
+/*NamespaceAlias
+    = Identifier
+    ;*/
+NamespaceAliasDefinition
+    = "namespace" Identifier "=" QualifiedNamespaceSpecifier ";"
+    ;
+QualifiedNamespaceSpecifier
+    = NestedNameSpecifier? NamespaceName
+    ;
+
+// Section namespace.udecl
+UsingDeclaration
+    = "using" UsingDeclaratorList ";"
+    ;
+UsingDeclaratorList @array
+    = UsingDeclarator "..."?
+    | UsingDeclaratorList "," UsingDeclarator "..."?
+    ;
+UsingDeclarator
+    = "typename"? NestedNameSpecifier UnqualifiedId
+    ;
+
+// Section namespace.udir
+UsingDirective
+    = AttributeSpecifierSeq "using" "namespace" NestedNameSpecifier? NamespaceName ";"
+    ;
+
+// Section dcl.asm
+/*AsmDefinition
+    = "asm" "(" BalancedTokenSeq ")" ";"
+    | "__asm" "(" BalancedTokenSeq ")" ";"
+    | "__asm__" "(" BalancedTokenSeq ")" ";"
+    | "__asm__" "__volatile__" "(" BalancedTokenSeq ")" ";"
+    ;*/
+
+// Section dcl.link
+LinkageSpecification @array
+    = LinkageSpecificationBegin DeclarationSeq LinkageSpecificationEnd
+    | LinkageSpecificationSingle
+    ;
+LinkageSpecificationSingle
+    = "extern" StringLiteral Declaration2
+    ;
+LinkageSpecificationBegin
+    = "extern" StringLiteral "{"
+    ;
+LinkageSpecificationEnd
+    = "}"
+    ;
+
+// Section dcl.attr.grammar
+AttributeSpecifierSeqPlus @array
+    = AttributeSpecifier+
+    ;
+AttributeSpecifierSeq @array
+    = AttributeSpecifier*
+    ;
+AttributeSpecifier
+    = "[" "[" AttributeList "]" "]"
+    | <AlignmentSpecifier
+    | "__attribute__" "(" "(" AttributeList ")" ")"
+    | "__attribute" "(" "(" AttributeList ")" ")"
+    | "__asm__" "(" BalancedTokenSeq ")"
+    | "__asm__" "__volatile__" "(" BalancedTokenSeq ")"
+    | "__asm" "(" BalancedTokenSeq ")"
+    | "asm" "(" BalancedTokenSeq ")"
+    | "restrict"
+    | "__restrict"
+    | "__restrict__"
+    | "__fastcall"
+    | "__stdcall"
+    | "__thiscall"
+    | "__regcall"
+    | "__cdecl"
+    | "__vectorcall"
+    | "__ptr64"
+    | "__w64"
+    | "__ptr32"
+    | "__sptr"
+    | "__uptr"
+    | "__declspec" "(" Identifier ")"
+    ;
+AlignmentSpecifier
+    = "alignas" "(" TypeId "..."? ")"
+    | "alignas" "(" ConstantExpression "..."? ")"
+    ;
+AttributeList @array
+    = Attribute?
+    | AttributeList "," Attribute?
+    | Attribute "..."
+    | AttributeList "," Attribute "..."
+    ;
+Attribute
+    = AttributeToken AttributeArgumentClause?
+    ;
+AttributeToken
+    = Identifier
+    | "const" // used by Qt
+    | <AttributeScopedToken
+    ;
+AttributeScopedToken
+    = AttributeNamespace "::" Identifier
+    ;
+AttributeNamespace
+    = Identifier
+    ;
+AttributeArgumentClause
+    = "(" BalancedTokenSeq ")"
+    ;
+BalancedTokenSeq @array
+    = BalancedToken
+    | BalancedTokenSeq BalancedToken
+    ;
+BalancedToken
+    = "(" BalancedTokenSeq ")"
+    | "[" BalancedTokenSeq "]"
+    | "{" BalancedTokenSeq "}"
+    | Token // except a parenthesis, a bracket, or a brace
+    ;
+
+// Section dcl.decl
+InitDeclaratorList @array
+    = InitDeclarator
+    | InitDeclaratorList "," InitDeclarator
+    ;
+InitDeclarator
+    = <Declarator
+    | @rejectTag(FunctionDeclarator) innerDeclarator:Declarator Initializer
+    | @needTag(NonFunctionDeclarator) @needTag(FunctionDeclarator) innerDeclarator:Declarator Initializer
+    ;
+Declarator
+    = <PtrDeclarator
+    | <FunctionDeclaratorTrailing
+    ;
+FunctionDeclaratorTrailing
+    = @inheritTag(NonFunctionDeclarator) innerDeclarator:NoptrDeclarator parameters:ParametersAndQualifiers TrailingReturnType virtSpec:VirtSpecifierSeq? @tag(FunctionDeclarator)
+    ;
+PtrDeclarator
+    = <NoptrDeclarator
+    | PtrOperator @inheritTag(FunctionDeclarator) @inheritTag(NonFunctionDeclarator) innerDeclarator:PtrDeclarator @tag(PtrDeclarator)
+    ;
+NoptrDeclarator
+    = innerDeclarator:DeclaratorId AttributeSpecifierSeq
+    | <FunctionDeclarator
+    | <ArrayDeclarator
+    | "(" AttributeSpecifierSeq @needTag(PtrDeclarator) innerDeclarator:PtrDeclarator ")" @tag(NonFunctionDeclarator)
+    | "(" AttributeSpecifierSeq @rejectTag(PtrDeclarator) innerDeclarator:PtrDeclarator ")"
+    ;
+FunctionDeclarator
+    = @inheritTag(NonFunctionDeclarator) innerDeclarator:NoptrDeclarator parameters:ParametersAndQualifiers virtSpec:VirtSpecifierSeq? @tag(FunctionDeclarator)
+    ;
+ArrayDeclarator
+    = innerDeclarator:NoptrDeclarator "[" ConstantExpression? AttributeSpecifierSeq "]" AttributeSpecifierSeq
+    ;
+ParametersAndQualifiers
+    = "(" ParameterDeclarationClause ")" QualifiersSeq
+    ;
+QualifiersSeq @array @regArray
+    = AttributeSpecifierSeq CvQualifierSeq? RefQualifier? ExceptionSpecification?
+    | CvQualifierSeq ExceptionSpecification AttributeSpecifierSeq // exists in Qt for QDeadlineTimer::deadline
+    | ExceptionSpecification AttributeSpecifierSeq
+    ;
+TrailingReturnType
+    = "->" TrailingTypeSpecifierSeq AbstractDeclarator?
+    ;
+PtrOperator
+    = "*" AttributeSpecifierSeq CvQualifierSeq?
+    | "&" AttributeSpecifierSeq
+    | "&&" AttributeSpecifierSeq
+    | @rejectTag(NestedNameSpecifierStart) NestedNameSpecifier "*" AttributeSpecifierSeq CvQualifierSeq?
+    ;
+CvQualifierSeq @array
+    = CvQualifier
+    | CvQualifier CvQualifierSeq
+    ;
+CvQualifier
+    = "const"
+    | "volatile"
+    ;
+RefQualifier
+    = "&"
+    | "&&"
+    ;
+DeclaratorId
+    = "..."? UnqualifiedId
+    | @rejectTag(NestedNameSpecifierStart) nestedName:NestedNameSpecifier "template" UnqualifiedId
+    | @rejectTag(NestedNameSpecifierStart) nestedName:NestedNameSpecifier ClassNameOrUnqualifiedId
+    ;
+ClassNameOrUnqualifiedId @directUnwrap
+    = <ClassName
+    | <UnqualifiedId
+    ;
+
+// Section dcl.name
+TypeId
+    = TypeSpecifierSeq AbstractDeclarator?
+    ;
+AbstractDeclarator
+    = <PtrAbstractDeclarator
+    | <FunctionAbstractDeclaratorTrailing
+    ;
+AbstractDeclaratorOpt
+    = <AbstractDeclarator
+    | <FakeAbstractDeclarator
+    ;
+FakeAbstractDeclarator
+    = @empty
+    ;
+FunctionAbstractDeclaratorTrailing
+    = innerDeclarator:NoptrAbstractDeclarator? parameters:ParametersAndQualifiers TrailingReturnType virtSpec:VirtSpecifierSeq?
+    ;
+PtrAbstractDeclarator
+    = <NoptrAbstractDeclarator
+    | PtrOperator innerDeclarator:PtrAbstractDeclarator?
+    ;
+NoptrAbstractDeclarator
+    = <FunctionAbstractDeclarator
+    | <ArrayAbstractDeclarator
+    | "(" innerDeclarator:PtrAbstractDeclarator ")"
+    ;
+FunctionAbstractDeclarator
+    = innerDeclarator:NoptrAbstractDeclarator? parameters:ParametersAndQualifiers virtSpec:VirtSpecifierSeq?
+    ;
+ArrayAbstractDeclarator
+    = innerDeclarator:NoptrAbstractDeclarator? "[" ConstantExpression? AttributeSpecifierSeq "]" AttributeSpecifierSeq
+    ;
+
+// Section dcl.fct
+ParameterDeclarationClause
+    = ParameterDeclarationList? //"..."?
+    | "..."
+    | ParameterDeclarationList "," "..."
+    ;
+ParameterDeclarationList @array
+    = ParameterDeclaration
+    | ParameterDeclarationList "," ParameterDeclaration
+    ;
+ParameterDeclaration
+    = declSeq:DeclSpecifierSeq declarators:Declarator TripleDots?
+    | declSeq:DeclSpecifierSeq declarators:Declarator "=" InitializerClause
+    | <ParameterDeclarationAbstract
+    ;
+TripleDots
+    = "..."
+    | TripleDots "..."
+    ;
+ParameterDeclarationAbstract
+    = declSeq:DeclSpecifierSeq declarators:AbstractDeclaratorOpt TripleDots?
+    | declSeq:DeclSpecifierSeq declarators:AbstractDeclaratorOpt "=" InitializerClause
+    ;
+
+// Section dcl.fct.def.general
+FunctionDefinitionMember
+    = FunctionDefinitionHead FunctionBody
+    | FunctionDefinitionHead "=" "default" ";"
+    | FunctionDefinitionHead "=" "delete" ";"
+    | FunctionDefinitionHead "=" IntegerLiteral ";"
+    ;
+FunctionDefinitionGlobal
+    = FunctionDefinitionHead FunctionBody
+    | FunctionDefinitionHead "=" "default" ";"
+    | FunctionDefinitionHead "=" "delete" ";"
+    ;
+FunctionDefinitionHead
+    = declSeq:DeclSpecifierSeq? @needTag(FunctionDeclarator) @rejectTag(NonFunctionDeclarator) Declarator
+    ;
+FunctionBody
+    = CtorInitializer? CompoundStatement
+    | <FunctionTryBlock
+    ;
+
+// Section dcl.init
+Initializer
+    = <BraceOrEqualInitializer
+    | "(" ExpressionList ")"
+    ;
+BraceOrEqualInitializer
+    = "=" InitializerClause
+    | <BracedInitList
+    ;
+InitializerClause
+    = AssignmentExpression
+    | BracedInitList
+    ;
+InitializerClauseDesignator
+    = <InitializerClause
+    | DesignatorList "=" AssignmentExpression
+    | DesignatorList "=" BracedInitList
+    ;
+InitializerList @array
+    = InitializerClauseDesignator
+    | InitializerClauseDesignator "..."
+    | InitializerList "," InitializerClauseDesignator
+    | InitializerList "," InitializerClauseDesignator "..."
+    ;
+InitializerList2 @array
+    = InitializerList
+    | InitializerList ","
+    | @empty;
+DesignatorList @array
+    = Designator
+    | DesignatorList Designator
+    ;
+Designator
+    = "[" ConstantExpression "]"
+    | "." Identifier
+    ;
+BracedInitList
+    = "{" InitializerList2 "}"
+    ;
+
+// Section class
+ClassName @directUnwrap
+    = <NameIdentifier
+    | <SimpleTemplateId
+    ;
+ClassSpecifier
+    = ClassHead ClassBody
+    ;
+ClassBody
+    = "{" MemberSpecification "}"
+    ;
+ClassHead
+    = ClassKey AttributeSpecifierSeq name:ClassHeadName ClassVirtSpecifierSeq? BaseClause?
+    | ClassKey AttributeSpecifierSeq BaseClause?
+    ;
+ClassHeadName
+    = nestedName:NestedNameSpecifier? ClassName
+    ;
+ClassVirtSpecifierSeq @array
+    = ClassVirtSpecifier
+    | ClassVirtSpecifierSeq ClassVirtSpecifier
+    ;
+ClassVirtSpecifier
+    = Identifier >> "final"
+    | Identifier >> "explicit"
+    ;
+ClassKey
+    = "class"
+    | "struct"
+    | "union"
+    ;
+
+// Section class.mem
+MemberSpecification @array
+    = @empty
+    | MemberSpecification MemberDeclaration
+    | MemberSpecification AccessSpecifierWithColon
+    ;
+AccessSpecifierWithColon
+    = AccessSpecifier ":"
+    ;
+MemberDeclaration
+    = <MemberDeclaration1
+    | <MemberDeclaration2
+    | <FunctionDefinitionMember
+    | <UsingDeclaration
+    | <StaticAssertDeclaration
+    | <TemplateDeclaration
+    | <AliasDeclaration
+    ;
+MemberDeclaration1
+    = declSeq:DeclSpecifierSeq? declarators:MemberDeclaratorList ";"
+    ;
+MemberDeclaration2
+    = declSeq:DeclSpecifierSeq? ";"
+    ;
+MemberDeclaratorList @array
+    = MemberDeclarator
+    | MemberDeclaratorList "," MemberDeclarator
+    ;
+MemberDeclarator
+    = <Declarator
+    | @rejectTag(FunctionDeclarator) innerDeclarator:Declarator initializer:BraceOrEqualInitializer
+    | @needTag(NonFunctionDeclarator) @needTag(FunctionDeclarator) innerDeclarator:Declarator initializer:BraceOrEqualInitializer
+    | innerDeclarator:Identifier? AttributeSpecifierSeq virtSpec:VirtSpecifierSeq? ":" ConstantExpression
+    ;
+VirtSpecifierSeq @array
+    = VirtSpecifier
+    | VirtSpecifierSeq VirtSpecifier
+    ;
+VirtSpecifier
+    = Identifier >> "override"
+    | Identifier >> "final"
+    | "new"
+    ;
+//PureSpecifier
+//    = "=" IntegerLiteral // "0"
+//    ;
+
+// Section class.derived
+BaseClause
+    = ":" BaseSpecifierList
+    ;
+BaseSpecifierList @array
+    = BaseSpecifier "..."?
+    | BaseSpecifierList "," BaseSpecifier "..."?
+    ;
+BaseSpecifier
+    = AttributeSpecifierSeq BaseTypeSpecifier
+    | AttributeSpecifierSeq "virtual" AccessSpecifier? BaseTypeSpecifier
+    | AttributeSpecifierSeq AccessSpecifier "virtual"? BaseTypeSpecifier
+    ;
+ClassOrDecltype
+    = NestedNameSpecifier? ClassName
+    | <DecltypeSpecifier
+    ;
+BaseTypeSpecifier
+    = <ClassOrDecltype
+    ;
+AccessSpecifier
+    = "private"
+    | "protected"
+    | "public"
+    ;
+
+// Section class.conv.fct
+ConversionFunctionId
+    = "operator" ConversionTypeId
+    ;
+ConversionTypeId
+    = TypeSpecifierSeq ConversionDeclarator?
+    ;
+ConversionDeclarator
+    = PtrOperator ConversionDeclarator?
+    ;
+
+// Section class.base.init
+CtorInitializer
+    = ":" MemInitializerList
+    ;
+MemInitializerList @array
+    = MemInitializer "..."?
+    | MemInitializerList "," MemInitializer "..."?
+    ;
+MemInitializer
+    = MemInitializerId "(" ExpressionList? ")"
+    | MemInitializerId BracedInitList
+    ;
+MemInitializerId
+    = <ClassOrDecltype
+//    | Identifier
+    ;
+
+// Section over.oper
+OperatorFunctionId
+    = "operator" OverloadableOperator
+    | "operator" OverloadableOperator "<" TemplateArgumentList? ">"
+    ;
+OverloadableOperator
+    = "new"
+    | "delete"
+    | "new" "[" "]"
+    | "delete" "[" "]"
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "^"
+    | "&"
+    | "|"
+    | "~"
+    | "!"
+    | "="
+    | "<"
+    | ">"
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "%="
+    | "^="
+    | "&="
+    | "|="
+    | "<<"
+    | ">" ">"
+    | ">>="
+    | "<<="
+    | "=="
+    | "!="
+    | "<="
+    | ">="
+    | "&&"
+    | "||"
+    | "++"
+    | "--"
+    | ","
+    | "->*"
+    | "->"
+    | "(" ")"
+    | "[" "]"
+    ;
+
+// Section over.Literal
+LiteralOperatorId
+    = "operator" StringLiteral Identifier
+    ;
+
+// Section temp
+TemplateDeclaration
+    = "template" "<" TemplateParameterList ">" Declaration2
+    ;
+TemplateParameterList @array
+    = TemplateParameter
+    | TemplateParameterList "," TemplateParameter
+    ;
+
+// Section temp.param
+TemplateParameter
+    = <TypeParameter
+    | <ParameterDeclaration
+    ;
+TypeParameter
+    = "class" "..." Identifier?
+    | "class"
+    | "class" name:Identifier? "=" TypeId
+    | "typename" "..."? name:Identifier?
+    | "typename" name:Identifier? "=" TypeId
+    | "template" "<" TemplateParameterList ">" "class" "..."? name:Identifier?
+    | "template" "<" TemplateParameterList ">" "class" name:Identifier? "=" IdExpression
+    ;
+
+// Section temp.names
+SimpleTemplateId
+    = TemplateName "<" TemplateArgumentList? ">"
+    ;
+TemplateId @directUnwrap
+    = <SimpleTemplateId
+    | OperatorFunctionId "<" TemplateArgumentList? ">"
+    | LiteralOperatorId "<" TemplateArgumentList? ">"
+    ;
+TemplateName @directUnwrap
+    = <NameIdentifier
+    ;
+TemplateArgumentList @array
+    = TemplateArgument
+    | TemplateArgumentList "," TemplateArgument
+    ;
+TemplateArgument2
+    = <TypeId
+    | <ConstantExpression
+    //| <IdExpression // subset of ConstantExpression
+    ;
+TemplateArgument
+    = <TemplateArgument2
+    | TemplateArgument2 "..."
+    ;
+
+// Section temp.res
+TypenameSpecifier
+    = "typename" NestedNameSpecifier NameIdentifier
+    | "typename" NestedNameSpecifier "template"? SimpleTemplateId
+    ;
+
+// Section temp.explicit
+ExplicitInstantiation
+    = "extern"? "template" Declaration2
+    ;
+
+// Section temp.expl.spec
+ExplicitSpecialization
+    = "template" "<" ">" Declaration2
+    ;
+
+// Section except
+TryBlock
+    = "try" CompoundStatement HandlerSeq
+    ;
+FunctionTryBlock
+    = "try" CtorInitializer? CompoundStatement HandlerSeq
+    ;
+HandlerSeq @array
+    = Handler
+    | Handler HandlerSeq
+    ;
+Handler
+    = "catch" "(" ExceptionDeclaration ")" CompoundStatement
+    ;
+ExceptionDeclaration
+    = AttributeSpecifierSeq TypeSpecifierSeq Declarator
+    | AttributeSpecifierSeq TypeSpecifierSeq AbstractDeclarator?
+    | "..."
+    ;
+ThrowExpression
+    = "throw" AssignmentExpression?
+    ;
+
+// Section except.spec
+ExceptionSpecification
+    = <DynamicExceptionSpecification
+    | <NoexceptSpecification
+    ;
+DynamicExceptionSpecification
+    = "throw" "(" TypeIdList? ")"
+    ;
+TypeIdList @array
+    = TypeId "..."?
+    | TypeIdList "," TypeId "..."?
+    ;
+NoexceptSpecification
+    = "noexcept" "(" ConstantExpression ")"
+    | "noexcept" !"("
+    ;
+
+IdentifierList
+    = Identifier
+    | IdentifierList "," Identifier
+    ;
+
+// Section lex.token
+Token
+    = Identifier
+    | <Keyword
+    | LiteralSP
+    | <OperatorOrPunctuator
+    ;
+
+// Section lex.key
+Keyword
+    = "alignas"
+    | "alignof"
+    | "asm"
+    | "auto"
+    | "bool"
+    | "break"
+    | "case"
+    | "catch"
+    | "char"
+    | "char16_t"
+    | "char32_t"
+    | "class"
+    | "const"
+    | "constexpr"
+    | "const_cast"
+    | "continue"
+    | "decltype"
+    | "default"
+    | "delete"
+    | "do"
+    | "double"
+    | "dynamic_cast"
+    | "else"
+    | "enum"
+    | "explicit"
+    | "export"
+    | "extern"
+    | "false"
+    | "float"
+    | "for"
+    | "friend"
+    | "goto"
+    | "if"
+    | "inline"
+    | "int"
+    | "long"
+    | "mutable"
+    | "namespace"
+    | "new"
+    | "noexcept"
+    | "nullptr"
+    | "operator"
+    | "private"
+    | "protected"
+    | "public"
+    | "register"
+    | "reinterpret_cast"
+    | "return"
+    | "short"
+    | "signed"
+    | "sizeof"
+    | "static"
+    | "static_assert"
+    | "_Static_assert"
+    | "static_cast"
+    | "struct"
+    | "switch"
+    | "template"
+    | "this"
+    | "thread_local"
+    | "throw"
+    | "true"
+    | "try"
+    | "typedef"
+    | "typeid"
+    | "typename"
+    | "union"
+    | "unsigned"
+    | "using"
+    | "virtual"
+    | "void"
+    | "volatile"
+    | "wchar_t"
+    | "while"
+    ;
+
+// Section lex.operators
+OperatorOrPunctuator
+    // = "{"
+    // | "}"
+    // | "["
+    // | "]"
+    // | "("
+    // | ")"
+    // | "<:"
+    // | ":>"
+    // | "<%"
+    // | "%>"
+    = ";"
+    | ":"
+    | "..."
+    | "?"
+    | "::"
+    | "."
+    | ".*"
+    | "->"
+    | "->*"
+    | "~"
+    | "!"
+    | "+"
+    | "-"
+    | "*"
+    | "/"
+    | "%"
+    | "^"
+    | "&"
+    | "|"
+    | "="
+    | "+="
+    | "-="
+    | "*="
+    | "/="
+    | "%="
+    | "^="
+    | "&="
+    | "|="
+    | "=="
+    | "!="
+    | "<"
+    | ">"
+    | "<="
+    | ">="
+    | "<=>"
+    | "&&"
+    | "||"
+    | "<<"
+    | ">" ">"
+    | "<<="
+    | ">>="
+    | "++"
+    | "--"
+    | ","
+    | "and"
+    | "or"
+    | "xor"
+    | "not"
+    | "bitand"
+    | "bitor"
+    | "compl"
+    | "and_eq"
+    | "or_eq"
+    | "xor_eq"
+    | "not_eq"
+    ;
+
+// Section lex.literal.kinds
+Literal
+    = IntegerLiteral
+    | <CharLiteral
+    | <FloatLiteral
+    | <BooleanLiteral
+    | <PointerLiteral
+    | <UserDefinedLiteral
+    ;
+FloatLiteral
+    = FloatingLiteral
+    ;
+CharLiteral
+    = CharacterLiteral
+    ;
+LiteralS
+    = <Literal
+    | StringLiteralSequence
+    ;
+LiteralSP
+    = <Literal
+    | StringLiteral
+    ;
+
+// Section lex.icon
+token IntegerLiteral
+    = DecimalLiteral IntegerSuffix?
+    | OctalLiteral IntegerSuffix?
+    | HexadecimalLiteral IntegerSuffix?
+    ;
+fragment DecimalLiteral
+    = NonzeroDigit
+    | DecimalLiteral Digit
+    ;
+fragment OctalLiteral
+    = "0"
+    | OctalLiteral OctalDigit
+    ;
+fragment HexadecimalLiteral
+    = "0x" HexadecimalDigit
+    | "0X" HexadecimalDigit
+    | HexadecimalLiteral HexadecimalDigit
+    ;
+fragment NonzeroDigit
+    = [1-9]
+    ;
+fragment IntegerSuffix
+    = UnsignedSuffix LongSuffix?
+    | UnsignedSuffix LongLongSuffix?
+    | LongSuffix UnsignedSuffix?
+    | LongLongSuffix UnsignedSuffix?
+    ;
+fragment UnsignedSuffix
+    = "u"
+    | "U"
+    ;
+fragment LongSuffix
+    = "l"
+    | "L"
+    ;
+fragment LongLongSuffix
+    = "ll"
+    | "LL"
+    ;
+
+// Section lex.fcon
+token FloatingLiteral
+    = FractionalConstant ExponentPart? FloatingSuffix?
+    | DigitSequence ExponentPart FloatingSuffix?
+    ;
+fragment FractionalConstant
+    = DigitSequence? "." DigitSequence
+    | DigitSequence "."
+    ;
+fragment ExponentPart
+    = "e" Sign? DigitSequence
+    | "E" Sign? DigitSequence
+    ;
+fragment Sign
+    = "+"
+    | "-"
+    ;
+fragment DigitSequence
+    = <Digit
+    | DigitSequence Digit
+    ;
+fragment FloatingSuffix
+    = "f"
+    | "l"
+    | "F"
+    | "L"
+    ;
+
+// Section lex.string
+StringLiteralSequence
+    = <StringLiteral2
+    | StringLiteralSequence StringLiteral2
+    ;
+StringLiteral2
+    = StringLiteral
+    | "__FILE__"
+    | "__FUNCTION__"
+    | "__DATE__"
+    | "__TIME__"
+    | "__func__"
+    | "__PRETTY_FUNCTION__"
+    ;
+
+// Section lex.bool
+BooleanLiteral
+    = "false"
+    | "true"
+    ;
+
+// Section lex.nullptr
+PointerLiteral
+    = "nullptr"
+    | "__cppconv_nullptr"
+    ;
+
+// Section lex.ext
+UserDefinedLiteral
+    = UserDefinedIntegerLiteral
+    | UserDefinedFloatingLiteral
+    | UserDefinedStringLiteral
+    | UserDefinedCharacterLiteral
+    ;
+token UserDefinedIntegerLiteral @lowPrio
+    = DecimalLiteral UdSuffix - {[eE] [^]*}
+    | OctalLiteral UdSuffix - {[eE] [^]*}
+    | HexadecimalLiteral UdSuffix
+    ;
+token UserDefinedFloatingLiteral @lowPrio
+    = FractionalConstant ExponentPart? UdSuffix
+    | DigitSequence ExponentPart UdSuffix
+    ;
+UserDefinedStringLiteral
+    = StringLiteral Identifier
+    ;
+token UserDefinedCharacterLiteral
+    = CharacterLiteral UdSuffix
+    ;
+fragment UdSuffix
+    = Identifier
+    ;
+
+TypeofTypeSpecifier
+    = <Typeof
+    ;
+
+TypeIdOrExpression
+    = <TypeId
+    | <Expression;
+
+Typeof
+    = "__typeof__" "(" TypeIdOrExpression ")"
+    | "__typeof" "(" TypeIdOrExpression ")"
+    | "typeof" "(" TypeIdOrExpression ")"
+    ;
+
+// Not used, because the lexer of grammarcpreproc is used normally.
+token Space @ignoreToken = [ \n\r\t]+;
+token LineComment @ignoreToken = "//" [^\n]*;
+token BlockComment @ignoreToken @minimalMatch = "/*" [^]* "*/";
+token PreprocessorMetadata @ignoreToken = "#" [^\n]*;
+

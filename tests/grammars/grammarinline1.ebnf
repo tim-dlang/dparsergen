@@ -1,0 +1,97 @@
+// GENPASER_OPTS: --combinedreduce
+// EXCLUDE_VARIANT: normal
+// EXCLUDE_VARIANT: optdescent
+/*
+GENERATOR_OUTPUT(normal):
+---
+Warning: Parse conflict in state 82
+Warning: Parse conflict in state 106
+---
+*/
+/*
+GENERATOR_OUTPUT(optdescent):
+---
+Warning: Parse conflict in state 97
+Warning: Parse conflict in state 124
+---
+*/
+S = ^"1" <Test1 | ^"2" <Test2 | "3" <Test3 | "4" <Test4 | "5" <Test5 | ^"6" <Test6 | ^"7" <Test7
+// START REMOVE
+      // | ^"8" <Test8
+	//| ^"9" <Test9
+// END REMOVE
+	;
+
+Test1 = A "x" "a"
+      | B "x" "b"
+      ;
+
+A @inline = Identifier;
+B @inline = Identifier;
+Identifier = "i";
+
+
+Test2 = A4 "x" "a"
+      | B4 "x" "b"
+      ;
+
+A4 = A3;
+A3 = A2;
+A2 = A1;
+A1 = @deepInline Identifier;
+B4 = B3;
+B3 = B2;
+B2 = B1;
+B1 = @deepInline Identifier;
+
+
+Test3 = Test3A "x" "a"
+      | Test3B "x" "b"
+      ;
+Test3A = Identifier | Test3A Identifier;
+Test3B = Identifier | Test3B Identifier;
+
+Test4 = Test4A "x" "a"
+      | Test4B "x" "b"
+      | Test4B "y" "b"
+      | Test4C "y" "c"
+      ;
+Test4A = Identifier;
+Test4B = Identifier;
+Test4C = Identifier;
+
+Test5 = Test5A2 "x" "a"
+      | Test5B "x" "b"
+      ;
+Test5A2 = Test5A1;
+Test5A1 = Identifier;
+Test5B = Identifier;
+
+
+Test6 = Test6A2 "x" "a"
+      | Test6B Test6BX "b"
+      ;
+Test6A2 = Test6A1;
+Test6A1 = Identifier;
+Test6B = Identifier;
+Test6BX = "x";
+
+
+Test7 = Test7A "x" "a"
+      | Test7B "i" "x" "a";
+
+Test7A = Identifier | Test7A Identifier;
+Test7B = Identifier | Test7B Identifier;
+// START REMOVE
+
+// elkhound_cc04.pdf, page 80
+//Test8 = Test8A;
+//Test8A = "d" | Test8B;
+//Test8B = "d";
+
+
+// G_3 from GLR parsing for ε-grammars, Rahman Nozohoor-Farshi.
+//Test9 = Test9S;
+//Test9S = Test9A Test9S "b" | "x";
+//Test9A = @empty;
+// END REMOVE

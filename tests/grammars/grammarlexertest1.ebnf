@@ -1,0 +1,56 @@
+/*
+GENERATOR_OUTPUT(lexer):
+---
+Warning: Unused symbol NotReachable
+Warning: Unused symbol NotReachable2
+Warning: Token RealLoop could be empty
+Warning: Token RealLoop2 could be empty
+---
+*/
+/*
+GENERATOR_OUTPUT(normal, optdescent, glr):
+---
+Warning: Unused symbol NotReachable
+Warning: Unused symbol NotReachable2
+---
+*/
+
+Start = Number | Identifier | NotToken
+	| RealLoop | RealLoop2 | InfiniteLoop | InfiniteLoop2
+	| StringLiteral | EqualOperator | Operators | UniTest
+	| @empty;
+
+token Number = repeat([0-9]);
+token Identifier @lowPrio = [a-zA-Z_] repeat2([a-zA-Z_0-9]);
+
+repeat(e) = e | repeat(e) e;
+repeat2(e) = repeat(e) | @empty;
+
+NotToken = "key";
+
+NotReachable = @empty;
+NotReachable2 = "notreachable";
+
+token RealLoop = @empty | RealLoop "loop";
+token RealLoop2 @lowPrio = @empty | "loop" RealLoop2;
+token InfiniteLoop = "loop" InfiniteLoop;
+token InfiniteLoop2 = InfiniteLoop2 "loop";
+
+fragment Hex = [0-9a-fA-F];
+
+fragment EscapeSequence = "\\" [^uUx]
+		| "\\x" Hex Hex
+//		| "\\u" Hex Hex Hex Hex
+//		| "\\U" Hex Hex Hex Hex Hex Hex Hex Hex
+		;
+
+token StringLiteral = "\"" repeat2([^"\\] | EscapeSequence) "\"";
+
+token EqualOperator = "==";
+Operators = "/" | "*";
+
+UniTest = "üöä";
+
+token Space @ignoreToken = [ \n\r\t]+;
+token LineComment @ignoreToken = "//" [^\n]*;
+token InlineComment @ignoreToken = "/*" {[^*] | "*"* [^/*]}* "*"* "*/";

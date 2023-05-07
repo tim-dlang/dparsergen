@@ -1,0 +1,8 @@
+S = Test;
+
+Test @directUnwrap = <A | <B;
+
+A @directUnwrap = <X | A "a";
+B @directUnwrap = <X | B "b";
+
+X = "x";

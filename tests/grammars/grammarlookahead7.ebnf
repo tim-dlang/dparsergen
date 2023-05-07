@@ -1,0 +1,20 @@
+/*
+GENERATOR_OUTPUT(normal):
+---
+Warning: Parse conflict in state 2
+---
+*/
+/*
+GENERATOR_OUTPUT(optdescent):
+---
+Warning: Parse conflict in state 4
+---
+*/
+S = <X;
+
+X1 = "x";
+X2 = "x";
+X = X1 L1 | X2 L2;
+
+L1 = "a" | L1 "b";
+L2 = "b" | "a" L2;

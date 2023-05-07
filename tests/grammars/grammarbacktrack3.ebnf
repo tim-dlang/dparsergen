@@ -1,0 +1,35 @@
+S = Statements;
+
+Statements @array
+	= @empty
+	| Statement
+	;
+
+Statement @directUnwrap = @lookahead <LabelStatement | @lookahead DeclOrExpr ";";
+LabelStatement = LabelId ":";
+LabelId = Id;
+
+DeclOrExpr @backtrack = <Decl | <Expr;
+
+Decl = Type Id;
+Type = Id | <ArrayType | <PointerType;
+ArrayType = Type "[" "]";
+PointerType = Type "*";
+
+Expr = <MulExpr;
+MulExpr
+	= <UnaryExpr
+	| MulExpr "*" UnaryExpr
+	;
+UnaryExpr
+	= <PrimaryExpr
+	| "*" UnaryExpr
+	;
+PrimaryExpr
+	= Id
+	| "[" "]"
+	;
+
+token Id = "id";
+
+token Space @ignoreToken = " ";

@@ -1,0 +1,52 @@
+// GENPASER_OPTS: --optempty
+/*
+GENERATOR_OUTPUT(normal):
+---
+Warning: Parse conflict in state 24
+Warning: Parse conflict in state 29
+---
+*/
+/*
+GENERATOR_OUTPUT(optdescent):
+---
+Warning: Parse conflict in state 26
+Warning: Parse conflict in state 31
+---
+*/
+S = <ScopeStatement;
+
+Attributes @array @regArray
+    = Attribute
+    | Attributes Attribute
+    ;
+AttributesEmpty @array @regArray
+    = @empty
+    | Attributes
+    ;
+Attribute @directUnwrap
+    = "static"
+    | <Synchronized
+    ;
+Synchronized
+    = "synchronized"
+    ;
+SynchronizedSingleArray @array @regArray
+    = Synchronized
+    ;
+
+SynchronizedStatement
+    = SynchronizedSingleArray !"(" !"class" ScopeStatement
+    | SynchronizedSingleArray "(" Expression ")" ScopeStatement
+    ;
+
+ClassDeclaration
+    = AttributesEmpty "class" Identifier ";"
+    ;
+
+ScopeStatement = Expression ";" | <ClassDeclaration | <SynchronizedStatement;
+
+Expression = Identifier | "(" Expression ")";
+
+token Identifier = "identifier";
+
+token Space @ignoreToken = [ \n\r\t]+;

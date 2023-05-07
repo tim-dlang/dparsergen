@@ -1,0 +1,22 @@
+/*
+GENERATOR_OUTPUT(normal, optdescent):
+---
+Warning: Parse conflict in state 13
+---
+*/
+S = StmtList;
+StmtList @array
+	= @empty
+	| StmtList Stmt
+	;
+Stmt
+	= "s" ";"
+	| <IfStmt
+	| "{" StmtList "}"
+	;
+IfStmt
+	= "if" "(" ")" Stmt
+	| "if" "(" ")" Stmt "else" Stmt
+	;
+
+token Space @ignoreToken = [ \n\r\t]+;

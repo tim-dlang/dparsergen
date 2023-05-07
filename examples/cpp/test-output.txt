@@ -1,0 +1,36 @@
++-TranslationUnit <examples/cpp/test.cpp:1:1>
+  +-SimpleDeclaration1 <examples/cpp/test.cpp:1:1>
+  | +-DeclSpecifierSeq <examples/cpp/test.cpp:1:1>
+  | | +-TypeKeyword <examples/cpp/test.cpp:1:1>
+  | |   +-"int" <examples/cpp/test.cpp:1:1>
+  | +-NoptrDeclarator <examples/cpp/test.cpp:1:5>
+  | | +-DeclaratorId <examples/cpp/test.cpp:1:5>
+  | |   +-"" <???>
+  | |   +-NameIdentifier <examples/cpp/test.cpp:1:5>
+  | |     +-"global" <examples/cpp/test.cpp:1:5>
+  | +-";" <examples/cpp/test.cpp:1:11>
+  +-FunctionDefinitionGlobal <other-file.cpp:100:1>
+    +-FunctionDefinitionHead <other-file.cpp:100:1>
+    | +-DeclSpecifierSeq <other-file.cpp:100:1>
+    | | +-TypeKeyword <other-file.cpp:100:1>
+    | |   +-"int" <other-file.cpp:100:1>
+    | +-FunctionDeclarator <other-file.cpp:100:5>
+    |   +-NoptrDeclarator <other-file.cpp:100:5>
+    |   | +-DeclaratorId <other-file.cpp:100:5>
+    |   |   +-"" <???>
+    |   |   +-NameIdentifier <other-file.cpp:100:5>
+    |   |     +-"main" <other-file.cpp:100:5>
+    |   +-ParametersAndQualifiers <other-file.cpp:100:9>
+    |     +-"(" <other-file.cpp:100:9>
+    |     +-")" <other-file.cpp:100:10>
+    +-FunctionBody <other-file.cpp:101:1>
+      +-CompoundStatement <other-file.cpp:101:1>
+        +-"{" <other-file.cpp:101:1>
+        +-Statement <other-file.cpp:102:5>
+        | +-JumpStatement <other-file.cpp:102:5>
+        |   +-JumpStatement2 <other-file.cpp:102:5>
+        |   | +-"return" <other-file.cpp:102:5>
+        |   | +-Literal <other-file.cpp:102:12>
+        |   |   +-"0" <other-file.cpp:102:12>
+        |   +-";" <other-file.cpp:102:13>
+        +-"}" <other-file.cpp:103:1>

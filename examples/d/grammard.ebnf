@@ -1,0 +1,2025 @@
+// Based on grammar from dlang.org commit 0789e99aafc099ba0e8adfe06265336b3c8c7379
+
+import "grammardlex.ebnf";
+SourceFile @start
+    = ByteOrderMark Module?
+    // | Shebang Module?
+    | Module?
+    ;
+Module
+    = ModuleDeclaration DeclDefs?
+    | DeclDefs?
+    ;
+DeclDefs @array @regArray
+    = DeclDef
+    | DeclDef DeclDefs
+    ;
+DeclDef @directUnwrap
+    = <AttributeSpecifier
+    | <Declaration
+    | <Constructor
+    | <Destructor
+    // | <Postblit
+    | <Allocator
+    | <Deallocator
+    | <Invariant
+    | <UnitTest
+    | <AliasThis
+    // | <StaticConstructor
+    // | <StaticDestructor
+    // | <SharedStaticConstructor
+    // | <SharedStaticDestructor
+    | <ConditionalDeclaration
+    | <DebugSpecification
+    | <VersionSpecification
+    | <StaticAssert
+    | <TemplateDeclaration
+    | <TemplateMixin
+    | <MixinDeclaration
+    | <EmptyDeclaration
+    | <PragmaDeclaration
+    | <AliasReassignment
+    | <StaticForeachDeclaration
+    ;
+EmptyDeclaration
+    = ";"
+    ;
+ModuleDeclaration
+    = ModuleAttributes? "module" ModuleFullyQualifiedName ";"
+    ;
+ModuleAttributes @array @regArray
+    = <ModuleAttribute
+    | ModuleAttribute ModuleAttributes
+    ;
+ModuleAttribute @directUnwrap
+    = <DeprecatedAttribute
+    | <UserDefinedAttribute
+    ;
+ModuleFullyQualifiedName
+    = <ModuleName
+    | Packages "." ModuleName
+    ;
+ModuleName
+    = Identifier
+    ;
+Packages
+    = <PackageName
+    | Packages "." PackageName
+    ;
+PackageName
+    = Identifier
+    ;
+ImportDeclaration
+    = AttributesNoPragmaEmpty "import" ImportList ";"
+    // | AttributesNoPragmaEmpty "static" "import" ImportList ";"
+    ;
+ImportList @array @regArray
+    = Import
+    | ImportBindings
+    | Import "," ImportList
+    ;
+Import
+    = ModuleFullyQualifiedName
+    | ModuleAliasIdentifier "=" ModuleFullyQualifiedName
+    ;
+ImportBindings
+    = Import ":" ImportBindList
+    ;
+ImportBindList @array @regArray
+    = ImportBind
+    | ImportBind "," ImportBindList
+    ;
+ImportBind
+    = Identifier
+    | Identifier "=" Identifier
+    ;
+ModuleAliasIdentifier
+    = Identifier
+    ;
+MixinDeclaration
+    = AttributesNoPragmaEmpty Mixin ";"
+    ;
+Expression @directUnwrap
+    = <CommaExpression
+    ;
+CommaExpression @directUnwrap
+    = <AssignExpression
+    | <CommaExpressionX
+    ;
+CommaExpressionX
+    = CommaExpressionArray
+    ;
+CommaExpressionArray @array @regArray
+    = AssignExpression "," AssignExpression
+    | CommaExpressionArray "," AssignExpression
+    ;
+AssignExpression @directUnwrap
+    = <ConditionalExpression
+    | ConditionalExpression "=" AssignExpression
+    | ConditionalExpression "+=" AssignExpression
+    | ConditionalExpression "-=" AssignExpression
+    | ConditionalExpression "*=" AssignExpression
+    | ConditionalExpression "/=" AssignExpression
+    | ConditionalExpression "%=" AssignExpression
+    | ConditionalExpression "&=" AssignExpression
+    | ConditionalExpression "|=" AssignExpression
+    | ConditionalExpression "^=" AssignExpression
+    | ConditionalExpression "~=" AssignExpression
+    | ConditionalExpression "<<=" AssignExpression
+    | ConditionalExpression ">>=" AssignExpression
+    | ConditionalExpression ">>>=" AssignExpression
+    | ConditionalExpression "^^=" AssignExpression
+    ;
+ConditionalExpression @directUnwrap
+    = <OrOrExpression
+    | OrOrExpression "?" Expression ":" ConditionalExpression
+    ;
+OrOrExpression @directUnwrap
+    = <AndAndExpression
+    | OrOrExpression "||" AndAndExpression
+    ;
+AndAndExpression @directUnwrap
+    = <OrExpression
+    | AndAndExpression "&&" OrExpression
+    ;
+OrExpression @directUnwrap
+    = <XorExpression
+    | OrExpression "|" XorExpression
+    ;
+XorExpression @directUnwrap
+    = <AndExpression
+    | XorExpression "^" AndExpression
+    ;
+AndExpression @directUnwrap
+    = <CmpExpression
+    | AndExpression "&" CmpExpression
+    ;
+CmpExpression @directUnwrap
+    = <EqualExpression
+    | <IdentityExpression
+    | <RelExpression
+    | <InExpression
+    | <ShiftExpression
+    ;
+EqualExpression @directUnwrap
+    = ShiftExpression "==" ShiftExpression
+    | ShiftExpression "!=" ShiftExpression
+    ;
+IdentityExpression @directUnwrap
+    = ShiftExpression "is" ShiftExpression
+    | ShiftExpression "!" "is" ShiftExpression
+    ;
+RelExpression @directUnwrap
+    = ShiftExpression "<" ShiftExpression
+    | ShiftExpression "<=" ShiftExpression
+    | ShiftExpression ">" ShiftExpression
+    | ShiftExpression ">=" ShiftExpression
+    ;
+InExpression @directUnwrap
+    = ShiftExpression "in" ShiftExpression
+    | ShiftExpression "!" "in" ShiftExpression
+    ;
+ShiftExpression @directUnwrap
+    = <AddExpression
+    | ShiftExpression "<<" AddExpression
+    | ShiftExpression ">>" AddExpression
+    | ShiftExpression ">>>" AddExpression
+    ;
+AddExpression @directUnwrap
+    = <MulExpression
+    | AddExpression "+" MulExpression
+    | AddExpression "-" MulExpression
+    | <CatExpression
+    ;
+CatExpression
+    = AddExpression "~" MulExpression
+    ;
+MulExpression @directUnwrap
+    = <UnaryExpression
+    | MulExpression "*" UnaryExpression
+    | MulExpression "/" UnaryExpression
+    | MulExpression "%" UnaryExpression
+    ;
+UnaryExpression @directUnwrap
+    = "&" UnaryExpression
+    | "++" UnaryExpression
+    | "--" UnaryExpression
+    | "*" UnaryExpression
+    | "-" UnaryExpression
+    | "+" UnaryExpression
+    | "!" UnaryExpression
+    | <ComplementExpression
+    | <DeleteExpression
+    | <CastExpression
+    | <ThrowExpression
+    | <PowExpression
+    ;
+ComplementExpression
+    = "~" UnaryExpression
+    ;
+DeleteExpression
+    = "delete" UnaryExpression
+    ;
+CastExpression
+    = "cast" "(" Type ")" UnaryExpression
+    | <CastQual
+    ;
+CastQual
+    = "cast" "(" TypeCtors? ")" UnaryExpression
+    ;
+ThrowExpression
+    = "throw" @eager AssignExpression
+    ;
+PowExpression @directUnwrap
+    = <PostfixExpression
+    | PostfixExpression "^^" UnaryExpression
+    ;
+PostfixExpression @directUnwrap
+    = <PrimaryExpression
+    | PostfixExpression "." IdentifierExpression
+    | PostfixExpression "." TemplateInstance
+    | PostfixExpression "." NewExpression
+    | PostfixExpression "++"
+    | PostfixExpression "--"
+    | <CallExpression
+    | TypeCtors BasicType Arguments
+    | !QualifiedIdentifier BasicType Arguments
+    // | <IndexExpression // See SliceExpression
+    | <SliceExpression
+    ;
+CallExpression
+    = PostfixExpression Arguments
+    ;
+Arguments
+    = "(" NamedArgumentList? ")"
+    ;
+/*IndexExpression
+    = PostfixExpression "[" ArgumentList "]"
+    ;*/
+SliceExpression
+    = PostfixExpression SliceExpressionSuffix
+    ;
+SliceExpressionSuffix
+    = "[" Slice2 "]"
+    ;
+Slice @array @regArray
+    = AssignExpression
+    | Slice "," AssignExpression
+    | IntervalExp
+    | Slice "," IntervalExp
+    ;
+Slice2 @array @regArray
+    = @empty
+    | Slice ","?
+    ;
+IntervalExp
+    = AssignExpression ".." AssignExpression
+    ;
+IdentifierExpression
+    = Identifier
+    ;
+PrimaryExpression @directUnwrap
+    = <IdentifierExpression
+    | "." IdentifierExpression
+    | <TemplateInstance
+    | "." TemplateInstance
+    | <ThisExpression
+    | "super"
+    | "null"
+    | "true"
+    | "false"
+    | "$"
+    | IntegerLiteral
+    | FloatLiteral
+    | CharacterLiteral
+    | <StringLiterals
+    | <ArrayLiteral
+    | <AssocArrayLiteral
+    | <FunctionLiteralNoParen
+    | <AssertExpression
+    | <MixinExpression
+    | <ImportExpression
+    | <NewExpression
+    | FundamentalType "." Identifier
+    // | "(" Type ")" "." Identifier
+    // | "(" Type ")" "." TemplateInstance
+    // | FundamentalType "(" ArgumentList? ")"
+    | TypeCtor "(" Type ")" "." Identifier
+    // | TypeCtor "(" Type ")" "(" ArgumentList? ")"
+    | <Typeof
+    | <TypeidExpression
+    | <IsExpression
+    | <SpecialKeyword
+    | <TraitsExpression
+    | <Vector
+    | <PrimaryExpressionParen
+    ;
+PrimaryExpressionParen @backtrack
+    = <FunctionLiteralParen
+    | <ParenExpression
+    ;
+ParenExpression
+    = "(" ParenContent ")"
+    ;
+ParenContent @backtrack
+    = <ParenContentExpr
+    | <Type
+    ;
+ParenContentExpr
+    = <AssignExpression
+    | CommaExpressionArray
+    ;
+ThisExpression
+    = "this"
+    ;
+StringLiterals
+    = <StringLiteral
+    | StringLiterals StringLiteral
+    ;
+ArrayLiteral
+    = "[" ArgumentList? "]"
+    ;
+AssocArrayLiteral
+    = "[" KeyValuePairs "]"
+    ;
+// KeyValuePairs contains at least one KeyValuePair, but can also
+// contain single expressions as used e.g. for DAY_NAME in dmd/test/runnable/test42.d.
+KeyValuePairs @array @regArray
+    = KeyValuePair
+    | KeyValuePair ","
+    | KeyValuePair "," ArgumentList
+    | KeyValuePair "," KeyValuePairs
+    | ValueExpression "," KeyValuePairs
+    ;
+KeyValuePair @directUnwrap
+    = KeyExpression ":" ValueExpression
+    ;
+KeyExpression @directUnwrap
+    = <AssignExpression
+    ;
+ValueExpression @directUnwrap
+    = <AssignExpression
+    ;
+FunctionLiteral @directUnwrap
+    = <FunctionLiteralNoParen
+    | <FunctionLiteralParen
+    ;
+FunctionLiteralNoParen @directUnwrap
+    = "function" RefOrAutoRef? Type? ParameterWithAttributes? FunctionLiteralBody2
+    | "delegate" RefOrAutoRef? Type? ParameterWithMemberAttributes? FunctionLiteralBody2
+    | RefOrAutoRef ParameterWithMemberAttributes FunctionLiteralBody2
+    | <BlockStatement // <FunctionLiteralBody
+    | Identifier "=>" @eager AssignExpression
+    ;
+FunctionLiteralParen @directUnwrap
+    = ParameterWithMemberAttributes FunctionLiteralBody2
+    ;
+ParameterWithAttributes @directUnwrap
+    = <Parameters
+    | Parameters FunctionAttributes
+    ;
+ParameterWithMemberAttributes @directUnwrap
+    = <Parameters
+    | Parameters MemberFunctionAttributes
+    ;
+FunctionLiteralBody2
+    = "=>" @eager AssignExpression
+    | <SpecifiedFunctionBody
+    ;
+RefOrAutoRef
+    = <Ref
+    | "auto" "ref"
+    ;
+AssertExpression
+    = "assert" "(" AssertArguments ")"
+    ;
+AssertArguments
+    = AssignExpression ","?
+    | AssignExpression "," AssignExpression ","?
+    ;
+MixinExpression @directUnwrap
+    = <Mixin
+    ;
+Mixin
+    = "mixin" "(" ArgumentList ")"
+    ;
+ImportExpression
+    = "import" "(" AssignExpression ")"
+    ;
+NewExpression
+    = "new" Type !"(" !"[" !"." !"*" // TODO: sometimes it should be parsed differently. See new S[2].ptr in dmd/test/compilable/b1215.d
+    //| "new" Type "[" AssignExpression "]"
+    //| "new" Type "(" ArgumentList? ")"
+    | <NewAnonClassExpression
+    ;
+ArgumentList @array @regArray
+    = AssignExpression
+    | AssignExpression ","
+    | AssignExpression "," ArgumentList
+    ;
+NamedArgumentList @array @regArray
+    = NamedArgument
+    | NamedArgument ","
+    | NamedArgument "," NamedArgumentList
+    ;
+NamedArgument @directUnwrap
+    = <AssignExpression
+    | IdentifierExpression ":" AssignExpression
+    ;
+TypeidExpression @backtrack
+    = "typeid" "(" Type ")"
+    | "typeid" "(" Expression ")"
+    ;
+IsExpression
+    = "is" "(" Type ")"
+    | "is" "(" Type ":" TypeSpecialization ")"
+    | "is" "(" Type "==" TypeSpecialization ")"
+    | "is" "(" Type ":" TypeSpecialization "," TemplateParameterList ")"
+    | "is" "(" Type "==" TypeSpecialization "," TemplateParameterList ")"
+    | "is" "(" Type Identifier ")"
+    | "is" "(" Type Identifier ":" TypeSpecialization ")"
+    | "is" "(" Type Identifier "==" TypeSpecialization ")"
+    | "is" "(" Type Identifier ":" TypeSpecialization "," TemplateParameterList ")"
+    | "is" "(" Type Identifier "==" TypeSpecialization "," TemplateParameterList ")"
+    | "is" "(" "this" ":" TypeSpecialization ")"
+    | "is" "(" "this" "==" TypeSpecialization ")"
+    | "is" "(" "this" ":" TypeSpecialization "," TemplateParameterList ")"
+    | "is" "(" "this" "==" TypeSpecialization "," TemplateParameterList ")"
+    ;
+TypeSpecialization
+    = <Type
+    | "struct"
+    | "union"
+    | "class"
+    | "interface"
+    | "enum"
+    | "__vector"
+    | "function"
+    | "delegate"
+    | "super"
+    | "const"
+    | "immutable"
+    | "inout"
+    | "shared"
+    | "return"
+    | "__parameters"
+    | "module"
+    | "package"
+    ;
+SpecialKeyword
+    = "__FILE__"
+    | "__FILE_FULL_PATH__"
+    | "__MODULE__"
+    | "__LINE__"
+    | "__FUNCTION__"
+    | "__PRETTY_FUNCTION__"
+    ;
+Declaration @directUnwrap
+    = <FuncDeclaration
+    | @inheritTag(Bitfield) <VarDeclarations
+    | <AliasDeclaration
+    // | <AliasAssign
+    | <AggregateDeclaration
+    | <EnumDeclaration
+    | <ImportDeclaration
+    // | <ConditionalDeclaration
+    // | <StaticForeachDeclaration
+    | <StaticAssert
+    | <TemplateDeclaration
+    | <TemplateMixinDeclaration // Moved from DeclDef for https://issues.dlang.org/show_bug.cgi?id=23205
+    ;
+AggregateDeclaration
+    = <ClassDeclaration
+    | <InterfaceDeclaration
+    | <StructDeclaration
+    | <UnionDeclaration
+    ;
+VarDeclarations
+    = StorageClassesAttributesNoPragmaEmpty PostfixType @inheritTag(Bitfield) Declarators ";"
+    | <AutoDeclaration
+    ;
+Declarators @array @regArray
+    = @inheritTag(Bitfield) DeclaratorInitializer
+    | @inheritTag(Bitfield) DeclaratorInitializer "," @inheritTag(Bitfield) DeclaratorIdentifierList
+    ;
+DeclaratorInitializer @directUnwrap
+    = <VarDeclarator
+    | VarDeclarator @lookahead TemplateParameters? "=" Initializer
+    | <BitfieldDeclarator
+    ;
+DeclaratorIdentifierList @array @regArray
+    = @inheritTag(Bitfield) DeclaratorIdentifier
+    | @inheritTag(Bitfield) DeclaratorIdentifier "," @inheritTag(Bitfield) DeclaratorIdentifierList
+    ;
+DeclaratorIdentifier
+    = Identifier
+    | Identifier TemplateParameters? "=" Initializer
+    | <BitfieldDeclarator
+    ;
+BitfieldDeclarator
+    = ":" ConditionalExpression @tag(Bitfield)
+    | Identifier ":" ConditionalExpression @tag(Bitfield)
+    | Identifier ":" ConditionalExpression "=" Initializer @tag(Bitfield)
+    ;
+Declarator
+    = <VarDeclarator
+    ;
+VarDeclarator
+    = <IdentifierExpression
+    ;
+StorageClasses @array @regArray
+    = StorageClass
+    | StorageClass StorageClasses
+    ;
+StorageClass @directUnwrap
+    = <LinkageAttribute
+    | <AlignAttribute
+    | <AtAttribute
+    | <Deprecated
+    // | <EnumKeyword
+    | <StorageClassOrAttribute
+    | <Property
+    ;
+StorageClassOrAttribute @directUnwrap
+    = "static"
+    | "extern"
+    | "abstract"
+    | "final"
+    | "override"
+    | <Synchronized
+    | <Auto
+    | <Scope
+    | <TypeCtor
+    | "__gshared"
+    | <Nothrow
+    | <Pure
+    | <Ref
+    ;
+Synchronized
+    = "synchronized"
+    ;
+Nothrow
+    = "nothrow"
+    ;
+Deprecated
+    = "deprecated"
+    ;
+Pure
+    = "pure"
+    ;
+SynchronizedSingleArray @array @regArray
+    = Synchronized
+    ;
+Initializer @backtrack
+    = <VoidInitializer
+    | <NonVoidInitializer
+    ;
+ArrayStructInitializer @directUnwrap
+    = <ArrayInitializer
+    | <StructInitializer
+    ;
+NonVoidInitializer @backtrack
+    = <ArrayStructInitializer
+    | <AssignExpression
+    ;
+ArrayInitializer
+    = "[" ArrayMemberInitializations? "]"
+    ;
+ArrayMemberInitializations @array @regArray
+    = <ArrayMemberInitialization
+    | ArrayMemberInitialization ","
+    | ArrayMemberInitialization "," ArrayMemberInitializations
+    ;
+ArrayMemberInitializationExpr
+    = AssignExpression ":" NonVoidInitializer
+    | <AssignExpression
+    ;
+ArrayMemberInitialization @backtrack
+    = <ArrayStructInitializer
+    | <ArrayMemberInitializationExpr
+    ;
+AutoDeclaration
+    = StorageClassesAttributesNoPragma AutoAssignments ";"
+    ;
+AutoAssignments @array @regArray
+    = AutoAssignment
+    | AutoAssignments "," AutoAssignment
+    ;
+AutoAssignment
+    = VarDeclarator @lookahead TemplateParameters? "=" Initializer
+    ;
+AliasDeclaration
+    = AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType Declarators ";"
+    | AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType FuncDeclarator ";"
+    | AttributesNoPragmaEmpty "alias" "this" Declarators ";"   // something different from alias .. this;
+    | AttributesNoPragmaEmpty "alias" AliasAssignments ";"
+    ;
+AliasAssignments @array @regArray
+    = AliasAssignment
+    | AliasAssignments "," AliasAssignment
+    ;
+AliasAssignment
+    = Identifier @lookahead TemplateParameters? "=" AliasRhs
+    ;
+AliasRhs @backtrack
+    = <AliasRhsType
+    | <AliasRhsExpr
+    ;
+AliasRhsExpr
+    = <ConditionalExpression
+    ;
+AliasRhsType
+    = StorageClassesAttributesEmpty PostfixType
+    | AtAttributesEmpty FunctionLiteral
+    | StorageClassesAttributesEmpty PostfixType Parameters MemberFunctionAttributes?
+    ;
+/*AliasAssign
+    = Identifier "=" Type
+    ;*/
+AliasReassignment
+    = IdentifierExpression "=" StorageClasses? PostfixType ";"
+    | IdentifierExpression "=" FunctionLiteral ";"
+    | IdentifierExpression "=" StorageClasses? BasicType Parameters MemberFunctionAttributes? ";"
+    ;
+VoidInitializer
+    = "void"
+    ;
+AsmStatement
+    = "asm" FunctionAttributes? "{" AsmInstructionList? "}"
+    ;
+AsmInstructionList = TokensMatchingAllParens?;
+/*
+AsmInstructionList
+    = AsmInstruction ";"
+    | AsmInstruction ";" AsmInstructionList
+    ;
+AsmInstruction
+    = Identifier ":" AsmInstruction
+    | "align" IntegerExpression
+    | "even"
+    | "naked"
+    | "db" Operands
+    | "ds" Operands
+    | "di" Operands
+    | "dl" Operands
+    | "df" Operands
+    | "dd" Operands
+    | "de" Operands
+    | "db" StringLiteral
+    | "ds" StringLiteral
+    | "di" StringLiteral
+    | "dl" StringLiteral
+    | "dw" StringLiteral
+    | "dq" StringLiteral
+    | <Opcode
+    | Opcode Operands
+    ;
+Opcode
+    = Identifier
+    | "int"
+    | "in"
+    | "out"
+    ;
+Operands
+    = <Operand
+    | Operand "," Operands
+    ;
+IntegerExpression
+    = IntegerLiteral
+    | Identifier
+    ;
+Register
+    = "AL"
+    | "AH"
+    | "AX"
+    | "EAX"
+    | "BL"
+    | "BH"
+    | "BX"
+    | "EBX"
+    | "CL"
+    | "CH"
+    | "CX"
+    | "ECX"
+    | "DL"
+    | "DH"
+    | "DX"
+    | "EDX"
+    | "BP"
+    | "EBP"
+    | "SP"
+    | "ESP"
+    | "DI"
+    | "EDI"
+    | "SI"
+    | "ESI"
+    | "ES"
+    | "CS"
+    | "SS"
+    | "DS"
+    | "GS"
+    | "FS"
+    | "CR0"
+    | "CR2"
+    | "CR3"
+    | "CR4"
+    | "DR0"
+    | "DR1"
+    | "DR2"
+    | "DR3"
+    | "DR6"
+    | "DR7"
+    | "TR3"
+    | "TR4"
+    | "TR5"
+    | "TR6"
+    | "TR7"
+    | "ST"
+    | "ST" "(" IntegerLiteral>>"0" ")"
+    | "ST" "(" IntegerLiteral>>"1" ")"
+    | "ST" "(" IntegerLiteral>>"2" ")"
+    | "ST" "(" IntegerLiteral>>"3" ")"
+    | "ST" "(" IntegerLiteral>>"4" ")"
+    | "ST" "(" IntegerLiteral>>"5" ")"
+    | "ST" "(" IntegerLiteral>>"6" ")"
+    | "ST" "(" IntegerLiteral>>"7" ")"
+    | "MM0"
+    | "MM1"
+    | "MM2"
+    | "MM3"
+    | "MM4"
+    | "MM5"
+    | "MM6"
+    | "MM7"
+    | "XMM0"
+    | "XMM1"
+    | "XMM2"
+    | "XMM3"
+    | "XMM4"
+    | "XMM5"
+    | "XMM6"
+    | "XMM7"
+    ;
+Register64
+    = "RAX"
+    | "RBX"
+    | "RCX"
+    | "RDX"
+    | "BPL"
+    | "RBP"
+    | "SPL"
+    | "RSP"
+    | "DIL"
+    | "RDI"
+    | "SIL"
+    | "RSI"
+    | "R8B"
+    | "R8W"
+    | "R8D"
+    | "R8"
+    | "R9B"
+    | "R9W"
+    | "R9D"
+    | "R9"
+    | "R10B"
+    | "R10W"
+    | "R10D"
+    | "R10"
+    | "R11B"
+    | "R11W"
+    | "R11D"
+    | "R11"
+    | "R12B"
+    | "R12W"
+    | "R12D"
+    | "R12"
+    | "R13B"
+    | "R13W"
+    | "R13D"
+    | "R13"
+    | "R14B"
+    | "R14W"
+    | "R14D"
+    | "R14"
+    | "R15B"
+    | "R15W"
+    | "R15D"
+    | "R15"
+    | "XMM8"
+    | "XMM9"
+    | "XMM10"
+    | "XMM11"
+    | "XMM12"
+    | "XMM13"
+    | "XMM14"
+    | "XMM15"
+    | "YMM0"
+    | "YMM1"
+    | "YMM2"
+    | "YMM3"
+    | "YMM4"
+    | "YMM5"
+    | "YMM6"
+    | "YMM7"
+    | "YMM8"
+    | "YMM9"
+    | "YMM10"
+    | "YMM11"
+    | "YMM12"
+    | "YMM13"
+    | "YMM14"
+    | "YMM15"
+    ;
+Operand
+    = <AsmExp
+    ;
+AsmExp
+    = <AsmLogOrExp
+    | AsmLogOrExp "?" AsmExp ":" AsmExp
+    ;
+AsmLogOrExp
+    = <AsmLogAndExp
+    | AsmLogOrExp "||" AsmLogAndExp
+    ;
+AsmLogAndExp
+    = <AsmOrExp
+    | AsmLogAndExp "&&" AsmOrExp
+    ;
+AsmOrExp
+    = <AsmXorExp
+    | AsmOrExp "|" AsmXorExp
+    ;
+AsmXorExp
+    = <AsmAndExp
+    | AsmXorExp "^" AsmAndExp
+    ;
+AsmAndExp
+    = <AsmEqualExp
+    | AsmAndExp "&" AsmEqualExp
+    ;
+AsmEqualExp
+    = <AsmRelExp
+    | AsmEqualExp "==" AsmRelExp
+    | AsmEqualExp "!=" AsmRelExp
+    ;
+AsmRelExp
+    = <AsmShiftExp
+    | AsmRelExp "<" AsmShiftExp
+    | AsmRelExp "<=" AsmShiftExp
+    | AsmRelExp ">" AsmShiftExp
+    | AsmRelExp ">=" AsmShiftExp
+    ;
+AsmShiftExp
+    = <AsmAddExp
+    | AsmShiftExp "<<" AsmAddExp
+    | AsmShiftExp ">>" AsmAddExp
+    | AsmShiftExp ">>>" AsmAddExp
+    ;
+AsmAddExp
+    = <AsmMulExp
+    | AsmAddExp "+" AsmMulExp
+    | AsmAddExp "-" AsmMulExp
+    ;
+AsmMulExp
+    = <AsmBrExp
+    | AsmMulExp "*" AsmBrExp
+    | AsmMulExp "/" AsmBrExp
+    | AsmMulExp "%" AsmBrExp
+    ;
+AsmBrExp
+    = <AsmUnaExp
+    | AsmBrExp "[" AsmExp "]"
+    ;
+AsmUnaExp
+    = AsmTypePrefix AsmExp
+    | "offsetof" AsmExp
+    | "seg" AsmExp
+    | "+" AsmUnaExp
+    | "-" AsmUnaExp
+    | "!" AsmUnaExp
+    | "~" AsmUnaExp
+    | <AsmPrimaryExp
+    ;
+AsmPrimaryExp
+    = IntegerLiteral
+    | FloatLiteral
+    | "__LOCAL_SIZE"
+    | "$"
+    | <Register
+    | Register ":" AsmExp
+    | <Register64
+    | Register64 ":" AsmExp
+    | <DotIdentifier
+    | "this"
+    ;
+DotIdentifier
+    = Identifier
+    | Identifier "." DotIdentifier
+    | FundamentalType "." Identifier
+    ;
+AsmTypePrefix
+    = "near" "ptr"
+    | "far" "ptr"
+    | "word" "ptr"
+    | "dword" "ptr"
+    | "qword" "ptr"
+    | FundamentalType "ptr"
+    ;
+GccAsmStatement
+    = "asm" FunctionAttributes? "{" GccAsmInstructionList "}"
+    ;
+GccAsmInstructionList
+    = GccAsmInstruction ";"
+    | GccAsmInstruction ";" GccAsmInstructionList
+    ;
+GccAsmInstruction
+    = <GccBasicAsmInstruction
+    | <GccExtAsmInstruction
+    | <GccGotoAsmInstruction
+    ;
+GccBasicAsmInstruction
+    = <AssignExpression
+    ;
+GccExtAsmInstruction
+    = AssignExpression ":" GccAsmOperands?
+    | AssignExpression ":" GccAsmOperands? ":" GccAsmOperands?
+    | AssignExpression ":" GccAsmOperands? ":" GccAsmOperands? ":" GccAsmClobbers?
+    ;
+GccGotoAsmInstruction
+    = AssignExpression ":" ":" GccAsmOperands? ":" GccAsmClobbers? ":" GccAsmGotoLabels?
+    ;
+GccAsmOperands
+    = GccSymbolicName? StringLiteral "(" AssignExpression ")"
+    | GccSymbolicName? StringLiteral "(" AssignExpression ")" "," GccAsmOperands
+    ;
+GccSymbolicName
+    = "[" Identifier "]"
+    ;
+GccAsmClobbers
+    = <StringLiteral
+    | StringLiteral "," GccAsmClobbers
+    ;
+GccAsmGotoLabels
+    = Identifier
+    | Identifier "," GccAsmGotoLabels
+    ;
+*/
+AttributeSpecifier
+    = AttributesNoPragma ":" @eager DeclDefs?
+    | AttributesNoPragma DeclarationBlock2
+    ;
+Attributes @array @regArray
+    = Attribute
+    | Attributes Attribute
+    ;
+AttributesNoPragma @array @regArray
+    = AttributeNoPragma
+    | AttributesNoPragma AttributeNoPragma
+    ;
+AttributesEmpty @array @regArray
+    = @empty
+    | Attributes
+    ;
+AttributesNoPragmaEmpty @array @regArray
+    = @empty
+    | AttributesNoPragma
+    ;
+Attribute @directUnwrap
+    = <AttributeNoPragma
+    | <Pragma
+    ;
+AttributeNoPragma @directUnwrap
+    = <LinkageAttribute
+    | <AlignAttribute
+    | <DeprecatedAttribute
+    | <VisibilityAttribute
+    | <StorageClassOrAttribute
+    | <AtAttribute
+    | <FunctionAttributeKwd
+    | <Ref
+    // | <ReturnAttribute
+    ;
+ReturnAttribute
+    = "return"
+    ;
+FunctionAttributeKwd @directUnwrap
+    = <Nothrow
+    | <Pure
+    ;
+AtAttribute @directUnwrap
+    = "@" Identifier>>"disable"
+    | "@" Identifier>>"nogc"
+    | "@" Identifier>>"live"
+    | <Property
+    | "@" Identifier>>"safe"
+    | "@" Identifier>>"system"
+    | "@" Identifier>>"trusted"
+    | <UserDefinedAttribute
+    ;
+AtAttributesEmpty @array @regArray
+    = @empty
+    | AtAttributesEmpty AtAttribute
+    ;
+Property
+    = "@" Identifier>>"property"
+    ;
+DeclarationBlock @directUnwrap
+    = !"{" <DeclDef
+    | <DeclarationBlock2
+    ;
+DeclarationBlock2
+    = "{" DeclDefs? "}"
+    ;
+LinkageAttribute
+    = "extern" "(" LinkageType ")"
+    | "extern" "(" Identifier>>"C" "++" "," ")"
+    // | "extern" "(" Identifier>>"C" "++" "," QualifiedIdentifier ")"
+    | "extern" "(" Identifier>>"C" "++" "," NamespaceList ")"
+    | "extern" "(" Identifier>>"C" "++" "," "class" ")"
+    | "extern" "(" Identifier>>"C" "++" "," "struct" ")"
+    ;
+LinkageType
+    = Identifier>>"C"
+    | Identifier>>"C" "++"
+    | Identifier>>"D"
+    | Identifier>>"Windows"
+    | Identifier>>"System"
+    | Identifier>>"Objective" "-" Identifier>>"C"
+    ;
+NamespaceList @array @regArray
+    = ConditionalExpression
+    | ConditionalExpression ","
+    | ConditionalExpression "," NamespaceList
+    ;
+AlignAttribute
+    = "align"
+    | "align" "(" AssignExpression ")"
+    ;
+DeprecatedAttribute @directUnwrap
+    = <Deprecated
+    | "deprecated" "(" AssignExpression ")"
+    ;
+VisibilityAttribute
+    = "private"
+    | "package" !"("
+    | "package" "(" QualifiedIdentifier ")"
+    | "protected"
+    | "public"
+    | "export"
+    ;
+UserDefinedAttribute
+    = "@" "(" TemplateArgumentList ")"
+    | "@" TemplateSingleArgument !"("
+    | "@" IdentifierExpression "(" ArgumentList? ")"
+    | "@" TemplateInstance !"("
+    | "@" TemplateInstance "(" ArgumentList? ")"
+    ;
+Statement @directUnwrap
+    = <EmptyStatement
+    | <NonEmptyStatement
+    | <ScopeBlockStatement
+    ;
+EmptyStatement
+    = ";"
+    ;
+NoScopeNonEmptyStatement @directUnwrap
+    = <NonEmptyStatement
+    | <BlockStatement
+    ;
+NoScopeStatement @directUnwrap
+    = <EmptyStatement
+    | <NonEmptyStatement
+    | <BlockStatement
+    ;
+NoScopeOrStatement @directUnwrap
+    = <NoScopeStatement
+    | <Statement
+    ;
+NonEmptyOrScopeBlockStatement @directUnwrap
+    = <NonEmptyStatement
+    | <ScopeBlockStatement
+    ;
+NonEmptyStatement @directUnwrap
+    = <NonEmptyStatementNoCaseNoDefault
+    | <CaseStatement
+    | <CaseRangeStatement
+    | <DefaultStatement
+    ;
+NonEmptyStatementNoCaseNoDefault
+    = <LabeledStatement
+    | <IfStatement
+    | <WhileStatement
+    | <DoStatement
+    | <ForStatement
+    | <ForeachStatement
+    | <SwitchStatement
+    | <ContinueStatement
+    | <BreakStatement
+    | <GotoStatement
+    | <WithStatement
+    | <TryStatement
+    | <AsmStatement
+    // | <MixinStatement
+    | <ForeachRangeStatement
+    | <NonEmptyStatementNoCaseNoDefaultBacktrack
+    ;
+NonEmptyStatementNoCaseNoDefaultBacktrack @backtrack
+    = <SynchronizedStatement
+    | <DeclarationStatementAll
+    | <ExpressionStatement
+    ;
+DeclarationStatementAll
+    = @rejectTag(Bitfield) <DeclarationStatement
+    | <FinalSwitchStatement
+    // | @rejectTag(Bitfield) <StaticAssert
+    // | @rejectTag(Bitfield) <ImportDeclaration
+    | <StaticForeachStatement
+    | <ConditionalStatement
+    | <TemplateMixin
+    | <PragmaStatement
+    | <ScopeGuardStatement
+    | <ReturnStatement
+    ;
+ScopeStatement @directUnwrap
+    = <NonEmptyStatement
+    | <BlockStatement
+    ;
+ScopeBlockStatement @directUnwrap
+    = <BlockStatement
+    ;
+LabeledStatement
+    = IdentifierExpression ":" @eager NoScopeOrStatement?
+    ;
+BlockStatement
+    = "{" StatementList? "}"
+    ;
+StatementList @array @regArray
+    = Statement
+    | StatementList Statement
+    ;
+ExpressionStatement
+    = !BlockStatement Expression ";"
+    ;
+DeclarationStatement @directUnwrap
+    = @inheritTag(Bitfield) <Declaration
+    // | StorageClasses Declaration
+    ;
+IfStatement
+    = "if" "(" IfCondition ")" ThenStatement !"else"
+    | "if" "(" IfCondition ")" ThenStatement "else" ElseStatement
+    ;
+IfCondition @backtrack
+    = <IfConditionDecl
+    | <Expression
+    ;
+IfConditionDecl
+    = Auto Identifier "=" Expression
+    | Scope Identifier "=" Expression
+    | TypeCtors Identifier "=" Expression
+    | TypeCtors? PostfixType Declarator "=" Expression
+    ;
+ThenStatement @directUnwrap
+    = <ScopeStatement
+    ;
+ElseStatement @directUnwrap
+    = <ScopeStatement
+    ;
+WhileStatement
+    = "while" "(" IfCondition ")" ScopeStatement
+    ;
+DoStatement
+    = "do" ScopeStatement "while" "(" Expression ")" ";"
+    ;
+ForStatement
+    = "for" "(" Initialize Test? ";" Increment? ")" ScopeStatement
+    ;
+Initialize
+    = ";"
+    | <NoScopeNonEmptyStatement
+    ;
+Test
+    = <Expression
+    ;
+Increment
+    = <Expression
+    ;
+AggregateForeach
+    = Foreach "(" ForeachTypeList ";" ForeachAggregate ")"
+    ;
+ForeachStatement
+    = AggregateForeach NoScopeNonEmptyStatement
+    ;
+Foreach
+    = "foreach"
+    | "foreach_reverse"
+    ;
+ForeachTypeList @array @regArray
+    = ForeachType
+    | ForeachType "," ForeachTypeList
+    ;
+ForeachType
+    = ForeachTypeAttributes? PostfixType Declarator
+    | ForeachTypeAttributes? Identifier
+    | ForeachTypeAttributes? "alias" Identifier
+    ;
+ForeachTypeAttributes @array @regArray
+    = ForeachTypeAttribute
+    | ForeachTypeAttributes ForeachTypeAttribute
+    ;
+ForeachTypeAttribute
+    = "enum"
+    | <Ref
+    | <Scope
+    | <TypeCtor
+    ;
+Ref
+    = "ref"
+    ;
+ForeachAggregate
+    = <Expression
+    ;
+RangeForeach
+    = Foreach "(" ForeachTypeList ";" LwrExpression ".." UprExpression ")"
+    ;
+LwrExpression
+    = <Expression
+    ;
+UprExpression
+    = <Expression
+    ;
+ForeachRangeStatement
+    = RangeForeach ScopeStatement
+    ;
+SwitchStatement
+    = "switch" "(" Expression ")" ScopeStatement
+    ;
+CaseStatement
+    = "case" ArgumentList ":" @eager ScopeStatement?
+    ;
+DefaultStatement
+    = "default" ":" // ScopeStatementList
+    ;
+/*ScopeStatementList @array
+    = StatementListNoCaseNoDefault
+    ;
+StatementListNoCaseNoDefault @array
+    = StatementNoCaseNoDefault
+    | StatementListNoCaseNoDefault StatementNoCaseNoDefault
+    ;
+StatementNoCaseNoDefault
+    = <EmptyStatement
+    | <NonEmptyStatementNoCaseNoDefault
+    | <ScopeBlockStatement
+    ;*/
+CaseRangeStatement
+    // = "case" FirstExp ":" ".." "case" LastExp ":" ScopeStatementList
+    = "case" ArgumentList ":" ".." "case" ArgumentList ":" // ScopeStatementList
+    ;
+/*FirstExp
+    = <AssignExpression
+    ;
+LastExp
+    = <AssignExpression
+    ;*/
+FinalSwitchStatement
+    = "final" "switch" "(" Expression ")" ScopeStatement
+    ;
+ContinueStatement
+    = "continue" Identifier? ";"
+    ;
+BreakStatement
+    = "break" Identifier? ";"
+    ;
+ReturnStatement
+    = "return" Expression? ";"
+    ;
+GotoStatement
+    = "goto" Identifier ";"
+    | "goto" "default" ";"
+    | "goto" "case" ";"
+    | "goto" "case" Expression ";"
+    ;
+WithStatement
+    = "with" "(" WithContent ")" ScopeStatement
+    ;
+WithContent @directUnwrap
+    = <Expression
+    // | <Symbol
+    // | <TemplateInstance
+    ;
+SynchronizedStatement
+    = SynchronizedSingleArray !"(" !"class" ScopeStatement
+    | SynchronizedSingleArray "(" Expression ")" ScopeStatement
+    ;
+TryStatement
+    = "try" ScopeStatement Catches !"finally" !"catch"
+    | "try" ScopeStatement Catches FinallyStatement
+    | "try" ScopeStatement FinallyStatement
+    ;
+Catches
+    = <Catch
+    | Catches Catch
+    ;
+Catch
+    = "catch" "(" CatchParameter ")" NoScopeNonEmptyStatement
+    | "catch" !"(" NoScopeNonEmptyStatement
+    ;
+CatchParameter
+    = PostfixType Identifier?
+    ;
+FinallyStatement
+    = "finally" NoScopeNonEmptyStatement
+    ;
+ScopeGuardStatement
+    = "scope" "(" Identifier>>"exit" ")" NonEmptyOrScopeBlockStatement
+    | "scope" "(" Identifier>>"success" ")" NonEmptyOrScopeBlockStatement
+    | "scope" "(" Identifier>>"failure" ")" NonEmptyOrScopeBlockStatement
+    ;
+/*MixinStatement
+    = Mixin ";"
+    ;*/
+TemplateDeclaration
+    = AttributesNoPragmaEmpty "template" Identifier TemplateParameters Constraint? "{" DeclDefs? "}"
+    ;
+TemplateParameters
+    = "(" TemplateParameterList? ")"
+    ;
+TemplateParameterList @array @regArray
+    = TemplateParameter
+    | TemplateParameter ","
+    | TemplateParameter "," TemplateParameterList
+    ;
+TemplateInstance
+    = IdentifierExpression TemplateArguments
+    ;
+TemplateArguments
+    = "!" "(" TemplateArgumentList? ")"
+    | "!" TemplateSingleArgument
+    ;
+TemplateArgumentList @array @regArray
+    = TemplateArgument
+    | TemplateArgument ","
+    | TemplateArgument "," TemplateArgumentList
+    ;
+TemplateArgument @backtrack
+    = <Type
+    | <AssignExpression
+    // | <Symbol
+    ;
+/*Symbol @directUnwrap
+    = <SymbolTail
+    | "." SymbolTail
+    ;
+SymbolTail @directUnwrap
+    = <IdentifierExpression
+    | IdentifierExpression "." SymbolTail
+    | <TemplateInstance
+    | TemplateInstance "." SymbolTail
+    ;*/
+TemplateSingleArgument @directUnwrap
+    = IdentifierExpression
+    | <FundamentalType
+    | CharacterLiteral
+    | <StringLiteral
+    | IntegerLiteral
+    | FloatLiteral
+    | "true"
+    | "false"
+    | "null"
+    | "this"
+    | <SpecialKeyword
+    ;
+TemplateParameter @directUnwrap
+    = <TemplateTypeParameter
+    | <TemplateValueParameter
+    | <TemplateAliasParameter
+    | <TemplateSequenceParameter
+    | <TemplateThisParameter
+    ;
+TemplateTypeParameter
+    = IdentifierExpression
+    | IdentifierExpression ":" Type
+    | IdentifierExpression "=" Type
+    | IdentifierExpression ":" Type "=" Type
+    ;
+TemplateThisParameter
+    = "this" TemplateTypeParameter
+    ;
+TemplateValueParameter
+    = ParameterAttributes? PostfixType Declarator
+    | ParameterAttributes? PostfixType Declarator ":" ConditionalExpression
+    | ParameterAttributes? PostfixType Declarator "=" TemplateValueParameterDefault
+    | ParameterAttributes? PostfixType Declarator ":" ConditionalExpression "=" TemplateValueParameterDefault
+    ;
+TemplateValueParameterDefault @directUnwrap
+    = <AssignExpression
+    | <SpecialKeyword
+    ;
+TemplateAliasParameter
+    = "alias" IdentifierExpression TemplateAliasParameterSpecialization? TemplateAliasParameterDefault?
+    | "alias" PostfixType Declarator TemplateAliasParameterSpecialization? TemplateAliasParameterDefault?
+    ;
+TemplateAliasParameterSpecialization @backtrack
+    = ":" Type
+    | ":" ConditionalExpression
+    ;
+TemplateAliasParameterDefault @backtrack
+    = "=" Type
+    | "=" ConditionalExpression
+    ;
+TemplateSequenceParameter
+    = IdentifierExpression "..."
+    ;
+ClassTemplateDeclaration
+    = AttributesNoPragmaEmpty "class" IdentifierExpression TemplateParameters ";"
+    | AttributesNoPragmaEmpty "class" IdentifierExpression TemplateParameters Constraint? BaseClassList? AggregateBody
+    | AttributesNoPragmaEmpty "class" IdentifierExpression TemplateParameters BaseClassList Constraint AggregateBody
+    ;
+InterfaceTemplateDeclaration
+    = AttributesNoPragmaEmpty "interface" IdentifierExpression TemplateParameters ";"
+    | AttributesNoPragmaEmpty "interface" IdentifierExpression TemplateParameters Constraint? BaseInterfaceList? AggregateBody
+    | AttributesNoPragmaEmpty "interface" IdentifierExpression TemplateParameters BaseInterfaceList Constraint AggregateBody
+    ;
+StructTemplateDeclaration
+    = AttributesNoPragmaEmpty "struct" IdentifierExpression TemplateParameters ";"
+    | AttributesNoPragmaEmpty "struct" IdentifierExpression TemplateParameters Constraint? AggregateBody
+    ;
+UnionTemplateDeclaration
+    = AttributesNoPragmaEmpty "union" IdentifierExpression TemplateParameters ";"
+    | AttributesNoPragmaEmpty "union" IdentifierExpression TemplateParameters Constraint? AggregateBody
+    ;
+ConstructorTemplate
+    = AttributesNoPragmaEmpty "this" @lookahead TemplateParameters Parameters MemberFunctionAttributes? Constraint? FunctionBody
+    ;
+Constraint
+    = "if" "(" Expression ")"
+    ;
+ClassDeclaration
+    = AttributesNoPragmaEmpty "class" IdentifierExpression ";"
+    | AttributesNoPragmaEmpty "class" IdentifierExpression BaseClassList? AggregateBody
+    | <ClassTemplateDeclaration
+    ;
+BaseClassList @array @regArray
+    = ":" SuperClassOrInterface
+    | ":" SuperClassOrInterface "," Interfaces
+    ;
+SuperClassOrInterface @directUnwrap
+    = <BasicType
+    ;
+Interfaces @array @regArray
+    = Interface
+    | Interfaces "," Interface
+    ;
+Interface @directUnwrap
+    = <BasicType
+    ;
+Constructor
+    = <ConstructorTemplate
+    | AttributesNoPragmaEmpty "this" @lookahead Parameters MemberFunctionAttributes? FunctionBody
+    ;
+Destructor
+    = AttributesNoPragmaEmpty "~" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    ;
+/*StaticConstructor
+    = "static" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    ;
+StaticDestructor
+    = "static" "~" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    ;
+SharedStaticConstructor
+    = "shared" "static" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    ;
+SharedStaticDestructor
+    = "shared" "static" "~" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    ;*/
+Invariant
+    = AttributesNoPragmaEmpty "invariant" "(" ")" BlockStatement
+    | AttributesNoPragmaEmpty "invariant" BlockStatement
+    | AttributesNoPragmaEmpty "invariant" "(" AssertArguments ")" ";"
+    ;
+Allocator // Removed in dlang.org commit e0f9fecab151613f7c21d13f83f462cf20b98056
+    = AttributesNoPragmaEmpty "new" Parameters FunctionBody
+    ;
+Deallocator // Removed in dlang.org commit 557c0dfc918bfce505e46bd7c5aa1d0ffd3740ad
+    = AttributesNoPragmaEmpty "delete" Parameters FunctionBody
+    ;
+NewAnonClassExpression
+    = "new" "class" ConstructorArgs? AnonBaseClassList? AggregateBody
+    ;
+ConstructorArgs
+    = "(" ArgumentList? ")"
+    ;
+AnonBaseClassList @array @regArray
+    = SuperClassOrInterface
+    | SuperClassOrInterface "," Interfaces
+    ;
+TraitsExpression
+    = "__traits" "(" TraitsKeyword "," TraitsArguments ")"
+    | "__traits" "(" TraitsKeyword ")"
+    // | "__traits" "(" Identifier >> "compiles" ")"
+    // | "__traits" "(" Identifier >> "compiles" "," TokensMatchingAllParens ")"
+    ;
+TraitsKeyword
+    = Identifier
+    ;
+TraitsArguments @array @regArray
+    = TraitsArgument
+    | TraitsArgument "," TraitsArguments
+    ;
+TraitsArgument @backtrack
+    = <Type
+    | <AssignExpression
+    ;
+FuncDeclaration
+    = StorageClassesAttributesNoPragmaEmpty PostfixType FuncDeclarator FunctionBody
+    | <AutoFuncDeclaration
+    ;
+StorageClassesAttributes @array @regArray
+    = StorageClasses
+    | Attributes
+    ;
+StorageClassesAttributesNoPragma @array @regArray
+    = StorageClasses
+    | AttributesNoPragma
+    ;
+StorageClassesAttributesEmpty @array @regArray
+    = @empty
+    | StorageClassesAttributes
+    ;
+StorageClassesAttributesNoPragmaEmpty @array @regArray
+    = @empty
+    | StorageClassesAttributesNoPragma
+    ;
+AutoFuncDeclaration
+    = StorageClassesAttributesNoPragma FuncDeclarator FunctionBody
+    ;
+FuncDeclarator
+    = VarDeclarator FuncDeclaratorSuffix
+    ;
+FuncDeclaratorSuffix
+    = @lookahead TemplateParameters Parameters MemberFunctionAttributes? Constraint?
+    | @lookahead Parameters MemberFunctionAttributes?
+    ;
+Parameters
+    = "(" ParameterList? ")"
+    | "(" "this" ")" // TODO: only postblit
+    ;
+ParameterList @array @regArray
+    = Parameter
+    | Parameter ","
+    | Parameter "," ParameterList
+    | VariadicParameter
+    ;
+VariadicParameter
+    = VariadicArgumentsAttributes? "..."
+    ;
+Parameter
+    = ParameterAttributes? PostfixType Declarator
+    | ParameterAttributes? PostfixType Declarator "..."
+    | ParameterAttributes? PostfixType Declarator "=" AssignExpression
+    | ParameterAttributes? PostfixType Declarator "=" AssignExpression "..."
+    | ParameterAttributes PostfixType
+    | ParameterAttributes? PostfixType "=" AssignExpression
+    | ParameterAttributes? PostfixType "=" AssignExpression "..."
+    | PostfixType
+    | ParameterAttributes? PostfixType "..."
+    ;
+ParameterAttributes @array @regArray
+    = ParameterStorageClass
+    | UserDefinedAttribute
+    | ParameterAttributes ParameterStorageClass
+    | ParameterAttributes UserDefinedAttribute
+    ;
+ParameterStorageClass @directUnwrap
+    = <Auto
+    | <TypeCtor
+    | "final"
+    | "in"
+    | "lazy"
+    | "out"
+    | <Ref
+    | <ReturnAttribute
+    | <Scope
+    ;
+Scope
+    = "scope"
+    ;
+Auto
+    = "auto"
+    ;
+VariadicArgumentsAttributes @array @regArray
+    = VariadicArgumentsAttribute
+    | VariadicArgumentsAttribute VariadicArgumentsAttributes
+    ;
+VariadicArgumentsAttribute @directUnwrap
+    = <ReturnAttribute
+    | <TypeCtor
+    | <Scope // Needs at least "scope". See __mingw_fprintf in druntime/src/core/stdc/stdio.d
+    ;
+FunctionAttributes
+    = <FunctionAttribute
+    | FunctionAttribute FunctionAttributes
+    ;
+FunctionAttribute @directUnwrap
+    = <Nothrow
+    | <Pure
+    | <Property
+    | <AtAttribute
+    ;
+MemberFunctionAttributes @array @regArray
+    = MemberFunctionAttribute
+    | MemberFunctionAttribute MemberFunctionAttributes
+    ;
+MemberFunctionAttribute @directUnwrap
+    = <TypeCtor
+    | <ReturnAttribute
+    | <Scope
+    | <FunctionAttribute
+    | <StorageClassOrAttribute // at least scope is needed, maybe pure
+    ;
+FunctionBody @directUnwrap
+    = <SpecifiedFunctionBody
+    | <ShortenedFunctionBody
+    | <MissingFunctionBody
+    ;
+SpecifiedFunctionBody @directUnwrap
+    = "do" BlockStatement
+    | Identifier>>"body" BlockStatement
+    | <BlockStatement
+    | FunctionContractsEndingInOutContractExpression "do"? BlockStatement
+    | FunctionContractsEndingInOutContractExpression Identifier>>"body" BlockStatement
+    | FunctionContractsEndingInOutStatement "do" BlockStatement
+    | FunctionContractsEndingInOutStatement Identifier>>"body" BlockStatement
+    ;
+MissingFunctionBody
+    = ";"
+    | FunctionContractsEndingInOutContractExpression ";"
+    | FunctionContractsEndingInOutStatement !"in" !"out" !"do"
+    ;
+ShortenedFunctionBody
+    = InOutContractExpressions? "=>" AssignExpression ";"
+    ;
+FunctionContracts @array @regArray
+    = FunctionContract
+    | FunctionContracts FunctionContract
+    ;
+FunctionContractsEndingInOutContractExpression @array @regArray
+    = FunctionContracts? InOutContractExpression
+    ;
+FunctionContractsEndingInOutStatement @array @regArray
+    = FunctionContracts? InOutStatement
+    ;
+FunctionContract @directUnwrap
+    = <InOutContractExpression
+    | <InOutStatement
+    ;
+InOutContractExpressions @array @regArray
+    = <InOutContractExpression
+    | InOutContractExpression InOutContractExpressions
+    ;
+InOutContractExpression @directUnwrap
+    = <InContractExpression
+    | <OutContractExpression
+    ;
+InOutStatement @directUnwrap
+    = <InStatement
+    | <OutStatement
+    ;
+InContractExpression
+    = "in" "(" AssertArguments ")"
+    ;
+OutContractExpression
+    = "out" "(" ";" AssertArguments ")"
+    | "out" "(" Identifier ";" AssertArguments ")"
+    ;
+InStatement
+    = "in" BlockStatement
+    ;
+OutStatement
+    = "out" BlockStatement
+    | "out" "(" Identifier ")" BlockStatement
+    ;
+/*MainFunction
+    = MainReturnDecl "main()" MainFunctionBody
+    | MainReturnDecl "main(string[]" "Identifier)" MainFunctionBody
+    ;
+MainReturnDecl
+    = "void"
+    | "int"
+    | <noreturn
+    | "auto"
+    ;
+MainFunctionBody
+    = <ShortenedFunctionBody
+    | <SpecifiedFunctionBody
+    ;
+CMainFunction
+    = "extern" "(C)" MainReturnDecl "main(CmainParameters$(OPT))" BlockStatement
+    ;
+CmainParameters
+    = "int" Identifier, "char**" Identifier
+    | "int" Identifier, "char**" Identifier, "char**" Identifier
+    ;*/
+StructDeclaration
+    = AttributesNoPragmaEmpty "struct" Identifier ";"
+    | AttributesNoPragmaEmpty "struct" Identifier AggregateBody
+    | <StructTemplateDeclaration
+    | <AnonStructDeclaration
+    ;
+AnonStructDeclaration
+    = AttributesNoPragmaEmpty "struct" AggregateBody
+    ;
+UnionDeclaration
+    = AttributesNoPragmaEmpty "union" Identifier ";"
+    | AttributesNoPragmaEmpty "union" Identifier AggregateBody
+    | <UnionTemplateDeclaration
+    | <AnonUnionDeclaration
+    ;
+AnonUnionDeclaration
+    = AttributesNoPragmaEmpty "union" AggregateBody
+    ;
+AggregateBody
+    = "{" DeclDefs? "}"
+    ;
+StructInitializer
+    = "{" StructMemberInitializers? "}"
+    ;
+StructMemberInitializers @array @regArray
+    = <StructMemberInitializer
+    | StructMemberInitializer ","
+    | StructMemberInitializer "," StructMemberInitializers
+    ;
+StructMemberInitializer @backtrack
+    = <ArrayStructInitializer
+    | <StructMemberInitializerExpr
+    ;
+StructMemberInitializerExpr @directUnwrap
+    = <AssignExpression
+    | IdentifierExpression ":" NonVoidInitializer
+    ;
+/*Postblit
+    = "this" "(" "this" ")" MemberFunctionAttributes? ";"
+    | "this" "(" "this" ")" MemberFunctionAttributes? FunctionBody
+    ;*/
+AliasThis
+    = AttributesNoPragmaEmpty "alias" IdentifierExpression "this" ";"
+    ;
+UnitTest
+    = AttributesNoPragmaEmpty "unittest" BlockStatement
+    ;
+ConditionalDeclaration
+    = AttributesNoPragmaEmpty Condition DeclarationBlock !"else"
+    | AttributesNoPragmaEmpty Condition DeclarationBlock "else" DeclarationBlock
+    | AttributesNoPragmaEmpty Condition ":" @eager DeclDefs?
+    | AttributesNoPragmaEmpty Condition DeclarationBlock "else" ":" @eager DeclDefs?
+    ;
+ConditionalStatement
+    = Condition NoScopeNonEmptyStatement !"else"
+    | Condition NoScopeNonEmptyStatement "else" NoScopeNonEmptyStatement
+    ;
+Condition
+    = <VersionCondition
+    | <DebugCondition
+    | <StaticIfCondition
+    ;
+VersionCondition
+    = "version" "(" IntegerLiteral ")"
+    | "version" "(" Identifier ")"
+    | "version" "(" "unittest" ")"
+    | "version" "(" "assert" ")"
+    ;
+VersionSpecification
+    = AttributesNoPragmaEmpty "version" "=" Identifier ";"
+    | AttributesNoPragmaEmpty "version" "=" IntegerLiteral ";"
+    ;
+DebugCondition
+    = "debug" !"("
+    | "debug" "(" IntegerLiteral ")"
+    | "debug" "(" Identifier ")"
+    ;
+DebugSpecification
+    = "debug" "=" Identifier ";"
+    | "debug" "=" IntegerLiteral ";"
+    ;
+StaticIfCondition
+    = "static" "if" "(" AssignExpression ")"
+    ;
+StaticForeach
+    = "static" AggregateForeach
+    | "static" RangeForeach
+    ;
+StaticForeachDeclaration
+    = AttributesNoPragmaEmpty StaticForeach DeclarationBlock
+    | AttributesNoPragmaEmpty StaticForeach ":" @eager DeclDefs?
+    ;
+StaticForeachStatement
+    = StaticForeach NoScopeNonEmptyStatement
+    ;
+StaticAssert
+    = AttributesNoPragmaEmpty "static" "assert" "(" ArgumentList ")" ";"
+    ;
+TemplateMixinDeclaration
+    = AttributesNoPragmaEmpty "mixin" "template" Identifier TemplateParameters Constraint? "{" DeclDefs? "}"
+    ;
+TemplateMixin
+    = AttributesNoPragmaEmpty "mixin" MixinTemplateName /* TemplateArguments? */ Identifier? ";"
+    ;
+MixinTemplateName
+    = "." MixinQualifiedIdentifier
+    | <MixinQualifiedIdentifier
+    | <QualifiedTypeof
+    ;
+MixinQualifiedIdentifier
+    = IdentifierExpression
+    | TemplateInstance
+    | MixinQualifiedIdentifier "." IdentifierExpression
+    | MixinQualifiedIdentifier "." TemplateInstance
+    ;
+EnumKeyword
+    = "enum"
+    ;
+EnumAttributes @array @regArray
+    = AttributesNoPragmaEmpty EnumKeyword AttributesEmpty
+    ;
+EnumDeclaration
+    = EnumAttributes IdentifierExpression EnumBody
+    | EnumAttributes IdentifierExpression ":" EnumBaseType EnumBody
+    | <EnumVarDeclaration
+    | <AnonymousEnumDeclaration
+    ;
+EnumVarDeclaration
+    = EnumAttributes PostfixType @rejectTag(Bitfield) Declarators ";"
+    | EnumAttributes AutoAssignments ";"
+    ;
+EnumBaseType
+    = <Type
+    ;
+EnumBody
+    = "{" EnumMembers "}"
+    | ";"
+    ;
+EnumMembers @array @regArray
+    = EnumMember
+    | EnumMember ","
+    | EnumMember "," EnumMembers
+    ;
+EnumMemberAttributes
+    = <EnumMemberAttribute
+    | EnumMemberAttribute EnumMemberAttributes
+    ;
+EnumMemberAttribute
+    = <DeprecatedAttribute
+    | <UserDefinedAttribute
+    | "@" Identifier>>"disable"
+    ;
+EnumMember
+    = EnumMemberAttributes? IdentifierExpression
+    | EnumMemberAttributes? IdentifierExpression "=" AssignExpression
+    ;
+AnonymousEnumDeclaration
+    = EnumAttributes ":" EnumBaseType "{" EnumMembers "}"
+    // | EnumAttributes "{" EnumMembers "}"
+    | EnumAttributes "{" AnonymousEnumMembers "}"
+    ;
+AnonymousEnumMembers @array @regArray
+    = AnonymousEnumMember
+    | AnonymousEnumMember ","
+    | AnonymousEnumMember "," AnonymousEnumMembers
+    ;
+AnonymousEnumMember @directUnwrap
+    = <EnumMember
+    | Type IdentifierExpression "=" AssignExpression
+    ;
+PragmaDeclaration
+    // = AttributesNoPragmaEmpty PragmaSingleArray ";"
+    = AttributesNoPragmaEmpty PragmaSingleArray DeclarationBlock
+    | AttributesNoPragmaEmpty PragmaSingleArray ":" @eager DeclDefs?
+    ;
+PragmaStatement
+    = PragmaSingleArray ";"
+    | PragmaSingleArray !";" NoScopeStatement
+    ;
+Pragma
+    = "pragma" "(" Identifier ")"
+    | "pragma" "(" Identifier "," ArgumentList ")"
+    ;
+PragmaSingleArray @array @regArray
+    = Pragma
+    ;
+InterfaceDeclaration
+    = AttributesNoPragmaEmpty "interface" Identifier ";"
+    | AttributesNoPragmaEmpty "interface" Identifier BaseInterfaceList? AggregateBody
+    | <InterfaceTemplateDeclaration
+    ;
+BaseInterfaceList
+    = ":" Interfaces
+    ;
+Type @directUnwrap
+    = <PostfixType !"*"
+    | TypeCtors PostfixType !"*"
+    ;
+TypeCtors @array @regArray
+    = TypeCtor
+    | TypeCtor TypeCtors
+    ;
+TypeCtor
+    = "const"
+    | "immutable"
+    | "inout"
+    | "shared"
+    ;
+BasicType @directUnwrap
+    = <FundamentalType
+    // | "." QualifiedIdentifier
+    | <QualifiedIdentifier
+    // | <Typeof
+    // | Typeof "." QualifiedIdentifier
+    | TypeCtor "(" Type ")"
+    | <Vector
+    | <TraitsExpression
+    | <MixinType
+    ;
+Vector
+    = "__vector" "(" VectorBaseType ")"
+    ;
+VectorBaseType
+    = <Type
+    ;
+FundamentalType
+    = "bool"
+    | "byte"
+    | "ubyte"
+    | "short"
+    | "ushort"
+    | "int"
+    | "uint"
+    | "long"
+    | "ulong"
+    | "cent"
+    | "ucent"
+    | "char"
+    | "wchar"
+    | "dchar"
+    | "float"
+    | "double"
+    | "real"
+    | "ifloat"
+    | "idouble"
+    | "ireal"
+    | "cfloat"
+    | "cdouble"
+    | "creal"
+    | "void"
+    ;
+PostfixType @directUnwrap
+    = <BasicType
+    | PostfixType "*"
+    | PostfixType ArrayTypeSuffix
+    | PostfixType "delegate" Parameters MemberFunctionAttributes?
+    | PostfixType "function" Parameters FunctionAttributes?
+    ;
+ArrayTypeSuffix
+    = "[" "]"
+    | "[" ArrayTypeSuffixContent "]"
+    ;
+ArrayTypeSuffixContent @backtrack
+    = <Type
+    | <ArrayTypeSuffixContentExpr
+    ;
+ArrayTypeSuffixContentExpr
+    = <AssignExpression
+    | <IntervalExp
+    ;
+QualifiedIdentifier @directUnwrap
+    = <IdentifierExpression
+    | <TemplateInstance
+    | <TraitsExpression
+    | <Typeof
+    | "." IdentifierExpression
+    | "." TemplateInstance
+    | QualifiedIdentifier "." IdentifierExpression
+    | QualifiedIdentifier "." TemplateInstance
+    | QualifiedIdentifier QualifiedArraySuffix
+    ;
+QualifiedTypeof @directUnwrap
+    = <Typeof
+    | QualifiedTypeof "." IdentifierExpression
+    | QualifiedTypeof "." TemplateInstance
+    | QualifiedTypeof QualifiedArraySuffix
+    ;
+QualifiedArraySuffix
+    = "[" ArrayTypeSuffixContent "]" // Only expressions and not types allowed, but if it looks like a type, DMD will produce an error. See testgrammard-extra/test9.d
+    ;
+Typeof
+    = "typeof" "(" Expression ")"
+    | "typeof" "(" "return" ")"
+    ;
+MixinType @directUnwrap
+    = <Mixin
+    ;
+
+
+match "(" ")";
+match "[" "]";
+match "{" "}";
+match "q{" "}";

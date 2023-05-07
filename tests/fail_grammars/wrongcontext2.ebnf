@@ -1,0 +1,8 @@
+/*
+GENERATOR_OUTPUT:
+---
+Unexpected expression UnpackVariadicList
+---
+*/
+S = f("1");
+f(x) = x...;

@@ -1,0 +1,11 @@
+/*
+GENERATOR_OUTPUT(normal, optdescent):
+---
+Warning: Parse conflict in state 8
+---
+*/
+S = A "y" "z" "a" | C;
+A = B;
+B = "x";
+C = "x" Y "z" "c";
+Y = "y";

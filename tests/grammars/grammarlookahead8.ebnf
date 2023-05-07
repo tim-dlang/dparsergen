@@ -1,0 +1,9 @@
+S = <X;
+
+X1 = "x";
+X2 = "x";
+X3 = "x";
+X = X1 "a" | Y;
+Y @backtrack = X2 "b" "b" | X3 L3;
+
+L3 = "b" | L3 "b";

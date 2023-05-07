@@ -1,0 +1,12 @@
+/*
+GENERATOR_OUTPUT(optdescent):
+---
+Warning: Parse conflict in state 9
+---
+*/
+S = X "a" | X "b";
+X = A | B;
+A = "x" !"b";
+B = "x" !"a";
+
+token Space @ignoreToken = [ \n\r\t]+;

@@ -1,0 +1,50 @@
+// EXCLUDE_VARIANT: normal
+// EXCLUDE_VARIANT: optdescent
+// Equivalent to grammarexprs2.ebnf.
+/*
+GENERATOR_OUTPUT(normal):
+---
+Warning: Parse conflict in state 3
+Warning: Parse conflict in state 5
+Warning: Parse conflict in state 7
+Warning: Parse conflict in state 9
+Warning: Parse conflict in state 11
+Warning: Parse conflict in state 13
+---
+*/
+
+E
+	= <Or
+	| <And
+	| <Comparison
+	| <Add
+	| <Mul
+	| <Unary
+	| <Primary
+	;
+Or
+	= @needTag(Or) E "||" @needTag(Comparison) E @tag(Or)
+	;
+And
+	= @needTag(And) E "&&" @needTag(Comparison) E @tag(And)
+	;
+Comparison
+	= @needTag(Add) E "<" @needTag(Add) E @tag(Comparison, Or, And)
+	| @needTag(Add) E ">" @needTag(Add) E @tag(Comparison, Or, And)
+	;
+Add
+	= @needTag(Add) E "+" @needTag(Mul) E @tag(Add, Comparison, Or, And)
+	| @needTag(Add) E "-" @needTag(Mul) E @tag(Add, Comparison, Or, And)
+	;
+Mul
+	= @needTag(Mul) E "*" @needTag(Unary) E @tag(Mul, Add, Comparison, Or, And)
+	| @needTag(Mul) E "/" @needTag(Unary) E @tag(Mul, Add, Comparison, Or, And)
+	;
+Unary
+	= "-" @needTag(Unary) E @tag(Unary, Mul, Add, Comparison, Or, And)
+	;
+Primary
+	= N @tag(Primary, Unary, Mul, Add, Comparison, Or, And)
+	| "(" E ")" @tag(Primary, Unary, Mul, Add, Comparison, Or, And)
+	;
+token N = [1-9] [0-9]* | "0";

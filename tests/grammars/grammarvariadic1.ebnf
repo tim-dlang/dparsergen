@@ -1,0 +1,20 @@
+S
+    = <Test1
+    | <Test2
+    | <Test3
+    | <Test4
+    ;
+
+Test1 = "1" or(A, B);
+Test2 = "2" or(A, B, C, D);
+Test3 = "3" or(B, C, D);
+Test4 = "4" or(A, B) "x"
+      | "4" or(C, D) "y";
+
+A = "a";
+B = "b";
+C = "c";
+D = "d";
+
+or(e) = <e;
+or(e, e2, r...) = <e | <or(e2, r...);

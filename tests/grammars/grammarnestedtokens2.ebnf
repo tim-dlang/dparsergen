@@ -1,0 +1,60 @@
+S = TokenString;
+
+token EndOfLine @ignoreToken
+    = "\u000D"
+    | "\u000A"
+    | "\u000D" "\u000A"
+    | "\u2028"
+    | "\u2029"
+    ;
+token WhiteSpace @ignoreToken
+    = Space
+    | Space WhiteSpace
+    ;
+fragment Space
+    = "\u0020"
+    | "\u0009"
+    | "\u000B"
+    | "\u000C"
+    ;
+token Comment @ignoreToken
+    = BlockComment
+    | LineComment
+    | NestingBlockComment
+    ;
+token BlockComment @ignoreToken
+    = "/*" {{[^*] | [*] [*]* [^/*]}* [*]*}? "*/"
+    ;
+token LineComment @ignoreToken
+    = "//" [^\n\r\u000D\u000A\u2028\u2029\0\x1a]* EndOfLine
+    ;
+token NestingBlockComment @ignoreToken
+    = "/+" NestingBlockCommentCharacters? "+"* "+/" @recursiveLexer
+    ;
+fragment NestingBlockCommentCharacters
+    = @empty
+    | NestingBlockCommentCharacter NestingBlockCommentCharacters
+    ;
+fragment NestingBlockCommentCharacter
+    = [^+/]
+    | "+"+ [^+/]
+    | "/"+ [^+/]
+    | "/"* NestingBlockComment
+    ;
+
+token TokenString
+    = "q{" TokensWS "}"
+    ;
+
+fragment TokensWS @array
+    = @empty
+    | TokensWS TokenMatchingBraces
+    | TokensWS Comment
+    | TokensWS [^/{}]
+    //| TokensWS "/" !"*" !"+" !"/"
+    | TokensWS "/" [^/*+{}]
+    | TokensWS "/" TokenMatchingBraces
+    ;
+fragment TokenMatchingBraces
+    = "{" TokensWS "}" @recursiveLexer
+    ;

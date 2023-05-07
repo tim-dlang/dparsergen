@@ -1,0 +1,22 @@
+S = DelimitedString*;
+DelimitedString = <DelimitedString1 | <DelimitedString2;
+
+token DelimitedString1
+	= "q\"" @store Identifier "\n"
+	Line*
+	@compareTrue Identifier "\""
+	;
+
+fragment Line
+	= @compareFalse Identifier [^\n]* "\n"
+	| [^_A-Za-z\n] [^\n]* "\n"
+	| "\n"
+	;
+
+token Identifier = [_A-Za-z] [_A-Za-z0-9]*;
+
+token DelimitedString2 = "q\"" @store [^<>(){}\[\]a-zA-Z_] OtherCharacter* @compareTrue [^] "\"";
+
+fragment OtherCharacter = @compareFalse [^];
+
+token Space @ignoreToken = [ \n\r\t]+;

@@ -1,0 +1,11 @@
+S = <L;
+L = L1 "1" | L2 "2" | L3 "3";
+
+L1 = "x" @lookahead Y "z";
+L2 = "x" @lookahead "y" "z"
+   | "x" @lookahead "Y" "z";
+L3 = L3S "y" "z"
+   | L3S "Y" "z";
+L3S = "x" @lookahead;
+
+Y = "y" | "Y";

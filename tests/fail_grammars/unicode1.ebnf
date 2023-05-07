@@ -1,0 +1,7 @@
+/*
+GENERATOR_OUTPUT(lexer):
+---
+Invalid UTF character \xf0
+---
+*/
+S = "\xf0";

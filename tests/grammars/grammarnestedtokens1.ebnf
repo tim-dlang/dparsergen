@@ -1,0 +1,26 @@
+S = Xs;
+Xs @array = @empty | Xs X;
+X = <NBComment | <CS | <Parens;
+
+// NB: NestingBlock
+// CS: CodeString
+
+token NBComment
+    = "/+" NBCommentChars "+"* "+/" @recursiveLexer
+    ;
+fragment NBCommentChars
+    = @empty
+    | NBCommentChar NBCommentChars
+    ;
+fragment NBCommentChar
+    = [^+/]
+    | "+"+ [^+/]
+    | "/"+ [^+/]
+    | "/"* NBComment
+    ;
+
+token CS = "q{" CSParts "}";
+fragment CSParts = @empty | CSParts CSPart;
+fragment CSPart = [^{}] | "{" CSParts "}" @recursiveLexer;
+
+token Parens = "(" Parens ")" @recursiveLexer | "x";

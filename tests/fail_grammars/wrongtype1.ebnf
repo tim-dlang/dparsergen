@@ -1,0 +1,18 @@
+/*
+GENERATOR_OUTPUT:
+---
+Warning: Using undefined symbol Undefined
+Warning: Nonterminal N used in token
+Warning: Fragment F used in nonterminal
+Warning: Unused symbol Unused
+Warning: Unused symbol UnusedToken1
+Warning: Unused symbol UnusedToken2
+---
+*/
+S = T F Undefined;
+token T = N;
+N = "x";
+fragment F = "y";
+Unused = UnusedToken1;
+token UnusedToken1 = "u1";
+token UnusedToken2 = "u2";

@@ -1,0 +1,7 @@
+S = <Add;
+
+Add = <Mult | Add "+" Mult;
+Mult = <Lambda | Mult "*" Lambda;
+Lambda = <Id | <Parens | "i" "=>" @eager Add;
+Id = "i";
+Parens = "(" Add ")";

@@ -1,0 +1,9 @@
+/*
+GENERATOR_OUTPUT(lexer):
+---
+cycle T1
+---
+*/
+S = T1;
+token T1 = "a" | T2 "b";
+token T2 = T1 "c";

@@ -1,0 +1,29 @@
+{
+    "name": "example_cpp",
+    "description": "Example C++ for DParserGen",
+    "authors": ["Tim Schendekehl"],
+    "license": "BSL-1.0",
+    "targetType": "executable",
+    "dependencies": {
+        "dparsergen:core": {
+            "version": "*",
+            "path": "../.."
+        },
+        "dparsergen:generator": {
+            "version": "*",
+            "path": "../.."
+        }
+    },
+    "sourceFiles": [
+        "testcpp.d",
+        "grammarcpreproc.d",
+        "grammarcpreproc_lexer.d",
+        "grammarcpp.d",
+        "grammarcpp_lexer.d"
+    ],
+    "preBuildCommands": [
+        "\"$DUB\" run --root=../../ :generator -- grammarcpreproc.ebnf -o grammarcpreproc.d --lexer grammarcpreproc_lexer.d",
+        "\"$DUB\" run --root=../../ :generator -- grammarcpp.ebnf --glr --mergesimilarstates --optempty -o grammarcpp.d --lexer grammarcpp_lexer.d"
+    ],
+    "buildRequirements": ["allowWarnings"]
+}

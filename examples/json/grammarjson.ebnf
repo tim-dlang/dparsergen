@@ -1,0 +1,102 @@
+Json
+    = <Element
+    ;
+
+Value
+    = <Object
+    | <Array
+    | String
+    | Number
+    | "true"
+    | "false"
+    | "null"
+    ;
+
+Object
+    = "{" "}"
+    | "{" Members "}"
+    ;
+
+Members @array
+    = Member
+    | Members "," Member
+    ;
+
+Member
+    = String ":" Element
+    ;
+
+Array
+    = "[" "]"
+    | "[" Elements "]"
+    ;
+
+Elements @array
+    = Element
+    | Elements "," Element
+    ;
+
+Element
+    = <Value
+    ;
+
+token String
+    = "\"" Character* "\""
+    ;
+fragment Character
+    = [^\"\\\x00-\x1F]
+    | "\\" Escape
+    ;
+fragment Escape
+    = "\""
+    | "\\"
+    | "/"
+    | "b"
+    | "f"
+    | "n"
+    | "r"
+    | "t"
+    | "u" Hex Hex Hex Hex
+    ;
+
+fragment Hex
+    = [0-9]
+    | [A-F]
+    | [a-f]
+    ;
+
+token Number
+    = Int Frac Exp
+    ;
+
+fragment Int
+    = [0-9]
+    | [1-9] [0-9]+
+    | "-" [0-9]
+    | "-" [1-9] [0-9]+
+    ;
+
+fragment Frac
+    = @empty
+    | "." [0-9]+
+    ;
+
+fragment Exp
+    = @empty
+    | "E" Sign [0-9]+
+    | "e" Sign [0-9]+
+    ;
+
+fragment Sign
+    = @empty
+    | "+"
+    | "-"
+    ;
+
+token WS @ignoreToken
+    = @empty
+    | "\x09" WS
+    | "\x0a" WS
+    | "\x0d" WS
+    | "\x20" WS
+    ;

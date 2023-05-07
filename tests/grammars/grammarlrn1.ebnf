@@ -1,0 +1,7 @@
+// GENPASER_OPTS: --regexlookahead
+S = A "y" "a" | B "y" "b";
+A = "x";
+B = "x";
+
+token Space @ignoreToken = [ \n\r\t]+;
+

@@ -1,0 +1,19 @@
+// GENPASER_OPTS: --regexlookahead
+S = "(" listo(S,",") ")"
+  | Identifier
+  | Identifier ^"!" ^"(" listo(S, ",") ^")"
+  | <Lambda;
+
+Lambda = ^"(" listo(Type, ",") ^")" ^"=>" S;
+
+Type = Identifier
+     | Identifier ^"!" ^"(" list(S, ",") ^")";
+
+token Identifier @lowPrio = [a-zA-Z] [a-zA-Z0-9]*;
+
+list(e,s) @array = e | list(e,s) ^s e;
+listo(e,s) @array = list(e,s) | list(e,s) ^s | @empty;
+
+match "(" ")";
+
+token Space @ignoreToken = [ \n\r\t]+;

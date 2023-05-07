@@ -1,0 +1,5 @@
+// GENPASER_OPTS: --optempty
+S = repeat(A) repeat(X);
+X = A "x";
+repeat(e) = @empty | repeat(e) e;
+A = "a";

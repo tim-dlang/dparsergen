@@ -1,0 +1,21 @@
+Start = S*;
+S = RawString;
+
+token RawString @minimalMatch
+    = "R" "\"(" RCharSequence? ")"* ")\""
+    | "R" "\"" @store DCharSequence "(" RCharSequence? ")" @compareTrue DCharSequence "\""
+    ;
+fragment RCharSequence
+    = RChar
+    | RCharSequence RChar
+    ;
+fragment RChar
+    = [^]
+    ;
+fragment DCharSequence
+    = DChar
+    | DCharSequence DChar
+    ;
+fragment DChar
+    = [^ ()\\\t\f\r\n]
+    ;

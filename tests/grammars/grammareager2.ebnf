@@ -1,0 +1,26 @@
+// GENPASER_OPTS: --optempty
+
+Statement
+    = <Label
+    | <BacktrackStmt
+    | <Block
+    ;
+
+Label = IdExpr ":" @eager Statement?;
+
+Block = "{" Statement* "}";
+
+BacktrackStmt @backtrack
+    = <Decl
+    | <IdStmt
+    ;
+
+IdStmt = IdExpr ";";
+
+IdExpr = Identifier;
+
+Decl = IdExpr IdExpr ";";
+
+token Identifier = [a-zA-Z_] [a-zA-Z_0-9]*;
+
+token Space @ignoreToken = [ \n\r\t]+;

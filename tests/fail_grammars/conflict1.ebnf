@@ -1,0 +1,11 @@
+/*
+GENERATOR_OUTPUT(normal, optdescent):
+---
+Warning: Parse conflict in state 10
+---
+*/
+S = X1 "y" "z" "1"
+  | X2 "y" "z" "1"
+  ;
+X1 = "x";
+X2 = "x";

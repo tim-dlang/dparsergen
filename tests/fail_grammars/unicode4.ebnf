@@ -1,0 +1,7 @@
+/*
+GENERATOR_OUTPUT(lexer):
+---
+Invalid UTF character \U0000D800
+---
+*/
+S = "\U0000D800";

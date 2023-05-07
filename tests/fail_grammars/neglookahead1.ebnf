@@ -1,0 +1,10 @@
+/*
+GENERATOR_OUTPUT:
+---
+Warning: Unused symbol B
+Error: Nonterminal B used as negative lookahead for production
+---
+*/
+S = A !B;
+A = "a";
+B = "b";

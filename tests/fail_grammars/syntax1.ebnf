@@ -1,0 +1,7 @@
+/*
+GENERATOR_OUTPUT:
+---
+tests/fail_grammars/syntax1.ebnf:7:4: unexpected Token ";"  "";""
+---
+*/
+E = ;

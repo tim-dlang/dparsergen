@@ -1,0 +1,4 @@
+S = @rejectTag(T1) Z;
+Z = Y "z1" | @inheritTag(T1) Y "z2";
+Y = @inheritTag(T1) X;
+X = "x" @tag(T1);

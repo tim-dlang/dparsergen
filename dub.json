@@ -1,0 +1,30 @@
+{
+    "name": "dparsergen",
+    "description": "Parser generator for the D programming language",
+    "authors": ["Tim Schendekehl"],
+    "license": "BSL-1.0",
+    "targetType": "none",
+    "dependencies": {
+        "dparsergen:generator": "*"
+     },
+    "subPackages": [
+        {
+            "name": "core",
+            "targetType": "library",
+            "sourcePaths": ["core/dparsergen/core"],
+            "importPaths": ["core"]
+        },
+        {
+            "name": "generator",
+            "targetType": "executable",
+            "sourcePaths": ["generator/dparsergen/generator"],
+            "importPaths": ["generator"],
+            "dependencies": {"dparsergen:core":"*"},
+            "buildRequirements": ["allowWarnings"]
+        },
+        "examples/calc",
+        "examples/json",
+        "examples/d",
+        "examples/cpp"
+    ]
+}

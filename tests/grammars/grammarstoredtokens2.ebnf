@@ -1,0 +1,57 @@
+S = Identifier | DelimitedString;
+
+token Identifier @lowPrio
+    = IdentifierStart
+    | IdentifierStart IdentifierChars
+    ;
+fragment IdentifierChars
+    = IdentifierChar
+    | IdentifierChar IdentifierChars
+    ;
+fragment IdentifierStart
+    = "_"
+    | Letter
+    | UniversalAlpha
+    ;
+fragment IdentifierChar
+    = IdentifierStart
+    | "0"
+    | NonZeroDigit
+    ;
+
+token DelimitedString @minimalMatch
+    = "q\"" @store Identifier [\n\r]
+        DelimitedStringLine*
+        @compareTrue Identifier "\""
+    | "q\"(" DelimitedStringNesting2* ")\""
+    | "q\"" @store DelimitedStringStartCharacter DelimitedStringCharacter* @compareTrue [^] "\""
+    ;
+fragment DelimitedStringNesting2
+    = "(" DelimitedStringNesting2* ")" @recursiveLexer
+    | [^()]
+    ;
+fragment DelimitedStringStartCharacter
+    = [^<>(){}\[\] \t\n\r] - IdentifierStart
+    ;
+fragment DelimitedStringCharacter
+    = [^]
+    ;
+fragment DelimitedStringLine
+    = [^\n\r]* [\n\r]
+    ;
+
+fragment Letter = [a-zA-Z];
+fragment UniversalAlpha
+    = [üöä]
+    ;
+fragment NonZeroDigit
+    = "1"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    | "8"
+    | "9"
+    ;

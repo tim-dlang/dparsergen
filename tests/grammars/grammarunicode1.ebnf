@@ -1,0 +1,21 @@
+S
+    = [¹²³]
+    | "≤"
+    | "≥"
+    | "≠"
+    | "\u2200" // ∀
+    | "😃"
+    | "♩"
+    | "\U0001F3BC" // 🎼
+    | "𝕂𝔼𝕐𝕎𝕆ℝ𝔻"
+    | AsciiWord
+    | GermanWord
+    | FullWidthHexNumber
+    ;
+
+token AsciiWord = [a-zA-Z]+;
+token GermanWord = [a-zA-ZüÜöÖäÄßẞ]* [üÜöÖäÄßẞ] [a-zA-ZüÜöÖäÄßẞ]*;
+
+fragment FullWidthHexDigit = [０-９Ａ-Ｆ\uFF41-ｆ];
+fragment FullWidthHexDigitNonZero = FullWidthHexDigit - "０";
+token FullWidthHexNumber = FullWidthHexDigitNonZero FullWidthHexDigit* | "０";

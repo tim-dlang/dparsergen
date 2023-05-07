@@ -1,0 +1,33 @@
+// GENPASER_OPTS: --combinedreduce
+S = <Literal;
+Literal = <ArrayLiteral | <AssocArrayLiteral;
+ArrayLiteral
+    = "[" ArgumentList? "]"
+    ;
+AssocArrayLiteral
+    = "[" KeyValuePairs "]"
+    ;
+KeyValuePairs @array @regArray
+    = KeyValuePair
+    | KeyValuePair ","
+    | KeyValuePair "," KeyValuePairs
+    ;
+KeyValuePair @directUnwrap
+    = KeyExpression ":" ValueExpression
+    | <ValueExpression // see DAY_NAME in dmd/test/runnable/test42.d
+    ;
+KeyExpression @directUnwrap
+    = <Expression
+    ;
+ValueExpression @directUnwrap
+    = <Expression
+    ;
+ArgumentList @array @regArray
+    = Expression
+    | Expression ","
+    | Expression "," ArgumentList
+    ;
+Expression = Number;
+
+token Number = [0-9] [0-9]*;
+token Space @ignoreToken = [ \n\r\t]+;

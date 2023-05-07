@@ -1,0 +1,27 @@
+{
+    "name": "example_d",
+    "description": "Example D for DParserGen",
+    "authors": ["Tim Schendekehl"],
+    "license": "BSL-1.0",
+    "targetType": "executable",
+    "dependencies": {
+        "dparsergen:core": {
+            "version": "*",
+            "path": "../.."
+        },
+        "dparsergen:generator": {
+            "version": "*",
+            "path": "../.."
+        }
+    },
+    "sourceFiles": [
+        "testgrammard.d",
+        "grammard.d",
+        "grammard_lexer.d"
+    ],
+    "lflags-windows": ["/STACK:8388608"],
+    "preBuildCommands": [
+        "\"$DUB\" run --root=../../ :generator -- grammard.ebnf --optempty --mergesimilarstates --combinedreduce -o grammard.d --lexer grammard_lexer.d"
+    ],
+    "buildRequirements": ["allowWarnings"]
+}

@@ -1,0 +1,16 @@
+Ddoc = Element2*;
+
+
+Element = <Text | <Macro | <NL | <WS | <Comma | <Parens;
+Element2 = <Text | <Macro | <NL | <WS | <Comma | <LonelyParen;
+
+Macro = "$(" Text2 Element* ")";
+Text = Text2 | "$";
+Parens = "(" Element* ")";
+LonelyParen = "(" | ")";
+NL = "\n";
+Comma = ",";
+
+token Text2 = [^ \t\n()$,]+;
+WS = WST;
+token WST = [ \t]+;

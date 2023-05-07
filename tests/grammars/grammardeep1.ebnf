@@ -1,0 +1,13 @@
+S = A;
+A = B;
+B = C;
+C = <D;
+D = E;
+E = F;
+F = X Y Z;
+X = "a" | "b";
+Y = "a" | "b";
+Z = "a" | "b";
+
+token Space @ignoreToken = [ \n\r\t]+;
+

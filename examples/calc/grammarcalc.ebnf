@@ -1,0 +1,50 @@
+
+option startTokenID = 1000;
+option startNonterminalID = 2000;
+option startProductionID = 3000;
+
+E @directUnwrap = <Add;
+Add @directUnwrap
+    = <Mul
+    | Add "+" Mul
+    | Add "-" Mul
+    ;
+Mul @directUnwrap
+    = <Unary
+    | Mul "*" Unary
+    | Mul "/" Unary
+    ;
+Unary @directUnwrap
+    = <Primary
+    | "-" Unary
+    ;
+Primary
+    = Number
+    | "(" E ")"
+    | <FunctionCall
+    | <Constant
+    ;
+FunctionCall
+    = Identifier "(" Arguments2 ")"
+    ;
+Arguments @array
+    = E
+    | Arguments ^"," E
+    ;
+Arguments2 @array
+    = @empty
+    | Arguments
+    | Arguments ^","
+    ;
+Constant
+    = Identifier
+    ;
+
+token Number
+    = Integer
+    | Integer "." [0-9]*
+    ;
+fragment Integer = [1-9] [0-9]* | "0";
+token Identifier = [a-zA-Z_] [a-zA-Z0-9_]*;
+
+token Space @ignoreToken = [ \n\r\t]+;

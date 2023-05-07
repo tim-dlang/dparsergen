@@ -1,0 +1,16 @@
+// See grammareager.ebnf for an alternative of implementing lambdas.
+
+Expr = <AssignExpression;
+
+AssignExpression
+    = <ConditionalExpression
+    | ConditionalExpression "=" AssignExpression
+    ;
+  
+Lambda
+    = Identifier "=>" AssignExpression !"="
+    ;
+
+token Identifier = "i";
+
+ConditionalExpression = Identifier | <Lambda;

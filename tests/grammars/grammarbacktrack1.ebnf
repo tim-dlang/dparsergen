@@ -1,0 +1,21 @@
+S = ^"test1" X;
+X @backtrack = A LA | B LB;
+A = "x";
+B = "x";
+
+LA = "y" "a";
+LB = "y" "b";
+
+S = ^"test2" DeclExpr;
+DeclExpr @backtrack = Decl | Expr;
+Decl = Type Id;
+Type = ST | AT;
+ST = Id;
+AT = Type "[" Z "]";
+Expr = Var "[" Z "]" | Z | Var;
+Var = Id;
+Id = "id";
+Z = "123";
+
+token Space @ignoreToken = [ \n\r\t]+;
+

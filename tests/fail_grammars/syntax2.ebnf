@@ -1,0 +1,7 @@
+/*
+GENERATOR_OUTPUT:
+---
+Empty concatenation missing @empty.
+---
+*/
+E = @x;

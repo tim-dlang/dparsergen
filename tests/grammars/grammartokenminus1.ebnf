@@ -1,0 +1,16 @@
+S
+	= "keyword" Identifier
+	| SomeDigits
+	| Comment*
+	;
+
+fragment Keyword = "keyword" | "keyword2";
+fragment RawIdentifier = [_a-zA-Z] [_a-zA-Z0-9]*;
+token Identifier = RawIdentifier - Keyword;
+
+token SomeDigits = [0-9] - "2" - "8";
+
+token Comment = "/*" [^]* - CommentNotAllowed "*/";
+fragment CommentNotAllowed = [^]* "*/" [^]*;
+
+token Space @ignoreToken = [ \n\r\t]+;

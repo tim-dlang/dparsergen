@@ -1,0 +1,4 @@
+import "import1/parta.ebnf";
+import "./import1/partb.ebnf";
+
+S = <A | <B;

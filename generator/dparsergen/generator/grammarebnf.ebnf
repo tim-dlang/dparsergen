@@ -1,0 +1,503 @@
+/**
+# DParserGen Syntax
+
+The description for the grammar is written as documentation comments
+in dparsergen/generator/grammarebnf.ebnf. It is compiled into a
+markdown document in docs/syntax.md.
+*/
+
+/**
+A grammar file contains a list of declarations.
+*/
+EBNF
+    = Declaration+
+    ;
+
+/// ditto
+Declaration
+    = <SymbolDeclaration
+    | <MatchDeclaration
+    | <Import
+    | <OptionDeclaration
+    ;
+
+/**
+Declares a symbol, which describes a part of the language.
+
+Every symbol has a name after the optional type. Optional parameters
+can be used to declare patterns like comma separated lists only once.
+Annotations starting with @ are used for supplying some options to
+the parser and lexer generator, but can also be used by the parse
+tree creator. The expression defines the sublanguage for this symbol.
+
+There are three types of symbols: Tokens and fragments are explicitly
+declared and nonterminals just use the identifier without type before
+it. The type of symbols with parameters and no explicit type is
+detected automatically from context.
+
+Tokens are sequences of characters, which are detected by the
+lexer. Fragments are only used inside tokens or other fragments.
+Nonterminals can use other nonterminals and tokens.
+*/
+SymbolDeclaration
+    = DeclarationType? Identifier MacroParametersPart? Annotation* ";"
+    | DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression ";"
+    ;
+
+/// ditto
+DeclarationType
+    = "fragment"
+    | "token"
+    ;
+
+/// ditto
+MacroParametersPart
+    = "(" MacroParameters? ")"
+    ;
+
+/// ditto
+MacroParameters @array
+    = MacroParameter
+    | MacroParameters "," MacroParameter
+    ;
+
+/// ditto
+MacroParameter
+    = Identifier
+    | Identifier "..."
+    ;
+
+/++
+Sets a global option for this grammar. Currently, the following
+options are defined and all need an integer as value:
+
+* startTokenID: Sets the first ID for tokens. Defaults to 0.
+* startNonterminalID: Sets the first ID for nonterminals. Defaults to 0.
+* startProductionID: Sets the first ID for productions. Defaults to 0.
++/
+OptionDeclaration
+    = ^"option" Identifier ^"=" IntegerLiteral ^";"
+    ;
+
+/**
+Imports symbols from a different grammar file.
+
+The string literal contains the path of the other grammar file
+relative to the current grammar file. The imported file is parsed
+separately, and all symbols will be available.
+*/
+Import
+    = "import" StringLiteral ";"
+    ;
+
+/**
+Hint that two tokens normally come in pairs, like parens. This can be
+used by long lookahead to e.g. skip tokens in parens and make a
+decision based on tokens after them.
+*/
+MatchDeclaration
+    = "match" Symbol Symbol ";"
+    ;
+
+/**
+Annotations can be added to symbols or expressions. Some annotations
+are used by the parser or lexer generator as options. The user can
+also use annotations for custom meta data, which can be used by
+the tree creator or at runtime.
+*/
+Annotation
+    = "@" Identifier AnnotationParams?
+    ;
+
+/// ditto
+AnnotationParams
+    = "(" AnnotationParamsPart* ")"
+    ;
+
+/// ditto
+AnnotationParamsPart
+    = StringLiteral | Identifier | CharacterSetLiteral | IntegerLiteral
+    | "(" AnnotationParamsPart* ")"
+    | "=" | ":" | ";" | "," | "{" | "}" | "?" | "!" | "<" | ">" | "*" | ">>" | "<<" | "-"
+    ;
+
+/**
+Disallows a symbol at this position. Inside tokens, it can disallow
+characters. Inside nonterminals, it can disallow a token. At the
+end of a production it disallows the symbol after the production.
+*/
+NegativeLookahead
+    = "!" Symbol
+    | "!" "anytoken"
+    ;
+
+/**
+Defines a sublanguage.
+
+$TRANSITIVE_UNWRAP_TABLE(Expression, TokenMinus, PostfixExpression)
+*/
+Expression
+    = <Alternation
+    ;
+
+/**
+Defines a sublanguage, which allows all texts of the combined
+sublanguages.
+*/
+Alternation
+    = <Concatenation
+    | Alternation "|" Concatenation
+    ;
+
+/**
+Defines a sublanguage, where multiple parts appear in a sequence.
+It allows optional annotations at the end.
+
+Empty productions should use the annotation @empty.
+*/
+Concatenation
+    = <TokenMinus
+    | TokenMinus TokenMinus+ @regArray ProductionAnnotation*
+    | TokenMinus @regArray ProductionAnnotation+
+    | @regArray ProductionAnnotation+
+    ;
+
+/// ditto
+ProductionAnnotation @directUnwrap
+    = <Annotation
+    | <NegativeLookahead
+    ;
+
+/**
+Defines a sublanguage for tokens, which allows every text in the left
+sublanguage, but not in the right sublanguge. Only allowed inside
+the definition of tokens.
+*/
+TokenMinus
+    = <AnnotatedExpression
+    | TokenMinus "-" AnnotatedExpression
+    ;
+
+/**
+Adds different annotations to an expression.
+
+The optional name can be used by the tree creator.
+
+The prefix "<" can be used to unwrap nonterminals for simple
+definitions like "A = <B;", so no tree will be created for "A".
+
+The prefix "^" drops this part in the created tree.
+*/
+AnnotatedExpression
+    = @regArray ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression
+    ;
+
+/// ditto
+ExpressionAnnotation @directUnwrap
+    = <Annotation
+    | <NegativeLookahead
+    ;
+
+/// ditto
+ExpressionName
+    = Identifier ":"
+    ;
+
+/// ditto
+ExpressionPrefix
+    = "<"
+    | "^"
+    ;
+
+/**
+
+*/
+PostfixExpression
+    = <Optional
+    | <Repetition
+    | <RepetitionPlus
+    | <AtomExpression
+    ;
+
+/**
+Makes an expression optional.
+
+Internally using X? is replaced with a new nonterminal and new
+grammar rules are added, similar to the following:
+```
+XOpt = @empty | <X;
+```
+*/
+Optional
+    = PostfixExpression "?"
+    ;
+
+/**
+Allows to repeat an expression zero or more time.
+
+Internally using X* is replaced with a new nonterminal and new
+grammar rules are added, similar to the following:
+```
+XStar @array = @empty | XPlus;
+XPlus @array = X | XPlus X;
+```
+*/
+Repetition
+    = PostfixExpression "*"
+    ;
+
+/**
+Allows to repeat an expression one or more time.
+
+Internally using X+ is replaced with a new nonterminal and new
+grammar rules are added, similar to the following:
+```
+XPlus @array = X | XPlus X;
+```
+*/
+RepetitionPlus
+    = PostfixExpression "+"
+    ;
+
+/**
+
+*/
+AtomExpression
+    = <Symbol
+    | <ParenExpression
+/*    | <PosLookaheadExpression
+    | <NegLookaheadExpression*/
+    | <SubToken
+    | <UnpackVariadicList
+    | <Tuple
+    ;
+
+/**
+
+*/
+Symbol
+    = <Name
+    | <Token
+    | <MacroInstance
+    ;
+
+/**
+References a symbol by name, which could be a token or nonterminal.
+*/
+Name
+    = Identifier
+    ;
+
+/**
+Literal for token.
+*/
+Token
+    = StringLiteral
+    | CharacterSetLiteral
+    ;
+
+/**
+Unpacks a list of variadic parameters, so a macro is instantiated
+with them directly.
+*/
+UnpackVariadicList
+    = Identifier "..."
+    ;
+
+/**
+Uses the token on the left side with the condition, that it matches
+the right side.
+*/
+SubToken
+    = Symbol ">>" Symbol
+    | Symbol ">>" ParenExpression
+    ;
+
+/**
+Uses a macro.
+*/
+MacroInstance
+    = Identifier "(" ExpressionList? ")"
+    ;
+
+/**
+Uses the inner expression without change.
+*/
+ParenExpression
+    = "{" Expression "}"
+    ;
+
+/*PosLookaheadExpression
+    = "{" "?" "=" ExpressionList "}"
+    ;
+NegLookaheadExpression
+    = "{" "?" "!" ExpressionList "}"
+    ;*/
+
+/**
+Comma seperated list of expressions.
+*/
+ExpressionList @array
+    = Expression
+    | ExpressionList "," Expression
+    ;
+
+/**
+Allows to create a tuple of expressions, which works like variadic
+arguments.
+*/
+Tuple
+    = "t(" ExpressionList? ")"
+    ;
+
+/**
+
+*/
+token Identifier @lowPrio
+    = [a-zA-Z_] [a-zA-Z0-9_]*
+    ;
+
+/**
+`StringLiteral` specifies a sequence of characters, which can be
+ directly used as a token or for defining other tokens.
+*/
+token StringLiteral
+    = "\"" StringPart* "\""
+    ;
+
+/// ditto
+fragment StringPart
+    = [^\"\\]
+    | EscapeSequence
+    ;
+
+/**
+`CharacterSetLiteral` specifies a set of characters, which can be directly
+used as a token or for defining other tokens. The syntax is inspired
+by bracket expressions inside regular expressions.
+
+The set is defined by a list of characters and ranges. A range
+consists of two characters separated by a '-'. The range contains
+all characters from the start character to the end characters
+including both.
+
+Using '^' directly after the opening bracket inverts the set.
+The sequence [^] means any valid character.
+
+`EscapeSequence`s can be used for characters, which would have a special
+meaning inside the character set. The characters '\', ']', and '-'
+always have a special meaning and need to be escaped. The character
+'^' is only special at the beginning. '[' is also reserved.
+
+The characters are always case-sensitive and do not depend on the
+locale for ordering.
+*/
+token CharacterSetLiteral
+    = "[" "^"? CharacterSetPart* "]"
+    ;
+
+/// ditto
+fragment CharacterSetPart
+    = CharacterSetPart2
+    | CharacterSetPart2 "-" CharacterSetPart2
+    ;
+
+/// ditto
+fragment CharacterSetPart2
+    = [^\[\]\\\-]
+    | EscapeSequence
+    ;
+
+/**
+Used in `StringLiteral` and `CharacterSetLiteral`.
+
+The escape sequences \0, \a, \b, \f, \n, \r, \t and \v represent
+special characters like in D.
+
+The escape sequences \x, \u and \U are followed by a hexadecimal
+number, which is turned into a Unicode character. The number needs
+to be a valid Unicode character of the used size. For \x only ACSII
+characters are valid, because other characters need more UTF-8 bytes.
+For \u and \U Unicode surrogates are not allowed.
+
+All other escape sequences represent the character following the slash.
+*/
+fragment EscapeSequence
+    = "\\\\"
+    | "\\\""
+    | "\\\'"
+    | "\\0"
+    | "\\a"
+    | "\\b"
+    | "\\f"
+    | "\\n"
+    | "\\r"
+    | "\\t"
+    | "\\v"
+    | "\\["
+    | "\\]"
+    | "\\-"
+    | "\\x" Hex Hex
+    | "\\u" Hex Hex Hex Hex
+    | "\\U" Hex Hex Hex Hex Hex Hex Hex Hex
+    ;
+
+/// ditto
+fragment Hex
+    = [0-9A-Fa-f]
+    ;
+
+/**
+
+*/
+token IntegerLiteral
+    = [1-9] [0-9]* | "0"
+    ;
+
+/**
+Whitespace is ignored. Sometimes it is necessary to separate tokens.
+*/
+token Space @ignoreToken
+    = [ \n\r\t]+
+    ;
+
+/**
+A line comment starts with "//" and includes all characters of the
+current line. Line comments starting with "///" can be used as
+documentation comments for symbols.
+*/
+token LineComment @ignoreToken
+    = "//" [^\n\r]*
+    ;
+
+/++
+A block comment starts with "/\*" and ends with next occurrence of "\*/".
+It can not be nested. Block comments starting with "/\*\*" can be used
+as documentation comments for symbols.
++/
+token BlockComment @ignoreToken
+    = "/*" BlockCommentPart* "*"* "*/"
+    ;
+
+/// ditto
+fragment BlockCommentPart
+    = [^*]
+    | "*"+ [^*/]
+    ;
+
+/**
+A nested block comment starts with "/+" and can be nested. It ends with
+the next not nested occurrence of "+/". Nested block comments starting
+with "/++" can be used as documentation comments for symbols.
+*/
+token NestingBlockComment @ignoreToken
+    = "/+" NestingBlockCommentPart* "+"* "+/" @recursiveLexer
+    ;
+
+/// ditto
+fragment NestingBlockCommentPart
+    = [^+/]
+    | "+"+ [^+/]
+    | "/"+ [^+/]
+    | "/"* NestingBlockComment
+    ;

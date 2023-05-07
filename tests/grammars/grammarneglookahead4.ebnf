@@ -1,0 +1,22 @@
+
+S = <Declaration | PostfixExpression ";" | <StaticAssert;
+
+StorageClass = "static";
+StorageClasses @array
+	= StorageClass
+	| StorageClasses StorageClass;
+
+StaticAssert
+    = "static" "assert" "(" ")" ";"
+    ;
+
+AssertExpression = "assert" "(" ")";
+
+PostfixExpression
+	= <AssertExpression
+	| "identifier"
+	;
+
+Declaration = StorageClasses? !AssertExpression PostfixExpression "identifier" ";";
+
+token Space @ignoreToken = [ \n\r\t]+;
