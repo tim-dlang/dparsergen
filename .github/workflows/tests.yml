@@ -2,9 +2,9 @@ name: DParserGen tests
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "master", "test" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "test" ]
 
 permissions:
   contents: read
