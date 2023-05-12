@@ -161,7 +161,6 @@ immutable string[] syntaxErrorExtra = [
     "is not a valid attribute",
     "for member lookup, not",
     "Invalid trailing code unit",
-    "cannot use syntax",
     "lower case integer suffix",
     "found end of file",
     "not a valid token",

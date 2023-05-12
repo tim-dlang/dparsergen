@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 0789e99aafc099ba0e8adfe06265336b3c8c7379
+// Based on grammar from dlang.org commit 1ae1b6660d48e3cdf3de82efedb06096c62a00f1
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -1060,12 +1060,12 @@ DeprecatedAttribute @directUnwrap
     | "deprecated" "(" AssignExpression ")"
     ;
 VisibilityAttribute
-    = "private"
+    = "export"
     | "package" !"("
     | "package" "(" QualifiedIdentifier ")"
+    | "private"
     | "protected"
     | "public"
-    | "export"
     ;
 UserDefinedAttribute
     = "@" "(" TemplateArgumentList ")"
@@ -1763,6 +1763,7 @@ StructMemberInitializerExpr @directUnwrap
     ;*/
 AliasThis
     = AttributesNoPragmaEmpty "alias" IdentifierExpression "this" ";"
+    | AttributesNoPragmaEmpty "alias" "this" "=" IdentifierExpression ";"
     ;
 UnitTest
     = AttributesNoPragmaEmpty "unittest" BlockStatement
