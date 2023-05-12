@@ -1,0 +1,14 @@
+/*
+GENERATOR_OUTPUT:
+---
+Error: Unsupported recursion for symbol List with @regArray
+---
+*/
+S = List;
+
+List @array @regArray
+    = Element
+    | Element "," List?
+    ;
+
+Element = [0-9];

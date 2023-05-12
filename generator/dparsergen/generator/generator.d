@@ -555,14 +555,25 @@ int main(string[] args)
 
     enforce(!hasRegArray || !hasDeactivated);
 
-    if (hasRegArray)
-        grammar = createRegArrayGrammar(ebnf, grammar);
+    try
+    {
+        if (hasRegArray)
+            grammar = createRegArrayGrammar(ebnf, grammar);
 
-    if (optimizationEmpty)
-        grammar = createOptEmptyGrammar(ebnf, grammar);
+        if (optimizationEmpty)
+            grammar = createOptEmptyGrammar(ebnf, grammar);
 
-    if (hasDeactivated)
-        grammar = createGrammarWithoutDeactivatedProductions(grammar);
+        if (hasDeactivated)
+            grammar = createGrammarWithoutDeactivatedProductions(grammar);
+    }
+    catch (Exception e)
+    {
+        if (e.msg == "Enforcement failed")
+            stderr.writeln(e);
+        else
+            stderr.writeln(e.msg);
+        return 1;
+    }
 
     EBNFGrammar lexerGrammar;
     if (lexerfilename.length || finalgrammarfilename)

@@ -2065,9 +2065,16 @@ Graph!(SymbolWithConstraint, NonterminalID) buildRegArrayGraph(EBNFGrammar gramm
         {
             regArrayNonterminals ~= n.nonterminalID;
 
+            bool[NonterminalWithConstraint] inProgress;
             void buildGraphPart(NonterminalWithConstraint n, NodeID start, NodeID end, string indent)
             {
                 assert(!n.constraint.negLookaheads.canFind(n.nonterminalID));
+                if (n in inProgress) {
+                    throw new Exception(text("Error: Unsupported recursion for symbol ", grammar.getSymbolName(n.nonterminalID), " with @regArray"));
+                }
+                inProgress[n] = true;
+                scope (success)
+                    inProgress.remove(n);
                 if (!grammar.nonterminals[n.nonterminalID].annotations.contains!"array"()
                         && !grammar.nonterminals[n.nonterminalID].name.endsWith("?"))
                 {
