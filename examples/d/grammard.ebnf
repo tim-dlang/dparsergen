@@ -1325,7 +1325,7 @@ Catch
     | "catch" !"(" NoScopeNonEmptyStatement
     ;
 CatchParameter
-    = PostfixType Identifier?
+    = TypeCtors? PostfixType Identifier?
     ;
 FinallyStatement
     = "finally" NoScopeNonEmptyStatement
