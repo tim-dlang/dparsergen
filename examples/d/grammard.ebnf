@@ -47,7 +47,7 @@ ModuleDeclaration
     = ModuleAttributes? "module" ModuleFullyQualifiedName ";"
     ;
 ModuleAttributes @array @regArray
-    = <ModuleAttribute
+    = ModuleAttribute
     | ModuleAttribute ModuleAttributes
     ;
 ModuleAttribute @directUnwrap
@@ -1154,7 +1154,7 @@ BlockStatement
     ;
 StatementList @array @regArray
     = Statement
-    | StatementList Statement
+    | Statement StatementList
     ;
 ExpressionStatement
     = !BlockStatement Expression ";"
@@ -1223,7 +1223,7 @@ ForeachType
     ;
 ForeachTypeAttributes @array @regArray
     = ForeachTypeAttribute
-    | ForeachTypeAttributes ForeachTypeAttribute
+    | ForeachTypeAttribute ForeachTypeAttributes
     ;
 ForeachTypeAttribute
     = "enum"
@@ -1315,9 +1315,9 @@ TryStatement
     | "try" ScopeStatement Catches FinallyStatement
     | "try" ScopeStatement FinallyStatement
     ;
-Catches
-    = <Catch
-    | Catches Catch
+Catches @array @regArray
+    = Catch
+    | Catch Catches
     ;
 Catch
     = "catch" "(" CatchParameter ")" NoScopeNonEmptyStatement
@@ -1467,7 +1467,7 @@ SuperClassOrInterface @directUnwrap
     ;
 Interfaces @array @regArray
     = Interface
-    | Interfaces "," Interface
+    | Interface "," Interfaces
     ;
 Interface @directUnwrap
     = <BasicType
@@ -1863,8 +1863,8 @@ EnumMembers @array @regArray
     | EnumMember ","
     | EnumMember "," EnumMembers
     ;
-EnumMemberAttributes
-    = <EnumMemberAttribute
+EnumMemberAttributes @array @regArray
+    = EnumMemberAttribute
     | EnumMemberAttribute EnumMemberAttributes
     ;
 EnumMemberAttribute

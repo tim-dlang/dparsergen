@@ -265,7 +265,17 @@ class Context
     bool isLexer;
 }
 
-void analyzeNonterminal(Tree[] trees, Context context, bool isToken)
+bool isArrayNonterminal(string name)
+{
+    bool isArray;
+    if (name.endsWith("List") || name.endsWith("Array") || name.endsWith("Attributes") || name.endsWith("Empty"))
+        isArray = true;
+    if (name.among("AliasAssignments", "AnonymousEnumMembers", "ArrayMemberInitializations", "AttributesNoPragma", "AutoAssignments", "Declarators", "DeclDefs", "EnumMembers", "FunctionContracts", "FunctionContractsEndingInOutContractExpression", "FunctionContractsEndingInOutStatement", "InOutContractExpressions", "Interfaces", "KeyValuePairs", "Slice", "Slice2", "StatementListNoCaseNoDefault", "StorageClasses", "StorageClassesAttributesNoPragma", "StructMemberInitializers", "TraitsArguments", "TypeCtors"))
+        isArray = true;
+    return isArray;
+}
+
+void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToken)
 {
     string name;
     assert(trees[0].name == "Macro");
@@ -404,21 +414,30 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isToken)
         output = output2;
     }
 
+    bool isNonterminal;
     if (name.endsWith("String"))
         isToken = true;
-    if (name == "Token" || name == "Keyword" || name == "StringLiteral" || name == "TokenString")
+    if (name.among("Token", "Keyword", "StringLiteral", "TokenString", "SourceFile"))
+    {
         isToken = false;
+        isNonterminal = true;
+    }
+    bool isArray = isArrayNonterminal(name);
     string code;
     if (isToken)
         code ~= "token ";
+    else if (isLexer && !isNonterminal)
+        code ~= "fragment ";
     code ~= name;
     if (name.endsWith("Comment") || name == "SpecialTokenSequence"
             || name == "EndOfLine" || name == "WhiteSpace")
-        code ~= " @IgnoreToken";
-    if (name == "Module")
-        code ~= " @Start";
+        code ~= " @ignoreToken";
+    if (name == "SourceFile")
+        code ~= " @start";
     if (name == "Identifier")
-        code ~= " @LowPrio";
+        code ~= " @lowPrio";
+    if (isArray)
+        code ~= " @array @regArray";
     if (isToken)
         context.tokens[name] = true;
     code ~= "\n";
@@ -427,32 +446,6 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isToken)
         if (name == "ParameterAttributes" && output.length == 1
                 && output[0].name == "ParameterAttributes")
             continue;
-
-        if (name == "NestingBlockComment")
-        {
-            output.length++;
-            output[$ - 1] = output[$ - 2];
-            output[$ - 2].isToken = false;
-            output[$ - 2].name = "/(+*)/";
-        }
-        if (name == "NestingBlockCommentCharacter" && output[0].name == "NestingBlockComment")
-        {
-            output.length++;
-            output[1] = output[0];
-            output[0].isToken = false;
-            output[0].name = "/(\\/*)/";
-        }
-        if (name == "NestingBlockCommentCharacters" && output.length == 1)
-        {
-            output[0].isToken = false;
-            output[0].name = "eps";
-        }
-        if ((name == "DoubleQuotedCharacters" || name == "WysiwygCharacters"
-                || name == "HexStringChars") && output.length == 1)
-        {
-            output[0].isToken = false;
-            output[0].name = "eps";
-        }
 
         if (i)
             code ~= "    |";
@@ -464,44 +457,6 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isToken)
                 s.isToken = true;
             if (name == "TraitsKeyword")
                 s.isToken = true;
-
-            if (name == "BlockComment" && s.name == "Characters")
-            {
-                s.isToken = false;
-                s.name = "/(([^*]|[*][*]*[^\\/*])*[*]*)/";
-            }
-            if (name == "LineComment" && s.name == "Characters")
-            {
-                s.isToken = false;
-                s.name = "/([^\\n\\r\\u000D\\u000A\\u2028\\u2029\\0\\x1a]*)/";
-            }
-            if (name == "NestingBlockCommentCharacter" && s.name == "Character")
-            {
-                s.isToken = false;
-                s.name = "/[^+\\/]|++*[^+\\/]|\\/\\/*[^+\\/]/";
-            }
-            if (name == "DoubleQuotedCharacter" && s.name == "Character")
-            {
-                s.isToken = false;
-                s.name = "/[^\\\"\\\\]/";
-            }
-            if (name == "SingleQuotedCharacter" && s.name == "Character")
-            {
-                s.isToken = false;
-                s.name = "/[^\\\'\\\\]/";
-            }
-            if (name == "FloatLiteral" && s.name == "Integer")
-            {
-                s.isToken = false;
-                s.name = "DecimalInteger"; // TODO: only this?
-            }
-            if (name == "DeclDefs" && output.length == 2)
-            {
-                if (s.name == "DeclDefs")
-                    s.name = "DeclDef";
-                else
-                    s.name = "DeclDefs";
-            }
 
             if (s.isToken)
             {
@@ -523,7 +478,7 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isToken)
             else
             {
                 if (!context.isLexer && output.length == 1 && s.name[0] != '/'
-                        && s.name != "eps" && s.name !in context.tokens)
+                        && s.name != "@empty" && s.name !in context.tokens && !isArray && !isArrayNonterminal(s.name))
                     code ~= " <" ~ s.name;
                 else
                     code ~= " " ~ s.name;
@@ -555,14 +510,14 @@ void analyzeGrammar(Tree tree, Context context)
         {
             if (start != size_t.max)
             {
-                analyzeNonterminal(tree.childs[2].childs[start .. i], context, isToken);
+                analyzeNonterminal(tree.childs[2].childs[start .. i], context, context.isLexer, isToken);
                 isToken = false;
             }
             start = i;
         }
     }
     if (start != size_t.max)
-        analyzeNonterminal(tree.childs[2].childs[start .. $], context, isToken);
+        analyzeNonterminal(tree.childs[2].childs[start .. $], context, context.isLexer, isToken);
 }
 
 void findGrammar(Tree tree, Context context)
@@ -613,15 +568,6 @@ int main(string[] args)
         assert(tree.inputLength.bytePos <= inText.length);
 
         findGrammar(tree, contextLex);
-        File of = File(args[3], "w");
-        if (git.status == 0)
-            of.writeln("// Based on grammar from dlang.org commit ", git.output.strip(), "\n");
-        foreach (name; contextLex.nonterminalsOrder)
-        {
-            of.write(contextLex.nonterminals[name]);
-        }
-        of.writeln("Letter = [a-zA-Z];");
-        of.writeln("Tokens @Array = eps | Tokens Token;");
     }
 
     Context context = new Context();
@@ -653,13 +599,28 @@ int main(string[] args)
         context.nonterminals[name] = name ~ " = \"TODO\";\n";
         context.nonterminalsOrder ~= name;
     }
-    File of = File(args[2], "w");
+
+    File of = File(args[3], "w");
+    if (git.status == 0)
+        of.writeln("// Based on grammar from dlang.org commit ", git.output.strip(), "\n");
+    foreach (name; contextLex.nonterminalsOrder)
+    {
+        if (name == "SourceFile")
+            continue;
+        of.write(contextLex.nonterminals[name]);
+    }
+    of.writeln("Letter = [a-zA-Z];");
+    of.writeln("Tokens @array = @empty | Tokens Token;");
+
+    of = File(args[2], "w");
     if (git.status == 0)
         of.writeln("// Based on grammar from dlang.org commit ", git.output.strip(), "\n");
     of.writeln("import \"grammardlex.ebnf\";");
+    of.write(contextLex.nonterminals["SourceFile"]);
     foreach (name; context.nonterminalsOrder)
     {
         of.write(context.nonterminals[name]);
     }
+
     return 0;
 }
