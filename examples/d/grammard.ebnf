@@ -33,7 +33,6 @@ DeclDef @directUnwrap
     | <DebugSpecification
     | <VersionSpecification
     | <StaticAssert
-    | <TemplateDeclaration
     | <TemplateMixin
     | <MixinDeclaration
     | <EmptyDeclaration
