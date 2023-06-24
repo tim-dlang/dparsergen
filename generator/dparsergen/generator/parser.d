@@ -419,29 +419,6 @@ do
 
     for (size_t i; i < result.data.length; i++)
     {
-        if (i == 0 || i == startElements.length)
-        {
-            NonterminalID onlyNonterminal = getOnlyNonterminal(graph, result.data);
-            if (graph.globalOptions.optimizationDescent && onlyNonterminal.id != SymbolID.max)
-            {
-                if (!graph.startNonterminalsSet[onlyNonterminal.id])
-                {
-                    graph.startNonterminalsSet[onlyNonterminal.id] = true;
-                    graph.startNonterminals ~= StartNonterminal(onlyNonterminal);
-                }
-                LRElement[] c;
-                foreach (e; result.data)
-                {
-                    LRElement e2 = e.dup;
-                    c ~= e2;
-                }
-                LRElementSet r = LRElementSet(c);
-                r.descentNonterminals.addOnce(onlyNonterminal);
-                r.elements = c;
-                return r;
-            }
-        }
-
         foreach (n; result.data[i].nextNonterminals(graph.grammar,
                 graph.globalOptions.directUnwrap))
         {
@@ -603,45 +580,6 @@ do
     }
     descentNonterminals.sort();
     return LRElementSet(result2.data, descentNonterminals);
-}
-
-NonterminalID getOnlyNonterminal(LRGraph graph, const LRElement[] elements)
-{
-    auto grammar = graph.grammar;
-    NonterminalID r = NonterminalID(SymbolID.max);
-    foreach (e; elements)
-    {
-        if (!e.isNextValid(grammar))
-            return NonterminalID(SymbolID.max);
-
-        if (e.isStartElement)
-            continue;
-
-        const SymbolInstance next = e.next(grammar);
-
-        if (next.isToken)
-            return NonterminalID(SymbolID.max);
-
-        if (next.negLookaheads.length > 0)
-            return NonterminalID(SymbolID.max);
-
-        if (r.id != SymbolID.max && next.id != r.id)
-            return NonterminalID(SymbolID.max);
-
-        if (grammar.canBeEmpty(next))
-            return NonterminalID(SymbolID.max);
-
-        if (graph.globalOptions.directUnwrap)
-        {
-            auto c = grammar.directUnwrapClosure(grammar.nextNonterminalWithConstraint(e.extraConstraint,
-                    next, e.dotPos == 0));
-            if (c.length != 1 || c[0].nonterminalID != next.toNonterminalID)
-                return NonterminalID(SymbolID.max);
-        }
-
-        r = next.toNonterminalID;
-    }
-    return r;
 }
 
 LRElement[] elementSetGoto(LRGraph graph, size_t prevState,
