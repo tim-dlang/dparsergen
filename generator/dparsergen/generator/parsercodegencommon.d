@@ -190,9 +190,6 @@ void createParseStateComments(ref CodeWriter code, LRGraph graph,
 {
     auto grammar = graph.grammar;
 
-    if (elements.simpleLLState)
-        code.writeln("// simpleLLState: ", grammar.getSymbolName(elements.onlyNonterminal));
-
     assert(stackDelayedReduce.length == 0
             || stackDelayedReduce.length == elements.stackSize, code.data);
     foreach (i, nonterminals; stackDelayedReduce)

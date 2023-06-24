@@ -1107,30 +1107,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         assert(node.type == LRGraphNodeType.backtrack || node.type == LRGraphNodeType.lookahead);
     }
 
-    if (node.elements.simpleLLState)
-    {
-        NonterminalID onlyNonterminal = getOnlyNonterminal(graph, node.elements);
-        assert(onlyNonterminal.id != SymbolID.max);
-
-        auto nextNode = graph.states[graph.nonterminalToState[onlyNonterminal.id]];
-        bool nextHasTags = nextNode.hasTags(graph);
-
-        mixin(genCode("code", q{
-            {
-                $$if (thisHasTags && !nextHasTags) {
-                    currentTags = Tag.none;
-                $$}
-                $(resultType(graph, nextNode, combinedReduceNonterminals)) pt;
-                Location rl;
-                gotoParent = $(parseFunctionName(graph, graph.nonterminalToState[onlyNonterminal.id]))(pt, rl$(nextHasTags ? ", &currentTags" : ""));
-                if (gotoParent < 0)
-                    return gotoParent;
-                currentResult = ParseResultIn.create($(grammar.nonterminalIDCode(onlyNonterminal)), pt);
-                currentResultLocation = rl;
-            }
-            }));
-    }
-    else if (node.type == LRGraphNodeType.backtrack)
+    if (node.type == LRGraphNodeType.backtrack)
     {
         assert(node.backtrackStates.length);
         code.writeln("Lexer savedLexer = *lexer;");

@@ -315,8 +315,6 @@ struct LRElement
 struct LRElementSet
 {
     LRElement[] elements;
-    bool simpleLLState;
-    NonterminalID onlyNonterminal = NonterminalID(SymbolID.max);
     NonterminalID[] descentNonterminals;
     alias elements this;
     size_t stackSize() const
@@ -407,8 +405,6 @@ do
                 LRElementSet r = LRElementSet(c);
                 r.descentNonterminals.addOnce(onlyNonterminal);
                 r.elements = c;
-                r.simpleLLState = true;
-                r.onlyNonterminal = onlyNonterminal;
                 return r;
             }
         }
@@ -547,7 +543,7 @@ do
             result2.data[i].prevElementsMap[prev] = true;
     }
     descentNonterminals.sort();
-    return LRElementSet(result2.data, false, NonterminalID(SymbolID.max), descentNonterminals);
+    return LRElementSet(result2.data, descentNonterminals);
 }
 
 NonterminalID getOnlyNonterminal(LRGraph graph, const LRElement[] elements)
@@ -1158,8 +1154,7 @@ private size_t makeLRGraphRec(LRGraph graph, LRElementSet s, const(Symbol)[] pat
                 continue;
             auto symbol = e.next(graph.grammar);
             auto symbolWithSubToken = tuple!(Symbol, string)(symbol.symbol, symbol.subToken);
-            if (symbolWithSubToken !in done
-                    && (e.production.nonterminalID != s.onlyNonterminal || e.dotPos > 0))
+            if (symbolWithSubToken !in done)
             {
                 if (symbol.isToken)
                 {
@@ -1599,7 +1594,7 @@ LRGraph makeLRGraph(EBNFGrammar grammar, GlobalOptions globalOptions, LRGraph or
             .annotations.contains!"lookahead"();
         if (!graph.globalOptions.glrParser && (isBacktrack || isLookahead))
         {
-            LRElementSet set = LRElementSet(start, false);
+            LRElementSet set = LRElementSet(start);
 
             size_t backtrackState = graph.states.length;
             graph.states = graph.states ~ new LRGraphNode(set);

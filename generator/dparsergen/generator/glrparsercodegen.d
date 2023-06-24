@@ -195,9 +195,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         private void $(parseFunctionName(graph, stateNr, "pushTokenState"))(  _
         StackNode *stackNode, size_t tokenId, Token tokenContent, Location start, Location end)
         {
-            $$if (node.elements.simpleLLState) {
-                assert(false, "Not used for GLR parser");
-            $$} else if (node.type == LRGraphNodeType.backtrack) {
+            $$if (node.type == LRGraphNodeType.backtrack) {
                 assert(false, "Not used for GLR parser");
             $$} else if (node.type == LRGraphNodeType.lookahead) {
                 assert(false, "Not used for GLR parser");
