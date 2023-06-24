@@ -197,6 +197,22 @@ unittest
         FirstSetTest("star({FieldAccessExp | TemplateFuncExp})",["$end","\"_\"","\"!\""]),
     ]);
 
+    test(q{
+        S = A;
+        A = B "a" | "a";
+        B = A "b" | "b";
+    },
+    q{EBNFGrammar
+        S = A
+        A = B "a"
+        A = "a"
+        B = A "b"
+        B = "b"
+    }, [
+        FirstSetTest("A", ["\"a\"", "\"b\""]),
+        FirstSetTest("B", ["\"a\"", "\"b\""]),
+    ]);
+
     auto grammarTags1 = test(q{
         S = A | B;
         A = @rejectTag(T1) Y;

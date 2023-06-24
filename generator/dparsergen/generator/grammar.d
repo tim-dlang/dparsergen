@@ -366,8 +366,13 @@ class EBNFGrammar
         immutable(Symbol)[] negLookaheads;
         immutable(TagUsage)[] tags;
     }
+    struct FirstSetsValue
+    {
+        BitSet!TokenID tokens;
+        ubyte state;
+    }
 
-    BitSet!TokenID[FirstSetsKey] firstSetsCache;
+    FirstSetsValue[FirstSetsKey] firstSetsCache;
     BitSet!TokenID firstSetImpl(const(Symbol) x,
             immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
     {
@@ -382,13 +387,17 @@ class EBNFGrammar
             return result;
         }
 
-        if (FirstSetsKey(x.toNonterminalID, negLookaheads, tags) in firstSetsCache)
-            return firstSetsCache[FirstSetsKey(x.toNonterminalID, negLookaheads, tags)];
+        auto entry = FirstSetsKey(x.toNonterminalID, negLookaheads, tags) in firstSetsCache;
+        if (entry && (entry.state == 0 || entry.state > 1))
+            return entry.tokens;
 
         BitSet!TokenID result;
         result.length = tokens.vals.length;
 
-        firstSetsCache[FirstSetsKey(x.toNonterminalID, negLookaheads, tags)] = result;
+        if (entry)
+            entry.state++;
+        else
+            firstSetsCache[FirstSetsKey(x.toNonterminalID, negLookaheads, tags)] = FirstSetsValue(result, 1);
 
         foreach (p; getProductions(x.toNonterminalID))
         {
@@ -426,7 +435,9 @@ class EBNFGrammar
             }
         }
 
-        firstSetsCache[FirstSetsKey(x.toNonterminalID, negLookaheads, tags)] = result;
+        entry = FirstSetsKey(x.toNonterminalID, negLookaheads, tags) in firstSetsCache;
+        entry.tokens = result;
+        entry.state--;
         return result;
     }
 
