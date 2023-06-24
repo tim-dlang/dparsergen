@@ -354,8 +354,7 @@ void getNextLookahead(EBNFGrammar grammar, immutable(SymbolInstance)[] l,
     }
 }
 
-LRElementSet elementSetClosure(LRGraph graph, const LRElement[] startElements,
-        bool transitive = true)
+LRElementSet elementSetClosure(LRGraph graph, const LRElement[] startElements)
 in
 {
     foreach (ref e; startElements)
@@ -385,10 +384,35 @@ do
         return size_t.max;
     }
 
-    bool changed = true;
+    bool[NonterminalID] nonterminalsAdded;
 
-    for (size_t i; i < (transitive ? result.data.length : startElements.length); i++)
+    for (size_t i; i < result.data.length; i++)
     {
+        if (i == 0 || i == startElements.length)
+        {
+            NonterminalID onlyNonterminal = getOnlyNonterminal(graph, result.data);
+            if (graph.globalOptions.optimizationDescent && onlyNonterminal.id != SymbolID.max)
+            {
+                if (!graph.startNonterminalsSet[onlyNonterminal.id])
+                {
+                    graph.startNonterminalsSet[onlyNonterminal.id] = true;
+                    graph.startNonterminals ~= StartNonterminal(onlyNonterminal);
+                }
+                LRElement[] c;
+                foreach (e; result.data)
+                {
+                    LRElement e2 = e.dup;
+                    c ~= e2;
+                }
+                LRElementSet r = LRElementSet(c);
+                r.descentNonterminals.addOnce(onlyNonterminal);
+                r.elements = c;
+                r.simpleLLState = true;
+                r.onlyNonterminal = onlyNonterminal;
+                return r;
+            }
+        }
+
         foreach (n; result.data[i].nextNonterminals(graph.grammar,
                 graph.globalOptions.directUnwrap))
         {
@@ -417,12 +441,14 @@ do
             }
             else
             {
+                if (n.nonterminalID in nonterminalsAdded)
+                    continue;
+                nonterminalsAdded[n.nonterminalID] = true;
+
                 foreach (prodNr, p; graph.grammar.getProductions(n.nonterminalID))
                 {
                     if (graph.globalOptions.directUnwrap
                             && grammar.isDirectUnwrapProduction(*p))
-                        continue;
-                    if (!graph.grammar.isProductionAllowed(n, p))
                         continue;
 
                     size_t elementNr = findAlreadyUsed(p);
@@ -520,6 +546,7 @@ do
         foreach (prev; prevElements)
             result2.data[i].prevElementsMap[prev] = true;
     }
+    descentNonterminals.sort();
     return LRElementSet(result2.data, false, NonterminalID(SymbolID.max), descentNonterminals);
 }
 
@@ -665,36 +692,7 @@ LRElementSet gotoSet(LRGraph graph, size_t prevState, const LRElement[] elements
         }
     }
 
-    return completeLRElementSet(graph, LRElementSet(result.data));
-}
-
-LRElementSet completeLRElementSet(LRGraph graph, LRElementSet elementSet)
-{
-    NonterminalID onlyNonterminal = getOnlyNonterminal(graph, elementSet.elements);
-    LRElementSet r = elementSet;
-    if (graph.globalOptions.optimizationDescent && onlyNonterminal.id != SymbolID.max)
-    {
-        if (!graph.startNonterminalsSet[onlyNonterminal.id])
-        {
-            graph.startNonterminalsSet[onlyNonterminal.id] = true;
-            graph.startNonterminals ~= StartNonterminal(onlyNonterminal);
-        }
-        LRElement[] c;
-        foreach (e; r.elements)
-        {
-            LRElement e2 = e.dup;
-            c ~= e2;
-        }
-        r.descentNonterminals.addOnce(onlyNonterminal);
-        r.elements = c;
-        r.simpleLLState = true;
-        r.onlyNonterminal = onlyNonterminal;
-    }
-    else
-    {
-        r = elementSetClosure(graph, r.elements, true);
-    }
-    return r;
+    return elementSetClosure(graph, result.data);
 }
 
 LRElement[] firstElement(LRGraph graph, SymbolID nonterminalID, bool needsEmptyProduction)
@@ -1019,6 +1017,7 @@ struct LRGraphNodeKey
 {
     LRGraph graph;
     const LRElement[] elements;
+    const NonterminalID[] descentNonterminals;
 
     size_t toHash() const pure nothrow
     {
@@ -1026,6 +1025,7 @@ struct LRGraphNodeKey
         enum prime = 17;
 
         r = (r * prime) ^ elements.length;
+        r = (r * prime) ^ descentNonterminals.length;
 
         foreach (k; 0 .. elements.length)
         {
@@ -1034,12 +1034,18 @@ struct LRGraphNodeKey
             r = (r * prime) ^ e.production.nonterminalID.id;
             r = (r * prime) ^ e.production.symbols.length;
         }
+        foreach (k; 0 .. descentNonterminals.length)
+        {
+            r = (r * prime) ^ descentNonterminals[k].id;
+        }
         return r;
     }
 
     bool opEquals(ref const LRGraphNodeKey s) const pure nothrow
     {
         if (s.elements.length != elements.length)
+            return false;
+        if (s.descentNonterminals != descentNonterminals)
             return false;
         foreach (k; 0 .. elements.length)
         {
@@ -1107,10 +1113,10 @@ bool similarElements(const LRElement e1, const LRElement e2)
     return true;
 }
 
-sizediff_t countUntilGraph(bool checkLookahead)(LRGraph graph, const LRElement[] s)
+sizediff_t countUntilGraph(LRGraph graph, const LRElementSet s)
 {
     sizediff_t r = -1;
-    auto x = LRGraphNodeKey(graph, s) in graph.statesByKey2;
+    auto x = LRGraphNodeKey(graph, s.elements, s.descentNonterminals) in graph.statesByKey2;
     if (x)
         r = *x;
     return r;
@@ -1121,26 +1127,26 @@ private size_t makeLRGraphRec(LRGraph graph, LRElementSet s, const(Symbol)[] pat
 {
     if (s.length == 0)
         return size_t.max;
-    auto r = countUntilGraph!false(graph, s);
+    auto r = countUntilGraph(graph, s);
 
     if (r < 0)
     {
         if (origGraph !is null)
         {
-            r = countUntilGraph!false(origGraph, s);
+            r = countUntilGraph(origGraph, s);
             if (r >= 0)
             {
                 if (r >= graph.states.length)
                     graph.states.length = r + 1;
                 graph.states[r] = new LRGraphNode(s);
-                graph.statesByKey2[LRGraphNodeKey(graph, s.elements)] = r;
+                graph.statesByKey2[LRGraphNodeKey(graph, s.elements, s.descentNonterminals)] = r;
             }
         }
         if (r < 0)
         {
             r = graph.states.length;
             graph.states = graph.states ~ new LRGraphNode(s);
-            graph.statesByKey2[LRGraphNodeKey(graph, s.elements)] = r;
+            graph.statesByKey2[LRGraphNodeKey(graph, s.elements, s.descentNonterminals)] = r;
         }
         graph.states[r].shortestSymbolPath = path;
 
@@ -1219,9 +1225,9 @@ private size_t makeLRGraphRec(LRGraph graph, LRElementSet s, const(Symbol)[] pat
                 if (newElemFiltered.length == 0)
                     continue;
 
-                auto newElem = completeLRElementSet(graph, LRElementSet(newElemFiltered));
+                auto newElem = elementSetClosure(graph, newElemFiltered);
                 size_t nid;
-                auto nidp = LRGraphNodeKey(graph, newElem.elements) in graph.closureCache;
+                auto nidp = LRGraphNodeKey(graph, newElem.elements, newElem.descentNonterminals) in graph.closureCache;
                 if (nidp)
                 {
                     nid = *nidp;
@@ -1249,7 +1255,7 @@ private size_t makeLRGraphRec(LRGraph graph, LRElementSet s, const(Symbol)[] pat
                 {
                     nid = makeLRGraphRec(graph, newElem, path ~ x[0], origGraph, depth + 1);
                     if (nid != size_t.max)
-                        graph.closureCache[LRGraphNodeKey(graph, newElem.elements)] = nid;
+                        graph.closureCache[LRGraphNodeKey(graph, newElem.elements, newElem.descentNonterminals)] = nid;
                 }
                 graph.states[r].edges ~= LRGraphEdge(x[0], x[1], nid, checkDisallowedSymbols);
                 if (nid != size_t.max)
@@ -1553,7 +1559,7 @@ void addDelayedReduceStates(LRGraph graph, LRGraph origGraph = null)
                 .delayedReduceCombinations[graph.states[k].delayedReduceCombinationsDone];
             auto newElem = gotoSet(graph, k, graph.states[k].elements, generatedSet);
             assert(newElem.stackSize <= graph.states[k].elements.stackSize + 1);
-            auto r2 = countUntilGraph!false(graph, newElem);
+            auto r2 = countUntilGraph(graph, newElem);
             if (r2 == k)
                 continue;
             auto nid = makeLRGraphRec(graph, newElem,
@@ -1597,7 +1603,7 @@ LRGraph makeLRGraph(EBNFGrammar grammar, GlobalOptions globalOptions, LRGraph or
 
             size_t backtrackState = graph.states.length;
             graph.states = graph.states ~ new LRGraphNode(set);
-            graph.statesByKey2[LRGraphNodeKey(graph, set.elements)] = backtrackState;
+            graph.statesByKey2[LRGraphNodeKey(graph, set.elements, set.descentNonterminals)] = backtrackState;
             graph.states[backtrackState].isStartNode = true;
             graph.states[backtrackState].shortestSymbolPath
                 = [graph.startNonterminals[i].nonterminal];
@@ -1640,7 +1646,7 @@ LRGraph makeLRGraph(EBNFGrammar grammar, GlobalOptions globalOptions, LRGraph or
         }
         else
         {
-            LRElementSet set = completeLRElementSet(graph, elementSetClosure(graph, start, false));
+            LRElementSet set = elementSetClosure(graph, start);
             size_t id = makeLRGraphRec(graph, set,
                     [graph.startNonterminals[i].nonterminal], origGraph);
             graph.nonterminalToState[graph.startNonterminals[i].nonterminal.id] = id;

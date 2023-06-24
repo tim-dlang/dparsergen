@@ -8,7 +8,7 @@ Warning: Token RealLoop2 could be empty
 ---
 */
 /*
-GENERATOR_OUTPUT(normal, optdescent, glr):
+GENERATOR_OUTPUT(normal, glr, optdescent):
 ---
 Warning: Unused symbol NotReachable
 Warning: Unused symbol NotReachable2
