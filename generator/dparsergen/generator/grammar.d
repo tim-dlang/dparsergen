@@ -1065,6 +1065,56 @@ class EBNFGrammar
 
         return Constraint(newNegLookahead, nextTags, a.disabled && b.disabled);
     }
+
+    bool[NonterminalID] isMutuallyLeftRecursiveCache;
+    bool isMutuallyLeftRecursive(NonterminalID nonterminalID)
+    {
+        auto entry = nonterminalID in isMutuallyLeftRecursiveCache;
+        if (entry)
+            return *entry;
+        bool[NonterminalID] visited;
+        bool findLeftRecursion(NonterminalID n)
+        {
+            if (n in visited)
+                return false;
+            visited[n] = true;
+            if (n == nonterminalID)
+                return true;
+            foreach (p; getProductions(n))
+            {
+                foreach (s; p.symbols)
+                {
+                    if (!s.isToken)
+                    {
+                        if (findLeftRecursion(s.toNonterminalID))
+                            return true;
+                    }
+                    if (!canBeEmpty(s))
+                        break;
+                }
+            }
+            return false;
+        }
+
+        foreach (p; getProductions(nonterminalID))
+        {
+            foreach (s; p.symbols)
+            {
+                if (!s.isToken && s.toNonterminalID != nonterminalID)
+                {
+                    if (findLeftRecursion(s.toNonterminalID))
+                    {
+                        isMutuallyLeftRecursiveCache[nonterminalID] = true;
+                        return true;
+                    }
+                }
+                if (!canBeEmpty(s))
+                    break;
+            }
+        }
+        isMutuallyLeftRecursiveCache[nonterminalID] = false;
+        return false;
+    }
 }
 
 SymbolInfo[string] generateSymbolInfos(EBNF ebnf)

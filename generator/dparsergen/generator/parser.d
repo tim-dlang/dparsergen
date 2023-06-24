@@ -382,7 +382,40 @@ do
         return size_t.max;
     }
 
-    bool[NonterminalID] nonterminalsAdded;
+    BitSet!NonterminalID nonterminalsAdded;
+
+    size_t[] firstSetCounts;
+    BitSet!NonterminalID doneForFirstSetCounts;
+    size_t indexFirstSetCounts;
+    if (graph.globalOptions.optimizationDescent)
+        firstSetCounts.length = grammar.tokens.vals.length;
+
+    void addedElement(size_t i)
+    {
+        if (graph.globalOptions.optimizationDescent)
+        {
+            if (result.data[i].isNextToken(grammar))
+            {
+                auto token = result.data[i].next(grammar).toTokenID;
+                firstSetCounts[token.id]++;
+            }
+            foreach (n; result.data[i].nextNonterminals(graph.grammar,
+                    graph.globalOptions.directUnwrap))
+            {
+                if (!doneForFirstSetCounts[n.nonterminalID])
+                {
+                    doneForFirstSetCounts[n.nonterminalID] = true;
+                    foreach (token; graph.grammar.firstSetImpl(n.nonterminalID, [], []).bitsSet)
+                    {
+                        firstSetCounts[token.id]++;
+                    }
+                }
+            }
+        }
+    }
+
+    for (size_t i; i < result.data.length; i++)
+        addedElement(i);
 
     for (size_t i; i < result.data.length; i++)
     {
@@ -418,12 +451,27 @@ do
                 if (a.startsWith("enableToken("))
                     hasEnableToken = true;
 
+            bool uniqueFirstSet = false;
+            if (graph.globalOptions.optimizationDescent
+                && !grammar.canBeEmpty(n.nonterminalID)
+                && !nonterminalsAdded[n.nonterminalID]
+                && !grammar.isMutuallyLeftRecursive(n.nonterminalID))
+            {
+                uniqueFirstSet = true;
+                foreach (token; graph.grammar.firstSetImpl(n.nonterminalID, [], []).bitsSet)
+                {
+                    if (firstSetCounts[token.id] != 1)
+                        uniqueFirstSet = false;
+                }
+            }
+
             if (!graph.globalOptions.glrParser
                     && (graph.grammar.nonterminals[n.nonterminalID].annotations.contains!"backtrack"()
                         || graph.grammar.nonterminals[n.nonterminalID].annotations.contains!"lookahead"()
                         || hasEnableToken
-                        || result.data[i].next(grammar)
-                        .annotations.contains!"lookahead"() || n.hasLookaheadAnnotation)
+                        || result.data[i].next(grammar).annotations.contains!"lookahead"()
+                        || n.hasLookaheadAnnotation
+                        || uniqueFirstSet)
                     && (!result.data[i].isStartElement
                         || n.nonterminalID != result.data[i].production.nonterminalID))
             {
@@ -437,15 +485,18 @@ do
             }
             else
             {
-                if (n.nonterminalID in nonterminalsAdded)
+                if (nonterminalsAdded[n.nonterminalID])
                     continue;
                 nonterminalsAdded[n.nonterminalID] = true;
 
+                bool canStartWithEmpty;
                 foreach (prodNr, p; graph.grammar.getProductions(n.nonterminalID))
                 {
                     if (graph.globalOptions.directUnwrap
                             && grammar.isDirectUnwrapProduction(*p))
                         continue;
+                    if (p.symbols.length && graph.grammar.canBeEmpty(p.symbols[0]))
+                        canStartWithEmpty = true;
 
                     size_t elementNr = findAlreadyUsed(p);
                     if (elementNr == size_t.max)
@@ -454,6 +505,14 @@ do
                         auto newElem = LRElement(p, 0);
                         newElementsForProductions[p.productionID] = result.data.length;
                         result.put(newElem);
+                        addedElement(elementNr);
+                    }
+                }
+                if (!canStartWithEmpty && graph.globalOptions.optimizationDescent)
+                {
+                    foreach (token; graph.grammar.firstSetImpl(n.nonterminalID, [], []).bitsSet)
+                    {
+                        firstSetCounts[token.id]--;
                     }
                 }
             }
@@ -968,7 +1027,7 @@ class LRGraphNode
     bool hasTags(LRGraph graph) const
     {
         foreach (e; elements)
-            if (graph.grammar.nonterminals[e.production.nonterminalID].possibleTags.length)
+            if (!e.extraConstraint.disabled && graph.grammar.nonterminals[e.production.nonterminalID].possibleTags.length)
                 return true;
         foreach (s; backtrackStates)
             if (graph.states[s].hasTags(graph))
@@ -1977,6 +2036,9 @@ ActionTable genActionTable(LRGraph graph, const LRGraphNode node)
         if (descentNonterminal !in validShifts)
             continue;
         if (grammar.nonterminals[descentNonterminal].possibleTags.length)
+            r.hasTags = true;
+        auto nextNode = graph.states[graph.nonterminalToState[descentNonterminal.id]];
+        if (nextNode.hasTags(graph))
             r.hasTags = true;
         BitSet!TokenID firstTokens = grammar.firstSet([
             SymbolInstance(descentNonterminal)

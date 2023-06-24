@@ -1,0 +1,22 @@
+ClassDeclaration
+    = "class" BaseClassList? "{" "}"
+    ;
+BaseClassList @array @regArray
+    = ":" SuperClassOrInterface
+    | ":" SuperClassOrInterface "," Interfaces
+    ;
+SuperClassOrInterface @directUnwrap
+    = <BasicType
+    ;
+Interfaces @array @regArray
+    = Interface
+    | Interface "," Interfaces
+    ;
+Interface @directUnwrap
+    = <BasicType
+    ;
+BasicType
+    = "T" "X"
+    ;
+
+token Space @ignoreToken = [ \n\r\t]+;

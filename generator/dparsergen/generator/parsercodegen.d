@@ -859,7 +859,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
 
             mixin(genCode("code", q{
                 {
-                    $$if (thisHasTags && !nextHasTags) {
+                    $$if (actionTable.hasTags && !nextHasTags) {
                         currentTags = Tag.none;
                     $$}
                     $(resultType(graph, nextNode, combinedReduceNonterminals)) pt;
