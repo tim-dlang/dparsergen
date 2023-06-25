@@ -366,20 +366,9 @@ do
     Appender!(LRElement[]) result;
     NonterminalID[] descentNonterminals;
     const(Symbol)[][] negLookaheads;
-    size_t[ProductionID] newElementsForProductions;
     foreach (e; startElements)
     {
-        if (e.dotPos == 0)
-            newElementsForProductions[e.production.productionID] = result.data.length;
         result.put(e.dup);
-    }
-
-    size_t findAlreadyUsed(const(Production*) production)
-    {
-        if (production.productionID in newElementsForProductions)
-            return newElementsForProductions[production.productionID];
-
-        return size_t.max;
     }
 
     BitSet!NonterminalID nonterminalsAdded;
@@ -487,15 +476,10 @@ do
                 if (p.symbols.length && graph.grammar.canBeEmpty(p.symbols[0]))
                     canStartWithEmpty = true;
 
-                size_t elementNr = findAlreadyUsed(p);
-                if (elementNr == size_t.max)
-                {
-                    elementNr = result.data.length;
-                    auto newElem = LRElement(p, 0);
-                    newElementsForProductions[p.productionID] = result.data.length;
-                    result.put(newElem);
-                    addedElement(elementNr);
-                }
+                size_t elementNr = result.data.length;
+                auto newElem = LRElement(p, 0);
+                result.put(newElem);
+                addedElement(elementNr);
             }
             if (!canStartWithEmpty && graph.globalOptions.optimizationDescent)
             {
