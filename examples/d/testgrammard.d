@@ -145,7 +145,7 @@ immutable string[] syntaxErrorExceptions = [
     "pragma(`inline`, `true` or `false`) expected,",
     "expected for mangled name",
     "expected valid identifier",
-    "compile time string constant (or tuple) expected",
+    "compile time string constant (or sequence) expected, not",
     "expected as third argument of",
     "at least one argument expected",
 ];
@@ -181,6 +181,8 @@ immutable string[] syntaxErrorExtra = [
     "instead of `long ",
     "instead of C-style syntax, use D-style",
     "only parameters, functions and `foreach` declarations can be `ref`",
+    "function cannot have enum storage class",
+    "token is not allowed in postfix position",
 ];
 
 size_t[syntaxErrorExceptions.length] syntaxErrorExceptionsUsed;

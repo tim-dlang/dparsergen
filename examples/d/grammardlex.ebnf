@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 1ae1b6660d48e3cdf3de82efedb06096c62a00f1
+// Based on grammar from dlang.org commit 74c06ae222f27b9bcaf78e196a27abdc540b2fa7
 
 token ByteOrderMark
     = "\uFEFF"
@@ -139,7 +139,6 @@ TokenNoParens
     | "~="
     | "@"
     | "=>"
-    | "#"
     ;
 token Identifier @lowPrio
     = IdentifierStart
@@ -184,35 +183,6 @@ fragment DoubleQuotedCharacter
     | EscapeSequence
     | EndOfLine
     ;
-fragment EscapeSequence
-    = "\\\'"
-    | "\\\""
-    | "\\?"
-    | "\\\\"
-    | "\\0"
-    | "\\a"
-    | "\\b"
-    | "\\f"
-    | "\\n"
-    | "\\r"
-    | "\\t"
-    | "\\v"
-    | "\\x" HexDigit HexDigit
-    | "\\" OctalDigit
-    | "\\" OctalDigit OctalDigit
-    | "\\" OctalDigit OctalDigit OctalDigit
-    | "\\u" HexDigit HexDigit HexDigit HexDigit
-    | "\\U" HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
-    | "\\" NamedCharacterEntity
-    ;
-fragment NamedCharacterEntity
-    = "&" Identifier ";"
-    ;
-fragment StringPostfix
-    = "c"
-    | "w"
-    | "d"
-    ;
 token DelimitedString
     = "q\"" @store Identifier [\n\r]
         DelimitedStringLine*
@@ -252,6 +222,35 @@ fragment DelimitedStringLine
     ;
 TokenString
     = "q{" Tokens "}"
+    ;
+fragment StringPostfix
+    = "c"
+    | "w"
+    | "d"
+    ;
+fragment EscapeSequence
+    = "\\\'"
+    | "\\\""
+    | "\\?"
+    | "\\\\"
+    | "\\0"
+    | "\\a"
+    | "\\b"
+    | "\\f"
+    | "\\n"
+    | "\\r"
+    | "\\t"
+    | "\\v"
+    | "\\x" HexDigit HexDigit
+    | "\\" OctalDigit
+    | "\\" OctalDigit OctalDigit
+    | "\\" OctalDigit OctalDigit OctalDigit
+    | "\\u" HexDigit HexDigit HexDigit HexDigit
+    | "\\U" HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
+    | "\\" NamedCharacterEntity
+    ;
+fragment NamedCharacterEntity
+    = "&" Identifier ";"
     ;
 token CharacterLiteral
     = "\'" SingleQuotedCharacter "\'"
@@ -401,12 +400,9 @@ fragment HexLetter
     | "F"
     ;
 token FloatLiteral
-    = Float
-    | Float Suffix
-    | DecimalInteger FloatSuffix
-    | DecimalInteger ImaginarySuffix
-    | DecimalInteger FloatSuffix ImaginarySuffix
-    | DecimalInteger RealSuffix ImaginarySuffix
+    = Float Suffix?
+    | DecimalInteger FloatSuffix ImaginarySuffix?
+    | DecimalInteger RealSuffix? ImaginarySuffix
     ;
 fragment Float
     = DecimalFloat
@@ -423,8 +419,7 @@ fragment DecimalFloat
     = LeadingDecimal "." !"." ![a-zA-Z_] !UniversalAlpha
     | LeadingDecimal "." DecimalDigitsNoStartingUS
     | LeadingDecimal "." DecimalDigitsNoStartingUS DecimalExponent
-    | "." DecimalDigitsNoStartingUS
-    | "." DecimalDigitsNoStartingUS DecimalExponent
+    | "." DecimalDigitsNoStartingUS DecimalExponent?
     | LeadingDecimal DecimalExponent
     ;
 fragment DecimalExponent
@@ -459,11 +454,9 @@ fragment HexExponentStart
     | "P-"
     ;
 fragment Suffix
-    = FloatSuffix
-    | RealSuffix
+    = FloatSuffix ImaginarySuffix?
+    | RealSuffix ImaginarySuffix?
     | ImaginarySuffix
-    | FloatSuffix ImaginarySuffix
-    | RealSuffix ImaginarySuffix
     ;
 fragment FloatSuffix
     = "f"

@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 1ae1b6660d48e3cdf3de82efedb06096c62a00f1
+// Based on grammar from dlang.org commit 74c06ae222f27b9bcaf78e196a27abdc540b2fa7
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -32,8 +32,6 @@ DeclDef @directUnwrap
     | <ConditionalDeclaration
     | <DebugSpecification
     | <VersionSpecification
-    | <StaticAssert
-    | <TemplateMixin
     | <MixinDeclaration
     | <EmptyDeclaration
     | <PragmaDeclaration
@@ -302,9 +300,9 @@ PrimaryExpression @directUnwrap
     | FundamentalType "." Identifier
     // | "(" Type ")" "." Identifier
     // | "(" Type ")" "." TemplateInstance
-    // | FundamentalType "(" ArgumentList? ")"
+    // | FundamentalType "(" NamedArgumentList? ")"
     | TypeCtor "(" Type ")" "." Identifier
-    // | TypeCtor "(" Type ")" "(" ArgumentList? ")"
+    // | TypeCtor "(" Type ")" "(" NamedArgumentList? ")"
     | <Typeof
     | <TypeidExpression
     | <IsExpression
@@ -408,7 +406,7 @@ ImportExpression
 NewExpression
     = "new" Type !"(" !"[" !"." !"*" // TODO: sometimes it should be parsed differently. See new S[2].ptr in dmd/test/compilable/b1215.d
     //| "new" Type "[" AssignExpression "]"
-    //| "new" Type "(" ArgumentList? ")"
+    //| "new" Type "(" NamedArgumentList? ")"
     | <NewAnonClassExpression
     ;
 ArgumentList @array @regArray
@@ -485,7 +483,8 @@ Declaration @directUnwrap
     // | <StaticForeachDeclaration
     | <StaticAssert
     | <TemplateDeclaration
-    | <TemplateMixinDeclaration // Moved from DeclDef for https://issues.dlang.org/show_bug.cgi?id=23205
+    | <TemplateMixinDeclaration
+    | <TemplateMixin
     ;
 AggregateDeclaration
     = <ClassDeclaration
@@ -1069,9 +1068,9 @@ VisibilityAttribute
 UserDefinedAttribute
     = "@" "(" TemplateArgumentList ")"
     | "@" TemplateSingleArgument !"("
-    | "@" IdentifierExpression "(" ArgumentList? ")"
+    | "@" IdentifierExpression "(" NamedArgumentList? ")"
     | "@" TemplateInstance !"("
-    | "@" TemplateInstance "(" ArgumentList? ")"
+    | "@" TemplateInstance "(" NamedArgumentList? ")"
     ;
 Statement @directUnwrap
     = <EmptyStatement
@@ -1130,11 +1129,9 @@ NonEmptyStatementNoCaseNoDefaultBacktrack @backtrack
 DeclarationStatementAll
     = @rejectTag(Bitfield) <DeclarationStatement
     | <FinalSwitchStatement
-    // | @rejectTag(Bitfield) <StaticAssert
     // | @rejectTag(Bitfield) <ImportDeclaration
     | <StaticForeachStatement
     | <ConditionalStatement
-    | <TemplateMixin
     | <PragmaStatement
     | <ScopeGuardStatement
     | <ReturnStatement
@@ -1506,7 +1503,7 @@ NewAnonClassExpression
     = "new" "class" ConstructorArgs? AnonBaseClassList? AggregateBody
     ;
 ConstructorArgs
-    = "(" ArgumentList? ")"
+    = "(" NamedArgumentList? ")"
     ;
 AnonBaseClassList @array @regArray
     = SuperClassOrInterface
@@ -1863,6 +1860,10 @@ EnumMembers @array @regArray
     | EnumMember ","
     | EnumMember "," EnumMembers
     ;
+EnumMember
+    = EnumMemberAttributes? IdentifierExpression
+    | EnumMemberAttributes? IdentifierExpression "=" AssignExpression
+    ;
 EnumMemberAttributes @array @regArray
     = EnumMemberAttribute
     | EnumMemberAttribute EnumMemberAttributes
@@ -1872,13 +1873,8 @@ EnumMemberAttribute
     | <UserDefinedAttribute
     | "@" Identifier>>"disable"
     ;
-EnumMember
-    = EnumMemberAttributes? IdentifierExpression
-    | EnumMemberAttributes? IdentifierExpression "=" AssignExpression
-    ;
 AnonymousEnumDeclaration
     = EnumAttributes ":" EnumBaseType "{" EnumMembers "}"
-    // | EnumAttributes "{" EnumMembers "}"
     | EnumAttributes "{" AnonymousEnumMembers "}"
     ;
 AnonymousEnumMembers @array @regArray
@@ -1888,7 +1884,7 @@ AnonymousEnumMembers @array @regArray
     ;
 AnonymousEnumMember @directUnwrap
     = <EnumMember
-    | Type IdentifierExpression "=" AssignExpression
+    | EnumMemberAttributes? Type IdentifierExpression "=" AssignExpression
     ;
 PragmaDeclaration
     // = AttributesNoPragmaEmpty PragmaSingleArray ";"
