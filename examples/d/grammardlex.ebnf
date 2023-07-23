@@ -249,9 +249,6 @@ fragment EscapeSequence
     | "\\U" HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
     | "\\" NamedCharacterEntity
     ;
-fragment NamedCharacterEntity
-    = "&" Identifier ";"
-    ;
 token CharacterLiteral
     = "\'" SingleQuotedCharacter "\'"
     ;
@@ -465,7 +462,7 @@ fragment FloatSuffix
 fragment RealSuffix
     = "L"
     ;
-fragment ImaginarySuffix
+fragment ImaginarySuffix // deprecated
     = "i"
     ;
 fragment LeadingDecimal
@@ -479,26 +476,26 @@ Keyword
     | "asm"
     | "assert"
     | "auto"
-//    | "body"
+//    | "body" // deprecated
     | "bool"
     | "break"
     | "byte"
     | "case"
     | "cast"
     | "catch"
-    | "cdouble"
-    | "cent"
-    | "cfloat"
+    | "cdouble" // deprecated
+    | "cent" // deprecated
+    | "cfloat" // deprecated
     | "char"
     | "class"
     | "const"
     | "continue"
-    | "creal"
+    | "creal" // deprecated
     | "dchar"
     | "debug"
     | "default"
     | "delegate"
-    | "delete"
+    | "delete" // deprecated
     | "deprecated"
     | "do"
     | "double"
@@ -515,9 +512,9 @@ Keyword
     | "foreach_reverse"
     | "function"
     | "goto"
-    | "idouble"
+    | "idouble" // deprecated
     | "if"
-    | "ifloat"
+    | "ifloat" // deprecated
     | "immutable"
     | "import"
     | "in"
@@ -525,11 +522,11 @@ Keyword
     | "int"
     | "interface"
     | "invariant"
-    | "ireal"
+    | "ireal" // deprecated
     | "is"
     | "lazy"
     | "long"
-    | "macro"
+    | "macro" // reserved
     | "mixin"
     | "module"
     | "new"
@@ -562,7 +559,7 @@ Keyword
     | "typeid"
     | "typeof"
     | "ubyte"
-    | "ucent"
+    | "ucent" // deprecated
     | "uint"
     | "ulong"
     | "union"
@@ -591,6 +588,9 @@ token SpecialTokenSequence @ignoreToken
     ;
 fragment Filespec
     = "\"" DoubleQuotedCharacters? "\""
+    ;
+fragment NamedCharacterEntity
+    = "&" Identifier ";"
     ;
 fragment Letter = [a-zA-Z];
 

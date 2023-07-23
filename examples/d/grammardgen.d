@@ -32,6 +32,12 @@ struct Symbol
     bool hasOpt;
 }
 
+struct Production
+{
+    Symbol[] symbols;
+    string comment;
+}
+
 void printSymbol(Tree tree, ref Symbol[] output)
 {
     if (tree.name == "WS")
@@ -247,6 +253,10 @@ void printSymbol(Tree tree, ref Symbol[] output)
                 output[$ - 1].isToken = true;
                 name = name[1 .. $ - 1];
             }
+            else if (name.length >= 3 && name[0] == '*' && name[$ - 1] == '*')
+            {
+                name = name[1 .. $ - 1];
+            }
             else if (i)
             {
                 output.length++;
@@ -278,9 +288,17 @@ bool isArrayNonterminal(string name)
 void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToken)
 {
     string name;
-    assert(trees[0].name == "Macro");
-    assert(trees[0].childs[1].content == "GNAME");
-    foreach (c; trees[0].childs[2].childs)
+    bool nonterminalDeprecated;
+    Tree firstTree = trees[0];
+    assert(firstTree.name == "Macro");
+    if (firstTree.name == "Macro" && firstTree.childs[1].content == "GDEPRECATED")
+    {
+        firstTree = firstTree.childs[2].childs[1];
+        nonterminalDeprecated = true;
+        assert(firstTree.name == "Macro");
+    }
+    assert(firstTree.childs[1].content == "GNAME");
+    foreach (c; firstTree.childs[2].childs)
         if (c.name == "Text")
             name = c.childs[0].content;
     trees = trees[1 .. $];
@@ -306,7 +324,7 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
         }
     }
 
-    Symbol[][] symbols = [[Symbol()]];
+    Production[] productions = [Production([Symbol()])];
 
     void findSymbols(Tree[] trees)
     {
@@ -314,19 +332,19 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
         {
             if (c.name == "NL")
             {
-                if (symbols[$ - 1].length > 1 || symbols[$ - 1][0].name.length)
+                if (productions[$ - 1].symbols.length > 1 || productions[$ - 1].symbols[0].name.length)
                 {
-                    symbols ~= [Symbol()];
+                    productions ~= Production([Symbol()]);
                 }
             }
             else if (c.name == "WS")
             {
-                if (symbols[$ - 1][$ - 1].name.length)
-                    symbols[$ - 1].length++;
+                if (productions[$ - 1].symbols[$ - 1].name.length)
+                    productions[$ - 1].symbols.length++;
             }
             else if (c.name == "Macro" && c.childs[1].content == "OPT")
             {
-                symbols[$ - 1][$ - 1].hasOpt = true;
+                productions[$ - 1].symbols[$ - 1].hasOpt = true;
             }
             else if (c.name == "Macro" && c.childs[1].content == "LEGACY_LNAME2")
             {
@@ -345,33 +363,45 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
                 }
                 findSymbols(trees2);
             }
+            else if (c.name == "Macro" && c.childs[1].content == "GDEPRECATED")
+            {
+                Tree[] trees2 = c.childs[2].childs;
+                findSymbols(trees2);
+                productions[$-1].comment = "deprecated";
+            }
+            else if (c.name == "Macro" && c.childs[1].content == "GRESERVED")
+            {
+                Tree[] trees2 = c.childs[2].childs;
+                findSymbols(trees2);
+                productions[$-1].comment = "reserved";
+            }
             else
             {
-                printSymbol(c, symbols[$ - 1]);
+                printSymbol(c, productions[$ - 1].symbols);
             }
         }
     }
 
     findSymbols(trees);
 
-    foreach (ref output; symbols)
+    foreach (ref output; productions)
     {
-        if (output[$ - 1].name.length == 0)
-            output.length--;
-        if (output.length && output[$ - 1].name.startsWith("(") && output[$ - 1].name.endsWith(")"))
-            output.length--;
+        if (output.symbols[$ - 1].name.length == 0)
+            output.symbols.length--;
+        if (output.symbols.length && output.symbols[$ - 1].name.startsWith("(") && output.symbols[$ - 1].name.endsWith(")"))
+            output.symbols.length--;
     }
-    if (symbols[$ - 1].length == 0)
-        symbols.length--;
+    if (productions[$ - 1].symbols.length == 0)
+        productions.length--;
 
     if (name == "Register" || name == "Register64")
     {
-        Symbol[][] symbolsBak = symbols;
-        symbols = [];
-        foreach (output; symbolsBak)
+        Production[] productionsBak = productions;
+        productions = [];
+        foreach (output; productionsBak)
         {
-            foreach (s; output)
-                symbols ~= [s];
+            foreach (s; output.symbols)
+                productions ~= Production([s]);
         }
     }
 
@@ -395,10 +425,10 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
         "Objective - C": ["Objective", "-", "C"],
         "( )": ["(", ")"],
     ];
-    foreach (i, ref output; symbols)
+    foreach (i, ref output; productions)
     {
         Symbol[] output2;
-        foreach (s; output)
+        foreach (s; output.symbols)
         {
             if (s.isToken && s.name in tokensToSplit)
             {
@@ -411,7 +441,7 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
             else
                 output2 ~= s;
         }
-        output = output2;
+        output.symbols = output2;
     }
 
     bool isNonterminal;
@@ -440,18 +470,20 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
         code ~= " @array @regArray";
     if (isToken)
         context.tokens[name] = true;
+    if (nonterminalDeprecated)
+        code ~= " // deprecated";
     code ~= "\n";
-    foreach (i, ref output; symbols)
+    foreach (i, ref output; productions)
     {
-        if (name == "ParameterAttributes" && output.length == 1
-                && output[0].name == "ParameterAttributes")
+        if (name == "ParameterAttributes" && output.symbols.length == 1
+                && output.symbols[0].name == "ParameterAttributes")
             continue;
 
         if (i)
             code ~= "    |";
         else
             code ~= "    =";
-        foreach (ref s; output)
+        foreach (ref s; output.symbols)
         {
             if (s.name == ".." || s.name == "," || s.name == "=")
                 s.isToken = true;
@@ -477,7 +509,7 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
             }
             else
             {
-                if (!context.isLexer && output.length == 1 && s.name[0] != '/'
+                if (!context.isLexer && output.symbols.length == 1 && s.name[0] != '/'
                         && s.name != "@empty" && s.name !in context.tokens && !isArray && !isArrayNonterminal(s.name))
                     code ~= " <" ~ s.name;
                 else
@@ -486,6 +518,8 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
             if (s.hasOpt)
                 code ~= "?";
         }
+        if (output.comment.length)
+            code ~= " // " ~ output.comment;
         code ~= "\n";
     }
     code ~= "    ;\n";
@@ -506,6 +540,10 @@ void analyzeGrammar(Tree tree, Context context)
     bool isToken = context.isLexer;
     foreach (i, c; tree.childs[2].childs)
     {
+        if (c.name == "Macro" && c.childs[1].content == "GDEPRECATED")
+        {
+            c = c.childs[2].childs[1];
+        }
         if (c.name == "Macro" && c.childs[1].content == "GNAME")
         {
             if (start != size_t.max)
@@ -558,7 +596,7 @@ int main(string[] args)
 
     Context contextLex = new Context();
     contextLex.isLexer = true;
-    foreach (f; ["lex"])
+    foreach (f; ["lex", "entity"])
     {
         string filename = dlangRepo ~ "/spec/" ~ f ~ ".dd";
 
