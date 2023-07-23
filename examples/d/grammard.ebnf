@@ -1928,7 +1928,7 @@ TypeCtor
     | "inout"
     | "shared"
     ;
-BasicType @directUnwrap
+BasicType @directUnwrap @noOptDescent
     = <FundamentalType
     // | "." QualifiedIdentifier
     | <QualifiedIdentifier
@@ -1990,7 +1990,7 @@ ArrayTypeSuffixContentExpr
     = <AssignExpression
     | <IntervalExp
     ;
-QualifiedIdentifier @directUnwrap
+QualifiedIdentifier @directUnwrap @noOptDescent
     = <IdentifierExpression
     | <TemplateInstance
     | <TraitsExpression

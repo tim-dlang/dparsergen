@@ -9,8 +9,8 @@ Warning: Parse conflict in state 29
 /*
 GENERATOR_OUTPUT(optdescent):
 ---
-Warning: Parse conflict in state 22
-Warning: Parse conflict in state 28
+Warning: Parse conflict in state 21
+Warning: Parse conflict in state 27
 ---
 */
 S = <ScopeStatement;

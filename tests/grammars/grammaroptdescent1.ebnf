@@ -1,0 +1,32 @@
+
+Parameter
+    = ParameterAttributes PostfixType
+    | PostfixType
+    ;
+ParameterAttributes @array @regArray
+    = ParameterStorageClass
+    | ParameterAttributes ParameterStorageClass
+    ;
+ParameterStorageClass @directUnwrap
+    = <TypeCtor
+    | "in"
+    ;
+TypeCtor
+    = "const"
+    | "immutable"
+    | "inout"
+    | "shared"
+    ;
+BasicType @directUnwrap @noOptDescent
+    = <FundamentalType
+    | TypeCtor "(" BasicType ")"
+    ;
+PostfixType @directUnwrap
+    = <BasicType
+    ;
+
+FundamentalType
+    = "int"
+    ;
+
+token Space @ignoreToken = [ \n\r\t]+;

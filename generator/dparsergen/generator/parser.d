@@ -289,26 +289,39 @@ struct LRElement
         return r - 1;
     }
 
-    immutable(NonterminalWithConstraint)[] nextNonterminals(EBNFGrammar grammar, bool directUnwrap) const
+    auto nextNonterminals(EBNFGrammar grammar, bool directUnwrap) const
     {
+        immutable(NonterminalWithConstraint)[] r;
         if (isNextNonterminal(grammar))
         {
             auto n = next(grammar);
 
-            auto m2 = grammar.nextNonterminalWithConstraint(extraConstraint, n, dotPos == 0);
+            auto n2 = grammar.nextNonterminalWithConstraint(extraConstraint, n, dotPos == 0);
 
-            if (directUnwrap && !next(grammar).annotations.contains!"excludeDirectUnwrap")
+            if (directUnwrap && next(grammar).annotations.contains!"excludeDirectUnwrap")
+                directUnwrap = false;
+
+            if (directUnwrap)
             {
-                return grammar.directUnwrapClosure(n.toNonterminalID,
-                        m2.constraint.negLookaheads, m2.constraint.tags);
+                r = grammar.directUnwrapClosureFull(n.toNonterminalID,
+                        n2.constraint.negLookaheads, n2.constraint.tags);
             }
             else
-                return [
-                    NonterminalWithConstraint(n.toNonterminalID, m2.constraint)
+                r = [
+                    NonterminalWithConstraint(n.toNonterminalID, n2.constraint)
                 ];
         }
         else
-            return [];
+        {
+            directUnwrap = false;
+            r = [];
+        }
+
+        bool needsNonterminal(NonterminalWithConstraint n)
+        {
+            return !n.constraint.disabled && (!directUnwrap || grammar.directUnwrapClosureHasSelf(n));
+        }
+        return r.filter!needsNonterminal;
     }
 }
 
@@ -377,9 +390,52 @@ do
     bool[NonterminalID] enforceDescent;
 
     size_t[] firstSetCounts;
-    BitSet!NonterminalID doneForFirstSetCounts;
+    size_t[] nonterminalsInDirectUnwrapClosures;
+    size_t[] nonterminalsInDirectUnwrapClosures2;
+    BitSet!NonterminalID nonterminalsInDirectUnwrapClosuresCounted;
     if (graph.globalOptions.optimizationDescent)
+    {
         firstSetCounts.length = grammar.tokens.vals.length;
+        nonterminalsInDirectUnwrapClosures.length = grammar.nonterminals.vals.length;
+        nonterminalsInDirectUnwrapClosures2.length = grammar.nonterminals.vals.length;
+    }
+
+    void changeNonterminalFirstSet(NonterminalID n, int change)
+    {
+        if (change == 1)
+        {
+            assert(!nonterminalsInDirectUnwrapClosuresCounted[n]);
+            nonterminalsInDirectUnwrapClosuresCounted[n] = true;
+        }
+        else if (change == -1)
+        {
+            assert(nonterminalsInDirectUnwrapClosuresCounted[n]);
+            nonterminalsInDirectUnwrapClosuresCounted[n] = false;
+        }
+        else
+            assert(false);
+        foreach (token; graph.grammar.firstSetImpl(n, [], []).bitsSet)
+        {
+            firstSetCounts[token.id] += change;
+        }
+        foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+        {
+            if (n2.nonterminalID == n)
+                continue;
+            if (change == 1 && nonterminalsAdded[n2.nonterminalID] && nonterminalsInDirectUnwrapClosuresCounted[n2.nonterminalID])
+            {
+                changeNonterminalFirstSet(n2.nonterminalID, -1);
+            }
+            nonterminalsInDirectUnwrapClosures[n2.nonterminalID.id] += change;
+        }
+        foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+        {
+            if (n2.nonterminalID == n)
+                continue;
+            if (change == -1 && nonterminalsAdded[n2.nonterminalID] && nonterminalsTodo.canFind(n2.nonterminalID) && nonterminalsInDirectUnwrapClosures[n2.nonterminalID.id] == 0)
+                changeNonterminalFirstSet(n2.nonterminalID, 1);
+        }
+    }
 
     void addedElement(size_t i)
     {
@@ -390,31 +446,36 @@ do
                 auto token = result.data[i].next(grammar).toTokenID;
                 firstSetCounts[token.id]++;
             }
+
+            if (result.data[i].isNextNonterminal(grammar))
+            {
+                auto n = result.data[i].next(grammar).toNonterminalID;
+
+                foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+                {
+                    nonterminalsInDirectUnwrapClosures2[n2.nonterminalID.id]++;
+                }
+            }
         }
 
         foreach (n; result.data[i].nextNonterminals(graph.grammar,
                 graph.globalOptions.directUnwrap))
         {
-            if (graph.globalOptions.optimizationDescent)
-            {
-                if (!doneForFirstSetCounts[n.nonterminalID])
-                {
-                    doneForFirstSetCounts[n.nonterminalID] = true;
-                    foreach (token; graph.grammar.firstSetImpl(n.nonterminalID, [], []).bitsSet)
-                    {
-                        firstSetCounts[token.id]++;
-                    }
-                }
-            }
-
             if (!nonterminalsAdded[n.nonterminalID])
             {
+                if (graph.globalOptions.optimizationDescent)
+                {
+                    if (nonterminalsInDirectUnwrapClosures[n.nonterminalID.id] == 0)
+                    {
+                        changeNonterminalFirstSet(n.nonterminalID, 1);
+                    }
+                }
                 nonterminalsAdded[n.nonterminalID] = true;
                 nonterminalsTodo ~= n.nonterminalID;
             }
 
             if (result.data[i].isStartElement
-                && n.nonterminalID == result.data[i].production.nonterminalID)
+                    && n.nonterminalID == result.data[i].production.nonterminalID)
                 preventDescent[n.nonterminalID] = true;
 
             if (n.hasLookaheadAnnotation
@@ -426,10 +487,28 @@ do
     foreach (i; 0 .. result.data.length)
         addedElement(i);
 
+    bool compareNonterminals(NonterminalID a, NonterminalID b)
+    {
+        auto ca = grammar.directUnwrapClosureFull(a, [], []);
+        auto cb = grammar.directUnwrapClosureFull(b, [], []);
+        if (ca.length > cb.length)
+            return true;
+        return false;
+    }
+
     while (nonterminalsTodo.length)
     {
+        nonterminalsTodo.sort!(compareNonterminals, SwapStrategy.stable);
         auto n = nonterminalsTodo[0];
         nonterminalsTodo = nonterminalsTodo[1 .. $];
+
+        if (graph.globalOptions.optimizationDescent)
+        {
+            if (nonterminalsInDirectUnwrapClosures[n.id] > 0)
+            {
+                continue;
+            }
+        }
 
         bool hasEnableToken;
         foreach (a; graph.grammar.nonterminals[n].annotations.otherAnnotations)
@@ -439,12 +518,19 @@ do
         bool uniqueFirstSet = false;
         if (graph.globalOptions.optimizationDescent
             && !grammar.canBeEmpty(n)
-            && !grammar.isMutuallyLeftRecursive(n))
+            && !grammar.isMutuallyLeftRecursive(n)
+            && !grammar.nonterminals[n].annotations.contains!"noOptDescent")
         {
             uniqueFirstSet = true;
             foreach (token; graph.grammar.firstSetImpl(n, [], []).bitsSet)
             {
                 if (firstSetCounts[token.id] != 1)
+                    uniqueFirstSet = false;
+            }
+
+            foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+            {
+                if (nonterminalsInDirectUnwrapClosures2[n2.nonterminalID.id] != nonterminalsInDirectUnwrapClosures2[n.id])
                     uniqueFirstSet = false;
             }
         }
@@ -468,6 +554,7 @@ do
         else
         {
             bool canStartWithEmpty;
+            size_t prevLength = result.data.length;
             foreach (prodNr, p; graph.grammar.getProductions(n))
             {
                 if (graph.globalOptions.directUnwrap
@@ -479,15 +566,17 @@ do
                 size_t elementNr = result.data.length;
                 auto newElem = LRElement(p, 0);
                 result.put(newElem);
-                addedElement(elementNr);
             }
-            if (!canStartWithEmpty && graph.globalOptions.optimizationDescent)
+            if (graph.globalOptions.optimizationDescent)
             {
-                foreach (token; graph.grammar.firstSetImpl(n, [], []).bitsSet)
+                if (nonterminalsInDirectUnwrapClosures[n.id] == 0)
                 {
-                    firstSetCounts[token.id]--;
+                    if (!canStartWithEmpty)
+                        changeNonterminalFirstSet(n, -1);
                 }
             }
+            foreach (i; prevLength .. result.data.length)
+                addedElement(i);
         }
     }
 
@@ -901,7 +990,7 @@ class LRGraphNode
         return false;
     }
 
-    NonterminalID[] allNonterminals() const
+    NonterminalID[] allNonterminals(EBNFGrammar grammar) const
     {
         BitSet!NonterminalID n;
         foreach (e; elements)
@@ -909,7 +998,9 @@ class LRGraphNode
             n[e.production.nonterminalID] = true;
         }
         foreach (x; elements.descentNonterminals)
+        {
             n[x] = true;
+        }
         return n.bitsSet.array;
     }
 

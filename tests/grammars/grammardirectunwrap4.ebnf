@@ -1,0 +1,30 @@
+StructInitializer
+    = "{" StructMemberInitializers? "}"
+    ;
+
+StructMemberInitializers @array
+    = StructMemberInitializer
+    | StructMemberInitializers "," StructMemberInitializer
+    ;
+
+StructMemberInitializer @directUnwrap
+    = <Expression
+    | IdentifierExpression ":" NonVoidInitializer
+    ;
+
+Expression @directUnwrap
+    = <IdentifierExpression
+    | Expression "+" IdentifierExpression
+    ;
+
+IdentifierExpression
+    = Identifier
+    ;
+
+NonVoidInitializer
+    = Identifier
+    ;
+
+token Identifier @lowPrio = [a-zA-Z_] [a-zA-Z_0-9]*;
+
+token Space @ignoreToken = [ \n\r\t]+;

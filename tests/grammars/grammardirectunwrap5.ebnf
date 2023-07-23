@@ -1,0 +1,5 @@
+S = A "a" | B "b";
+
+A @directUnwrap = "a" | <C;
+B @directUnwrap = <C;
+C = "c";

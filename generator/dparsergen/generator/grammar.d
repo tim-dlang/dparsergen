@@ -782,13 +782,13 @@ class EBNFGrammar
                     && !nonterminals[production.nonterminalID].annotations.contains!"array");
     }
 
-    immutable(NonterminalWithConstraint)[][NonterminalWithConstraint] directUnwrapClosureCache;
-    immutable(NonterminalWithConstraint)[] directUnwrapClosure(NonterminalID s,
+    immutable(NonterminalWithConstraint)[][NonterminalWithConstraint] directUnwrapClosureCacheFull;
+    immutable(NonterminalWithConstraint)[] directUnwrapClosureFull(NonterminalID s,
             immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
     {
-        if (NonterminalWithConstraint(s, Constraint(negLookaheads, tags)) in directUnwrapClosureCache)
+        if (NonterminalWithConstraint(s, Constraint(negLookaheads, tags)) in directUnwrapClosureCacheFull)
         {
-            auto r = directUnwrapClosureCache[NonterminalWithConstraint(s,
+            auto r = directUnwrapClosureCacheFull[NonterminalWithConstraint(s,
                         Constraint(negLookaheads, tags))];
             enforce(r.length, getSymbolName(s));
             return r;
@@ -810,16 +810,10 @@ class EBNFGrammar
                 return [];
         }
 
-        directUnwrapClosureCache[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = [
+        directUnwrapClosureCacheFull[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = [
         ];
 
         NonterminalWithConstraint[] r;
-        bool needsNonterminal;
-        foreach (p; getProductions(s))
-        {
-            if (!isDirectUnwrapProduction(*p))
-                needsNonterminal = true;
-        }
         void addNonterminal(NonterminalWithConstraint n)
         {
             foreach (t; n.constraint.tags)
@@ -839,8 +833,7 @@ class EBNFGrammar
             r ~= n;
         }
 
-        if (needsNonterminal)
-            addNonterminal(NonterminalWithConstraint(s, Constraint(negLookaheads, tags)));
+        addNonterminal(NonterminalWithConstraint(s, Constraint(negLookaheads, tags)));
 
         foreach (p; getProductions(s))
         {
@@ -851,21 +844,15 @@ class EBNFGrammar
                 immutable(Symbol)[] nextNegLookaheads = negLookaheads;
                 nextNegLookaheads.addOnce(p.symbols[0].negLookaheads);
                 auto nextTags = tags;
-                if (p.symbols[0].annotations.contains!"excludeDirectUnwrap")
+                foreach (n; directUnwrapClosureFull(p.symbols[0].symbol.toNonterminalID,
+                        nextNegLookaheads, nextTags))
                 {
-                    if (directUnwrapClosureHasSelf(p.symbols[0].symbol.toNonterminalID,
-                            nextNegLookaheads, nextTags))
-                        addNonterminal(NonterminalWithConstraint(p.symbols[0].symbol.toNonterminalID,
-                                Constraint(nextNegLookaheads, nextTags),
-                                p.symbols[0].annotations.contains!"lookahead"));
-                }
-                else
-                {
-                    foreach (n; directUnwrapClosure(p.symbols[0].symbol.toNonterminalID,
-                            nextNegLookaheads, nextTags))
-                        addNonterminal(NonterminalWithConstraint(n.nonterminalID, n.constraint,
-                                n.hasLookaheadAnnotation
-                                || p.symbols[0].annotations.contains!"lookahead"));
+                    Constraint constraint = n.constraint;
+                    if (p.symbols[0].annotations.contains!"excludeDirectUnwrap" && n.nonterminalID != p.symbols[0].symbol.toNonterminalID)
+                        constraint.disabled = true;
+                    addNonterminal(NonterminalWithConstraint(n.nonterminalID, constraint,
+                            n.hasLookaheadAnnotation
+                            || p.symbols[0].annotations.contains!"lookahead"));
                 }
             }
         }
@@ -874,17 +861,27 @@ class EBNFGrammar
 
         auto r2 = r.idup;
 
-        directUnwrapClosureCache[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = r2;
+        directUnwrapClosureCacheFull[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = r2;
 
         return r2;
     }
 
-    immutable(NonterminalWithConstraint)[] directUnwrapClosure(const SymbolInstance s)
+    auto directUnwrapClosure(NonterminalID s,
+            immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
+    {
+        bool needsNonterminal(NonterminalWithConstraint n)
+        {
+            return !n.constraint.disabled && directUnwrapClosureHasSelf(n);
+        }
+        return directUnwrapClosureFull(s, negLookaheads, tags).filter!needsNonterminal;
+    }
+
+    auto directUnwrapClosure(const SymbolInstance s)
     {
         return directUnwrapClosure(s.toNonterminalID, s.negLookaheads, s.tags);
     }
 
-    immutable(NonterminalWithConstraint)[] directUnwrapClosure(NonterminalWithConstraint n)
+    auto directUnwrapClosure(NonterminalWithConstraint n)
     {
         return directUnwrapClosure(n.nonterminalID, n.constraint.negLookaheads, n.constraint.tags);
     }
@@ -901,7 +898,7 @@ class EBNFGrammar
         }
 
         auto r = directUnwrapClosure(s, negLookaheads, tags);
-        if (r.length == 0)
+        if (r.empty)
             return null;
 
         immutable(Symbol)[][NonterminalID] n;

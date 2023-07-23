@@ -348,7 +348,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
     if (actionTable.hasShift)
     {
         code.writeln("alias ParseResultIn = CreatorInstance.NonterminalUnion!([",
-                node.allNonterminals.map!(x => (x.id + grammar.startNonterminalID)
+                node.allNonterminals(grammar).map!(x => (x.id + grammar.startNonterminalID)
                     .text).joiner(", "), "]);");
         code.writeln("ParseResultIn currentResult;");
         code.writeln("Location currentResultLocation;");
@@ -1497,7 +1497,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     $$CommaGen elseCodeOuter = CommaGen("else ");
                     $$foreach (nonterminalID; actionTable.jumps.sortedKeys) {
                         $$auto jumps2 = actionTable.jumps[nonterminalID];
-                        $$if (!node.allNonterminals.canFind(nonterminalID)) continue;
+                        $$if (!node.allNonterminals(grammar).canFind(nonterminalID)) continue;
                         $(elseCodeOuter())if (currentResult.nonterminalID == $(grammar.nonterminalIDCode(nonterminalID)))
                         {
                             $$CommaGen elseCode = CommaGen("else ");
