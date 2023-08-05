@@ -7,8 +7,9 @@ SourceFile @start
     | Module?
     ;
 Module
-    = ModuleDeclaration DeclDefs?
-    | DeclDefs?
+    = ModuleDeclaration
+    | ModuleDeclaration DeclDefs
+    | DeclDefs
     ;
 DeclDefs @array @regArray
     = DeclDef
@@ -420,8 +421,8 @@ NamedArgumentList @array @regArray
     | NamedArgument "," NamedArgumentList
     ;
 NamedArgument @directUnwrap
-    = <AssignExpression
-    | IdentifierExpression ":" AssignExpression
+    = IdentifierExpression ":" AssignExpression
+    | <AssignExpression
     ;
 TypeidExpression @backtrack
     = "typeid" "(" Type ")"
