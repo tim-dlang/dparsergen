@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 74c06ae222f27b9bcaf78e196a27abdc540b2fa7
+// Based on grammar from dlang.org commit 5559619df556ab28ccf5f790f8deea3fc19bcd3c
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -187,10 +187,7 @@ AddExpression @directUnwrap
     = <MulExpression
     | AddExpression "+" MulExpression
     | AddExpression "-" MulExpression
-    | <CatExpression
-    ;
-CatExpression
-    = AddExpression "~" MulExpression
+    | AddExpression "~" MulExpression
     ;
 MulExpression @directUnwrap
     = <UnaryExpression
@@ -244,6 +241,20 @@ PostfixExpression @directUnwrap
     | !QualifiedIdentifier BasicType Arguments
     // | <IndexExpression // See SliceExpression
     | <SliceExpression
+    ;
+ArgumentList @array @regArray
+    = AssignExpression
+    | AssignExpression ","
+    | AssignExpression "," ArgumentList
+    ;
+NamedArgumentList @array @regArray
+    = NamedArgument
+    | NamedArgument ","
+    | NamedArgument "," NamedArgumentList
+    ;
+NamedArgument @directUnwrap
+    = IdentifierExpression ":" AssignExpression
+    | <AssignExpression
     ;
 CallExpression
     = PostfixExpression Arguments
@@ -410,20 +421,6 @@ NewExpression
     //| "new" Type "(" NamedArgumentList? ")"
     | <NewAnonClassExpression
     ;
-ArgumentList @array @regArray
-    = AssignExpression
-    | AssignExpression ","
-    | AssignExpression "," ArgumentList
-    ;
-NamedArgumentList @array @regArray
-    = NamedArgument
-    | NamedArgument ","
-    | NamedArgument "," NamedArgumentList
-    ;
-NamedArgument @directUnwrap
-    = IdentifierExpression ":" AssignExpression
-    | <AssignExpression
-    ;
 TypeidExpression @backtrack
     = "typeid" "(" Type ")"
     | "typeid" "(" Expression ")"
@@ -446,6 +443,7 @@ IsExpression
     ;
 TypeSpecialization
     = <Type
+    | <TypeCtor
     | "struct"
     | "union"
     | "class"
@@ -455,10 +453,6 @@ TypeSpecialization
     | "function"
     | "delegate"
     | "super"
-    | "const"
-    | "immutable"
-    | "inout"
-    | "shared"
     | "return"
     | "__parameters"
     | "module"
@@ -1755,7 +1749,6 @@ StructMemberInitializerExpr @directUnwrap
     | IdentifierExpression ":" NonVoidInitializer
     ;
 /*Postblit
-    = "this" "(" "this" ")" MemberFunctionAttributes? ";"
     | "this" "(" "this" ")" MemberFunctionAttributes? FunctionBody
     ;*/
 AliasThis
