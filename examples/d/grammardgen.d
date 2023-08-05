@@ -587,7 +587,7 @@ int main(string[] args)
 
     if (args.length != 4)
     {
-        stderr.writeln("Usage: grammarcppgen dlang.org grammard.ebnf grammardlex.ebnf");
+        stderr.writeln("Usage: grammardgen dlang.org grammard.ebnf grammardlex.ebnf");
         return 1;
     }
     string dlangRepo = args[1];
