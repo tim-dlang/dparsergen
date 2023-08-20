@@ -1936,6 +1936,7 @@ struct ActionTable
     Action defaultReduceAction;
     bool hasTags;
     bool[ProductionID] reduceConflictProductions;
+    bool[Symbol] usedNegLookahead;
 }
 
 bool actionIgnored(LRGraph graph, const LRGraphNode node, const Action a, const Action[] actions)
@@ -2309,6 +2310,16 @@ ActionTable genActionTable(LRGraph graph, const LRGraphNode node)
             else
                 r.actions[t][s] = bestAction;
         }
+
+    foreach (e; node.elements)
+    {
+        if (e.isNextValid(grammar))
+            foreach (n; e.next(grammar).negLookaheads)
+                if (n !in r.usedNegLookahead)
+                {
+                    r.usedNegLookahead[n] = true;
+                }
+    }
 
     return r;
 }

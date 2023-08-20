@@ -180,17 +180,6 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         }
     }
 
-    bool[Symbol] usedNegLookahead;
-    foreach (e; node.elements)
-    {
-        if (e.isNextValid(grammar))
-            foreach (n; e.next(grammar).negLookaheads)
-                if (n !in usedNegLookahead)
-                {
-                    usedNegLookahead[n] = true;
-                }
-    }
-
     mixin(genCode("code", q{
         private void $(parseFunctionName(graph, stateNr, "pushTokenState"))(  _
         StackNode *stackNode, size_t tokenId, Token tokenContent, Location start, Location end)
@@ -201,7 +190,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                 assert(false, "Not used for GLR parser");
             $$} else {
                 $$string ifPrefix="";
-                $$foreach (l; usedNegLookahead.sortedKeys) {
+                $$foreach (l; actionTable.usedNegLookahead.sortedKeys) {
                     $$if (l.isToken) {
                         if (tokenId == getTokenID!$(grammar.tokens[l.toTokenID].tokenDCode))
                             stackNode.$(parseFunctionName(graph, stateNr, "stateData")).disallow$(symbolNameCode(grammar, l)) = true;
@@ -268,7 +257,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                 $$foreach (nonterminalID; actionTable.jumps.sortedKeys) {
                     $$auto jumps2 = actionTable.jumps[nonterminalID];
                     case $(grammar.nonterminalIDCode(nonterminalID)):
-                        $$if (nonterminalID in usedNegLookahead) {
+                        $$if (nonterminalID in actionTable.usedNegLookahead) {
                             stackNode.$(parseFunctionName(graph, stateNr, "stateData")).disallow$(symbolNameCode(grammar, nonterminalID)) = true;
                         $$}
                         $$CommaGen elseCode = CommaGen("else ");

@@ -310,17 +310,8 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
     code.incIndent;
     code.writeln("alias ThisParseResult = typeof(result);");
 
-    bool[Symbol] usedNegLookahead;
-    foreach (e; node.elements)
-    {
-        if (e.isNextValid(grammar))
-            foreach (n; e.next(grammar).negLookaheads)
-                if (n !in usedNegLookahead)
-                {
-                    code.writeln("bool disallow", symbolNameCode(grammar, n), ";");
-                    usedNegLookahead[n] = true;
-                }
-    }
+    foreach (n; actionTable.usedNegLookahead.sortedKeys)
+        code.writeln("bool disallow", symbolNameCode(grammar, n), ";");
 
     size_t allowTokenCount;
     foreach (e; node.elements)
@@ -1346,7 +1337,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     return false;
                 auto a = actionTable.actions[t];
                 string[] subTokens = a.sortedKeys;
-                return t !in usedNegLookahead && subTokens.length == 1 && subTokens[0] == ""
+                return t !in actionTable.usedNegLookahead && subTokens.length == 1 && subTokens[0] == ""
                     && a[""].type.among(ActionType.reduce, ActionType.accept, ActionType.descent);
             }
 
@@ -1430,7 +1421,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                 code.writeln(ifText).writeln("{").incIndent;
                 foreach (t; caseInfo.tokens)
                 {
-                    if (t in usedNegLookahead)
+                    if (t in actionTable.usedNegLookahead)
                     {
                         assert(caseInfo.tokens.length == 1);
                         code.writeln("disallow", symbolNameCode(grammar, t), " = true;");
@@ -1477,7 +1468,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
     void genJumpCode(NonterminalID nonterminalID, size_t newState)
     {
         mixin(genCode("code", q{
-            $$if (nonterminalID in usedNegLookahead) {
+            $$if (nonterminalID in actionTable.usedNegLookahead) {
                 disallow$(symbolNameCode(grammar, nonterminalID)) = true;
             $$}
             $$if (newState != size_t.max && trivialState(graph.states[newState])) {
