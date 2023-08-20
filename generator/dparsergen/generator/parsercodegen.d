@@ -310,6 +310,8 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
     code.incIndent;
     code.writeln("alias ThisParseResult = typeof(result);");
 
+    auto actionCases = groupActions(graph, actionTable);
+
     foreach (n; actionTable.usedNegLookahead.sortedKeys)
         code.writeln("bool disallow", symbolNameCode(grammar, n), ";");
 
@@ -1321,87 +1323,21 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     || (actionTable.defaultReduceAction.type == ActionType.none
                         && endTok in actionTable.actions));
 
-            static struct CaseInfo
+            if (!skipIf && endTok !in actionTable.actions)
             {
-                TokenID[] tokens;
-                string subToken;
-                Action action;
-                bool allowCombined;
+                mixin(genCode("code", q{
+                    if (lexer.empty)
+                    {
+                        lastError = new SingleParseException!Location("EOF", lexer.front.currentLocation, lexer.front.currentTokenEnd);
+                        return -1;
+                    }
+                    }));
             }
 
-            CaseInfo[] cases;
-
-            bool checkAllowCombined(TokenID t)
+            foreach (caseInfo; actionCases)
             {
-                if (t !in actionTable.actions)
-                    return false;
-                auto a = actionTable.actions[t];
-                string[] subTokens = a.sortedKeys;
-                return t !in actionTable.usedNegLookahead && subTokens.length == 1 && subTokens[0] == ""
-                    && a[""].type.among(ActionType.reduce, ActionType.accept, ActionType.descent);
-            }
-
-            if (!skipIf)
-            {
-                if (checkAllowCombined(endTok))
-                {
-                    cases ~= CaseInfo([endTok], "", actionTable.actions[endTok][""], true);
-                }
-                else if (endTok in actionTable.actions)
-                {
-                    code.writeln("if (lexer.empty)").writeln("{").incIndent;
-                    actionCode(actionTable.actions[endTok][""]);
-                    code.decIndent.writeln("}");
-                }
-                else
-                {
-                    mixin(genCode("code", q{
-                        if (lexer.empty)
-                        {
-                            lastError = new SingleParseException!Location("EOF", lexer.front.currentLocation, lexer.front.currentTokenEnd);
-                            return -1;
-                        }
-                        }));
-                }
-            }
-
-            foreach (t; actionTable.actions.sortedKeys)
-            {
-                auto a = actionTable.actions[t];
-                if (t == endTok)
+                if (skipIf && caseInfo.tokens.length == 1 && caseInfo.tokens[0] == endTok)
                     continue;
-
-                bool allowCombined = checkAllowCombined(t);
-
-                if (allowCombined)
-                {
-                    bool found;
-                    foreach (i, ref caseInfo; cases)
-                    {
-                        if (caseInfo.allowCombined && caseInfo.action == a[""])
-                        {
-                            caseInfo.tokens ~= t;
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (found)
-                        continue;
-                }
-
-                foreach (subToken; a.sortedKeys)
-                {
-                    auto a2 = a[subToken];
-
-                    if (a2.type != ActionType.none)
-                    {
-                        cases ~= CaseInfo([t], subToken, a2, allowCombined);
-                    }
-                }
-            }
-
-            foreach (caseInfo; cases)
-            {
                 assert(caseInfo.tokens.length == 1 || caseInfo.subToken.length == 0);
                 string ifText = caseInfo.tokens[0] == endTok ? "if (" : "else if (";
                 foreach (i, t; caseInfo.tokens)

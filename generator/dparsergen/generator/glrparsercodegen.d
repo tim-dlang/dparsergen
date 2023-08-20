@@ -161,24 +161,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         Tuple!(TokenID, string)[] conditions;
     }
 
-    ActionX[] actions;
-    size_t[Action] actionsMap;
-
-    foreach (t; actionTable.actions.sortedKeys)
-    {
-        auto a = actionTable.actions[t];
-        foreach (subToken; a.sortedKeys)
-        {
-            auto a2 = a[subToken];
-            auto x = tuple!(TokenID, string)(t, subToken);
-            if (a2 !in actionsMap)
-            {
-                actionsMap[a2] = actions.length;
-                actions ~= ActionX(a2);
-            }
-            actions[actionsMap[a2]].conditions ~= x;
-        }
-    }
+    auto actionCases = groupActions(graph, actionTable);
 
     mixin(genCode("code", q{
         private void $(parseFunctionName(graph, stateNr, "pushTokenState"))(  _
@@ -196,19 +179,18 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                             stackNode.$(parseFunctionName(graph, stateNr, "stateData")).disallow$(symbolNameCode(grammar, l)) = true;
                     $$}
                 $$}
-                $$foreach (a; actions) {
+                $$foreach (caseInfo; actionCases) {
                     $(ifPrefix)if (  _
                     $$CommaGen orCode = CommaGen(" || ");
-                    $$foreach (c; a.conditions) {
-                        $$if (c[1] == "") {
-                            $(orCode())tokenId == getTokenID!$(grammar.tokens[c[0]].tokenDCode)  _
-                        $$} else {
-                            $(orCode())(tokenId == getTokenID!$(grammar.tokens[c[0]].tokenDCode) && tokenContent == $(c[1]))  _
-                        $$}
+                    $$foreach (t; caseInfo.tokens) {
+                        $(orCode())tokenId == getTokenID!$(grammar.tokens[t].tokenDCode)  _
+                    $$}
+                    $$if (caseInfo.subToken.length) {
+                         && tokenContent == $(caseInfo.subToken)  _
                     $$}
                     )
                     {
-                        $$actionCode(a.action);
+                        $$actionCode(caseInfo.action);
                     }
                     $$ifPrefix = "else ";
                 $$}

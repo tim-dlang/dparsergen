@@ -2324,6 +2324,73 @@ ActionTable genActionTable(LRGraph graph, const LRGraphNode node)
     return r;
 }
 
+struct ActionCaseInfo
+{
+    TokenID[] tokens;
+    string subToken;
+    Action action;
+    bool allowCombined;
+}
+
+ActionCaseInfo[] groupActions(LRGraph graph, ActionTable actionTable)
+{
+    auto grammar = graph.grammar;
+    immutable endTok = grammar.tokens.getID("$end");
+    ActionCaseInfo[] cases;
+
+    bool checkAllowCombined(TokenID t)
+    {
+        if (t !in actionTable.actions)
+            return false;
+        auto a = actionTable.actions[t];
+        string[] subTokens = a.sortedKeys;
+        return t !in actionTable.usedNegLookahead && subTokens.length == 1 && subTokens[0] == ""
+            && a[""].type.among(ActionType.reduce, ActionType.accept, ActionType.descent);
+    }
+
+    if (endTok in actionTable.actions)
+    {
+        cases ~= ActionCaseInfo([endTok], "", actionTable.actions[endTok][""], checkAllowCombined(endTok));
+    }
+
+    foreach (t; actionTable.actions.sortedKeys)
+    {
+        auto a = actionTable.actions[t];
+        if (t == endTok)
+            continue;
+
+        bool allowCombined = checkAllowCombined(t);
+
+        if (allowCombined)
+        {
+            bool found;
+            foreach (i, ref caseInfo; cases)
+            {
+                if (caseInfo.allowCombined && caseInfo.action == a[""])
+                {
+                    caseInfo.tokens ~= t;
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+                continue;
+        }
+
+        foreach (subToken; a.sortedKeys)
+        {
+            auto a2 = a[subToken];
+
+            if (a2.type != ActionType.none)
+            {
+                cases ~= ActionCaseInfo([t], subToken, a2, allowCombined);
+            }
+        }
+    }
+
+    return cases;
+}
+
 bool trivialState(LRGraphNode s)
 {
     if (s.elements.length != 1)
