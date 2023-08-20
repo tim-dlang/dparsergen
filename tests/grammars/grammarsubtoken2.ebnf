@@ -1,0 +1,21 @@
+S = <AtAttribute;
+
+AtAttribute
+    = "@" Expression
+    | "@" Identifier>>"disable"
+    ;
+
+Expression
+    = <IdentifierExpression
+    ;
+
+IdentifierExpression
+    = Identifier
+    ;
+
+token Identifier
+    = [a-zA-Z]+
+    ;
+token Space @ignoreToken
+    = [ \t]+
+    ;

@@ -688,7 +688,7 @@ LRElement[] elementSetGoto(LRGraph graph, size_t prevState,
 
         if (next.isToken)
         {
-            if (nextP == next && nextP.subToken == subToken)
+            if (nextP == next && (nextP.subToken.length == 0 || nextP.subToken == subToken))
                 isGood = true;
         }
         else
@@ -1939,12 +1939,24 @@ struct ActionTable
     bool[Symbol] usedNegLookahead;
 }
 
+bool hasSubToken(const Production *p)
+{
+    foreach (s; p.symbols)
+    {
+        if (s.symbol.isToken && s.subToken.length)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 bool actionIgnored(LRGraph graph, const LRGraphNode node, const Action a, const Action[] actions)
 {
     auto grammar = graph.grammar;
     if (a.ignoreInConflict)
         return true;
-    if (a.type == ActionType.reduce)
+    if (a.type == ActionType.reduce || a.type == ActionType.accept)
     {
         auto p = node.elements[a.elementNr].production;
         if ((p.symbols.length && p.symbols[$ - 1].annotations.contains!"eager"
@@ -1953,6 +1965,25 @@ bool actionIgnored(LRGraph graph, const LRGraphNode node, const Action a, const 
                     ActionType.descent)) || (actions[1] == a
                     && actions[0].type.among(ActionType.shift, ActionType.descent))))
             return true;
+        if (!hasSubToken(p))
+        {
+            bool otherHasSubToken;
+            foreach (e2; node.elements)
+            {
+                auto stackSymbols = e2.stackSymbols;
+                if (stackSymbols.length > p.symbols.length)
+                    stackSymbols = stackSymbols[$ - p.symbols.length .. $];
+                foreach (s2; stackSymbols)
+                {
+                    if (s2.symbol.isToken && s2.subToken.length)
+                    {
+                        otherHasSubToken = true;
+                    }
+                }
+            }
+            if (otherHasSubToken)
+                return true;
+        }
         return p.annotations.contains!"ignoreInConflict"()
             || grammar.nonterminals[p.nonterminalID].annotations.contains!"ignoreInConflict"();
     }
@@ -2337,14 +2368,23 @@ ActionCaseInfo[] groupActions(LRGraph graph, ActionTable actionTable)
     auto grammar = graph.grammar;
     immutable endTok = grammar.tokens.getID("$end");
     ActionCaseInfo[] cases;
+    bool[TokenID] hasSubToken;
+
+    foreach (t, a; actionTable.actions)
+    {
+        foreach (subToken, _; a)
+        {
+            if (subToken.length)
+                hasSubToken[t] = true;
+        }
+    }
 
     bool checkAllowCombined(TokenID t)
     {
         if (t !in actionTable.actions)
             return false;
         auto a = actionTable.actions[t];
-        string[] subTokens = a.sortedKeys;
-        return t !in actionTable.usedNegLookahead && subTokens.length == 1 && subTokens[0] == ""
+        return t !in actionTable.usedNegLookahead && t !in hasSubToken
             && a[""].type.among(ActionType.reduce, ActionType.accept, ActionType.descent);
     }
 
@@ -2387,6 +2427,20 @@ ActionCaseInfo[] groupActions(LRGraph graph, ActionTable actionTable)
             }
         }
     }
+
+    cases.sort!((a, b) {
+        if (a.tokens != b.tokens)
+            return a.tokens < b.tokens;
+        if (a.subToken != b.subToken)
+        {
+            if (a.subToken == "")
+                return false;
+            if (b.subToken == "")
+                return true;
+            return a.subToken < b.subToken;
+        }
+        return false;
+    });
 
     return cases;
 }

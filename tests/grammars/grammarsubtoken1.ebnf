@@ -1,0 +1,15 @@
+S = <Call | <Alias;
+
+Call
+    = NAME "(" ")"
+    ;
+Alias
+    = NAME>>"type" NAME "=" Call
+    ;
+
+token NAME
+    = [a-zA-Z]+
+    ;
+token SPACE @ignoreToken
+    = [ \t]+
+    ;
