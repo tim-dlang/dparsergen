@@ -679,7 +679,7 @@ class EBNFGrammar
             TagID[] possibleTags;
             auto r = handleNonterminal(n, possibleTags);
             if (r[0] & NonterminalFlags.anyArray)
-                enforce(!(r[0] & NonterminalFlags.anySingle));
+                enforce(!(r[0] & NonterminalFlags.anySingle), text(getSymbolName(n), " can be both array an not array"));
             nonterminals[n].flags = r[0];
             r[1].sort();
             nonterminals[n].buildNonterminals = r[1].idup;
@@ -1932,7 +1932,8 @@ EBNFGrammar createLexerGrammar(EBNF ebnf, EBNFGrammar realGrammar)
         if (!lexerGrammar.symbolInfos[d.name].reachableFromToken)
             continue;
 
-        NonterminalID id = createGrammar(lexerGrammar, d.name, d.exprTree, ebnf);
+        if (d.exprTree !is null)
+            createGrammar(lexerGrammar, d.name, d.exprTree, ebnf);
     }
 
     lexerGrammar.fillProductionsForNonterminal();
