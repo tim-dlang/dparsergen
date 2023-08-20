@@ -464,7 +464,7 @@ token StringLiteral
     = <b>&quot;\\&quot;&quot;</b> <a href="#string-literal">StringPart</a>* <b>&quot;\\&quot;&quot;</b>
     ;
 fragment StringPart
-    = <b>[^\\&quot;\\\\]</b>
+    = <b>[^\\&quot;\\\\\\r\\n]</b>
     | <a href="#escape-sequence">EscapeSequence</a>
     ;
 </pre>

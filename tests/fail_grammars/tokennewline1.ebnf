@@ -1,0 +1,8 @@
+/*
+GENERATOR_OUTPUT(optdescent, glr, normal, lexer):
+---
+tests/fail_grammars/tokennewline1.ebnf:7:4: Error unexpected '\n', expected [^\n\r]
+---
+*/
+S = "x
+";

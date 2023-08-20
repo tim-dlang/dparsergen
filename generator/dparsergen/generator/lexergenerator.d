@@ -968,7 +968,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
                                         goto lexerend;
                                 $$}
                                 else
-                                    throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar"), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
+                                    throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar").escapeChar(false), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
                             $$}
                         $$} else {
                             $$needsElse = true;
@@ -1010,7 +1010,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
                                         storedStart = size_t.max;
                                     $$}
                                     $$if (e.next3.id == size_t.max) {
-                                        throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar"), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
+                                        throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar").escapeChar(false), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
                                     $$} else {
                                         goto state$(e.next3.id);
                                     $$}
@@ -1018,7 +1018,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
                                 else if (compareString.length < storedString.length && currentCharCorrect)
                                 {
                                     $$if (e.next2.id == size_t.max) {
-                                        throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar"), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
+                                        throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar").escapeChar(false), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
                                     $$} else {
                                         goto state$(e.next2.id);
                                     $$}
@@ -1027,7 +1027,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
                                 {
                                     storedStart = size_t.max;
                                     $$if (e.next.id == size_t.max) {
-                                        throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar"), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
+                                        throw lexerException(text("Error unexpected \'", $(ascii?"currentChar":"currentDchar").escapeChar(false), "\'"), "$(codepointSetToStr(allAllowedSet).escapeD)", inputCopy.ptr - input.ptr);
                                     $$} else {
                                         goto state$(e.next.id);
                                     $$}
@@ -1541,6 +1541,7 @@ const(char)[] createLexerCode(EBNFGrammar lexerGrammar, string modulename, strin
         module $(modulename);
         import dparsergen.core.grammarinfo;
         import dparsergen.core.parseexception;
+        import dparsergen.core.utils;
         import std.conv;
         import std.string;
         import std.typecons;

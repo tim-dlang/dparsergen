@@ -367,7 +367,7 @@ token StringLiteral
 
 /// ditto
 fragment StringPart
-    = [^\"\\]
+    = [^\"\\\r\n]
     | EscapeSequence
     ;
 

@@ -2,6 +2,7 @@
 module dparsergen.generator.grammarebnf_lexer;
 import dparsergen.core.grammarinfo;
 import dparsergen.core.parseexception;
+import dparsergen.core.utils;
 import std.conv;
 import std.string;
 import std.typecons;
@@ -255,7 +256,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[\\t-\\n\\r -\\\"(-\\[\\^-_a-}]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[\\t-\\n\\r -\\\"(-\\[\\^-_a-}]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -269,7 +270,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[\\t-\\n\\r -\\\"(-\\[\\^-_a-}]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[\\t-\\n\\r -\\\"(-\\[\\^-_a-}]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -350,7 +351,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[*-+/]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[*-+/]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -364,7 +365,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[*-+/]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[*-+/]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2323,7 +2324,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if (foundSymbol != SymbolID.max)
                     goto lexerend;
                 else
-                    throw lexerException("EOF", "[^]", inputCopy.ptr - input.ptr);
+                    throw lexerException("EOF", "[^\\n\\r]", inputCopy.ptr - input.ptr);
             }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
@@ -2337,6 +2338,13 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state51;
+                }
+                else if (currentChar == '\n' || currentChar == '\r')
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[^\\n\\r]", inputCopy.ptr - input.ptr);
                 }
                 else
                 {
@@ -2416,7 +2424,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2430,7 +2438,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2461,7 +2469,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2475,7 +2483,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2506,7 +2514,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2520,7 +2528,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2551,7 +2559,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2565,7 +2573,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2596,7 +2604,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2610,7 +2618,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2641,7 +2649,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2655,7 +2663,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2686,7 +2694,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2700,7 +2708,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2731,7 +2739,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2745,7 +2753,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2776,7 +2784,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2790,7 +2798,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -2826,7 +2834,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[^\\-\\[]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[^\\-\\[]", inputCopy.ptr - input.ptr);
                 }
                 else
                 {
@@ -2874,7 +2882,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[^\\[]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[^\\[]", inputCopy.ptr - input.ptr);
                 }
                 else if (currentChar == '\\')
                 {
@@ -2964,7 +2972,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -2978,7 +2986,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3009,7 +3017,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[^\\-\\[\\]]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[^\\-\\[\\]]", inputCopy.ptr - input.ptr);
                 }
                 else
                 {
@@ -3072,7 +3080,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3086,7 +3094,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3117,7 +3125,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3131,7 +3139,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3162,7 +3170,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3176,7 +3184,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3207,7 +3215,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3221,7 +3229,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3252,7 +3260,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3266,7 +3274,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3297,7 +3305,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3311,7 +3319,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3342,7 +3350,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3356,7 +3364,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3387,7 +3395,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3401,7 +3409,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3432,7 +3440,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3446,7 +3454,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3477,7 +3485,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3491,7 +3499,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3522,7 +3530,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3536,7 +3544,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3567,7 +3575,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3581,7 +3589,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3612,7 +3620,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3626,7 +3634,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3657,7 +3665,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3671,7 +3679,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3702,7 +3710,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3716,7 +3724,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3747,7 +3755,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3761,7 +3769,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3792,7 +3800,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3806,7 +3814,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -3979,7 +3987,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -3993,7 +4001,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
         }
@@ -4024,7 +4032,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar, "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -4038,7 +4046,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar, "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
         }
