@@ -1,0 +1,14 @@
+/*
+GENERATOR_OUTPUT(normal, optdescent):
+---
+Warning: Parse conflict in state 0
+---
+*/
+S = <B | <A;
+B @backtrack
+    = Identifier
+    | [0-9]
+    ;
+A = Identifier>>"a";
+
+token Identifier = [a-zA-Z]+;

@@ -2222,6 +2222,21 @@ ActionTable genActionTable(LRGraph graph, const LRGraphNode node)
         }
     }
 
+    foreach (t, a1; actions)
+    {
+        if ("" in a1)
+        {
+            foreach (s, ref a2; a1)
+            {
+                if (s == "")
+                    continue;
+                foreach (a3; a1[""])
+                    if (a3.type != ActionType.shift)
+                        a2 ~= a3;
+            }
+        }
+    }
+
     Action[] applyDelayedReduce(Action[] actions, TokenID token, string subToken)
     {
         if (!graph.globalOptions.delayedReduce)
