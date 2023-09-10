@@ -258,7 +258,7 @@ class EBNFGrammar
 
     void addProduction(Production* p)
     {
-        assert(productionsData.length < ProductionID.max);
+        enforce(productionsData.length < ProductionID.max);
         p.productionID = cast(ProductionID) productionsData.length;
         productionsData ~= p;
     }
@@ -1888,6 +1888,57 @@ void checkGrammar(EBNFGrammar grammar)
     }
 }
 
+void optimizeLexerGrammarCharSets(EBNFGrammar lexerGrammar)
+{
+    size_t[][NonterminalID] combinableProductions;
+    foreach (i, p; lexerGrammar.productionsData)
+    {
+        if (p is null)
+            continue;
+        if (p.symbols.length == 1 && p.symbols[0].isToken
+            && p.negLookaheads.length == 0
+            && p.negLookaheadsAnytoken == 0
+            && p.annotations.empty
+            && p.symbols[0].negLookaheads.length == 0
+            && p.symbols[0].annotations.empty)
+        {
+            string name = lexerGrammar.getSymbolName(p.symbols[0]);
+            if (name in lexerGrammar.nonterminals.ids)
+                continue;
+            if (name.endsWith("]") && !name.startsWith("[^")
+                && !name.startsWith("[-") && !name.endsWith("-]"))
+            {
+                assert(name.startsWith("["));
+                combinableProductions[p.nonterminalID] ~= i;
+            }
+        }
+    }
+
+    const(Production)*[] newProductionData = lexerGrammar.productionsData.dup;
+    foreach (nonterminal, productionIDs; combinableProductions)
+    {
+        if (productionIDs.length <= 1)
+            continue;
+        foreach (i; productionIDs)
+            newProductionData[i] = null;
+
+        string newContent = "[";
+        foreach (i; productionIDs)
+        {
+            newContent ~= lexerGrammar.getSymbolName(lexerGrammar.productionsData[i].symbols[0])[1 .. $ - 1];
+        }
+        newContent ~= "]";
+
+        Production* p2 = new Production();
+        p2.nonterminalID = nonterminal;
+        p2.symbols = [SymbolInstance(lexerGrammar.tokens.id(newContent))];
+        enforce(newProductionData.length < ProductionID.max);
+        p2.productionID = cast(ProductionID) newProductionData.length;
+        newProductionData ~= p2;
+    }
+    lexerGrammar.productionsData = newProductionData;
+}
+
 EBNFGrammar createLexerGrammar(EBNF ebnf, EBNFGrammar realGrammar)
 {
     EBNFGrammar lexerGrammar = new EBNFGrammar(realGrammar.symbolInfos);
@@ -1935,6 +1986,8 @@ EBNFGrammar createLexerGrammar(EBNF ebnf, EBNFGrammar realGrammar)
         if (d.exprTree !is null)
             createGrammar(lexerGrammar, d.name, d.exprTree, ebnf);
     }
+
+    optimizeLexerGrammarCharSets(lexerGrammar);
 
     lexerGrammar.fillProductionsForNonterminal();
 

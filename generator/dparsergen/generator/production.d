@@ -180,6 +180,11 @@ struct Annotations
                 app.put(" ");
         }
     }
+
+    bool empty() const
+    {
+        return stdAnnotations == AnnotationFlags.NONE && otherAnnotations.length == 0;
+    }
 }
 
 struct TagUsage
