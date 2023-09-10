@@ -831,7 +831,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     code.writeln("    *outTags = ", reduceTagsCode!((k) => text("stackTags",
                             k))(grammar, e.production), ";");
                 }
-                code.writeln("auto tmp = ",
+                code.write("auto tmp = ",
                         "combinedReduce" ~ productionIDs.map!(i => text(i)).join("_"), "(");
                 generateReduceParameters(code, e);
                 code.writeln(");");
