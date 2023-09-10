@@ -1,0 +1,71 @@
+PEG = Definition+;
+
+Definition
+    = Name BracketExpression? Memo? ":" Newline* "|"? Productions Newline
+    | Newline
+    | "@" "trailer" StringLiteralLong Newline
+    ;
+
+Memo = "(" Expression ")";
+
+Productions @array
+    = Production
+    | Productions Newline? "|" Production
+    ;
+
+Production = NamedExpression+ Code?;
+
+NamedExpression @backtrack
+    = Name BracketExpression? "=" PrefixExpression
+    | <PrefixExpression
+    ;
+PrefixExpression
+    = "!" Expression
+    | "&" PrefixExpression
+    | "&&" PrefixExpression
+    | StringLiteral "." Expression "+"
+    | StringLiteral "..." StringLiteral
+    | <Expression
+    | "~"
+    ;
+Expression @noOptDescent
+    = Name
+    | StringLiteral
+    | ExtraText
+    | <BracketExpression
+    | Expression "*"
+    | Expression "+"
+    | Expression "?"
+    | "(" Productions ")"
+    ;
+BracketExpression
+    = "[" Productions "]"
+    ;
+
+token StringLiteralLong @minimalMatch
+    = "'''" [^]* "'''"
+    ;
+token StringLiteral
+    = "'" [^']* "'" !"'"
+    | "\"" [^"]* "\""
+    ;
+token ExtraText
+    = "<" [^<>]* ">"
+    ;
+
+token Code = "{" {[^{}"'] | StringLiteral}* "}";
+
+token Name @lowPrio
+    = [a-zA-Z_] [a-zA-Z_0-9]*
+    | "`" [a-zA-Z_] [a-zA-Z_0-9]* "`"
+    ;
+
+token Space @ignoreToken
+    = [ \t]+
+    ;
+token Comment @ignoreToken
+    = "#" [^\n]*
+    ;
+token Newline
+    = "\n" | "\r" | "\r\n"
+    ;

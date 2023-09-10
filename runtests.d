@@ -494,6 +494,7 @@ int main(string[] args)
     string compiler = "dmd";
     string jsonTestDir = absolutePath("examples/json/JSONTestSuite/test_parsing");
     string dmdDir = absolutePath("dmd");
+    string pythonTestDir = absolutePath("cpython/Lib/test/");
     bool skipSlowExamples;
     bool avoidParallelMemoryUsage;
     Mutex outputMutex = new Mutex();
@@ -534,6 +535,16 @@ int main(string[] args)
             }
             i++;
             dmdDir = absolutePath(args[i]);
+        }
+        else if (arg == "--python-test-dir")
+        {
+            if (i + 1 >= args.length)
+            {
+                stderr.writeln("Missing argument for ", arg);
+                return 1;
+            }
+            i++;
+            pythonTestDir = absolutePath(args[i]);
         }
         else if (arg == "--skip-slow-examples")
         {
@@ -620,6 +631,16 @@ int main(string[] args)
                 readText("examples/cpp/test-output.txt").strip());
     }
     tests ~= Test("examples/cpp/grammarcpreproc", TestType.generateOnly);
+    tests ~= Test("examples/python/grammarpeg", TestType.compileOnly, [], "examples/python/grammarpythongen");
+    if (!skipSlowExamples)
+    {
+        testsLate ~= Test("examples/python/grammarpython", TestType.all, ["glr"],
+                "examples/python/testpython", [], [], ["--test-dir", pythonTestDir]);
+        version (Windows)
+        {
+            testsLate[$ - 1].extraDmdArgs ~= "-L/STACK:10485760";
+        }
+    }
 
     tests.sort!((a, b) => a.name < b.name);
 

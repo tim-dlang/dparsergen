@@ -51,6 +51,10 @@ The parser for C++ uses GLR, while the grammar for the preprocessor can
 use LALR. The example application shows the parse tree for a C++ file,
 which needs to be already preprocessed.
 
+An example for parsing Python is is folder [examples/python/](examples/python/).
+It uses a wrapper around the generated lexer, which keeps track of the
+indentation level.
+
 The folder [tests/grammars/](tests/grammars/) also contains example grammars, but some
 of them test corner cases and should not be used as examples for
 real grammars.

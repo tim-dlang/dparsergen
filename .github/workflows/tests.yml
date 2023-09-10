@@ -62,6 +62,15 @@ jobs:
         ref: d64aefb55228d9584d3e5b2433f720ea8fd00c82
         persist-credentials: false
 
+    - name: Checkout CPython
+      if: ${{ matrix.platform != 'win32' }}
+      uses: actions/checkout@v3
+      with:
+        path: cpython
+        repository: python/cpython
+        ref: 3979150a0d406707f6d253d7c15fb32c1e005a77
+        persist-credentials: false
+
     - name: 'Build & Test'
       run: |
-        ${{ env.DC }} -run runtests.d --compiler ${{ env.DC }} -m${{ matrix.model }} --json-test-dir JSONTestSuite/test_parsing --dmd-dir dmd --avoid-parallel-memory-usage --github ${{ matrix.extra_args }}
+        ${{ env.DC }} -run runtests.d --compiler ${{ env.DC }} -m${{ matrix.model }} --json-test-dir JSONTestSuite/test_parsing --dmd-dir dmd --python-test-dir cpython/Lib/test --avoid-parallel-memory-usage --github ${{ matrix.extra_args }}

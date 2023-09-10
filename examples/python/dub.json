@@ -1,0 +1,27 @@
+{
+    "name": "example_python",
+    "description": "Example Python for DParserGen",
+    "authors": ["Tim Schendekehl"],
+    "license": "BSL-1.0",
+    "targetType": "executable",
+    "dependencies": {
+        "dparsergen:core": {
+            "version": "*",
+            "path": "../.."
+        },
+        "dparsergen:generator": {
+            "version": "*",
+            "path": "../.."
+        }
+    },
+    "sourceFiles": [
+        "testpython.d",
+        "grammarpython.d",
+        "grammarpython_lexer.d"
+    ],
+    "lflags-windows": ["/STACK:10485760"],
+    "preBuildCommands": [
+        "\"$DUB\" run --root=../../ :generator -- grammarpython.ebnf -o grammarpython.d --lexer grammarpython_lexer.d"
+    ],
+    "buildRequirements": ["allowWarnings"]
+}

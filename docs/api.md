@@ -66,6 +66,8 @@ different things, like for example:
   [lexer hack](https://en.wikipedia.org/wiki/Lexer_hack) for C.
 * Store or process comments, which are ignored by the parser.
 * Add debug output without modifying lexer or parser directly.
+* Keep track of the indentation level for languages like Python, see
+  example in [examples/python/](../examples/python/).
 
 ## Tree Creator
 
