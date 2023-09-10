@@ -1116,6 +1116,8 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         foreach (i, s; node.backtrackStates)
         {
             prods ~= grammar.productionString(productions[i]);
+            if (i == 0)
+                code.writeln("lastError = null;");
             mixin(genCode("code", q{
                 // try $(s)  $(grammar.productionString(productions[i]))
                 try
@@ -1125,25 +1127,30 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     gotoParent = $(parseFunctionName(graph, s))(r, rl);
                     if (gotoParent < 0)
                     {
-                        throw lastError;
+                        assert(lastError !is null);
                     }
-                    if ($(tokenSetCode(grammar, node.elements[0].lookahead, "lexer", true)))
+                    else if ($(tokenSetCode(grammar, node.elements[0].lookahead, "lexer", true)))
                     {
-                        throw new SingleParseException!Location(text("unexpected  \"", lexer.front.content, "\"  \"", lexer.tokenName(lexer.front.symbol), "\""), lexer.front.currentLocation, lexer.front.currentTokenEnd);
+                        lastError = new SingleParseException!Location(text("unexpected  \"", lexer.front.content, "\"  \"", lexer.tokenName(lexer.front.symbol), "\""), lexer.front.currentLocation, lexer.front.currentTokenEnd);
                     }
-                    result = r;
-                    resultLocation = rl;
-                    return gotoParent;
+                    else
+                    {
+                        result = r;
+                        resultLocation = rl;
+                        return gotoParent;
+                    }
                 }
                 catch(ParseException e)
                 {
                     if (!e.allowBacktrack())
                         throw e;
-                    lastError = null;
-                    *lexer = savedLexer;
-                    lastTokenEnd = savedLastTokenEnd;
-                    exceptions[$(i)] = e;
+                    lastError = e;
                 }
+                assert(lastError !is null);
+                *lexer = savedLexer;
+                lastTokenEnd = savedLastTokenEnd;
+                exceptions[$(i)] = lastError;
+                lastError = null;
                 }));
         }
         mixin(genCode("code", q{
