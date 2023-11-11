@@ -318,6 +318,10 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
             trees = trees[1 .. $];
             break;
         }
+        else if (trees[0].name == "WS")
+        {
+            trees = trees[1 .. $];
+        }
         else
         {
             assert(false, text(trees[0]));

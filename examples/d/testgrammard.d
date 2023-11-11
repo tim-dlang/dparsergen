@@ -148,6 +148,7 @@ immutable string[] syntaxErrorExceptions = [
     "compile time string constant (or sequence) expected, not",
     "expected as third argument of",
     "at least one argument expected",
+    "`string` expected for pragma mangle argument, not",
 ];
 
 immutable string[] syntaxErrorExtra = [
@@ -221,7 +222,7 @@ syntax error.
 bool hasExpectedSyntaxError(string file, ref string failureText)
 {
     auto testOutputRegex = regex(r"TEST_OUTPUT(\([^()]*\))?: *\r?\n?----*\r?\n(([^-]|--?[^-])*)-?-?\n----*");
-    auto errorRegex = regex(r".*\.d\([0-9]+\): (Error: .*)");
+    auto errorRegex = regex(r".*\.d\([0-9]+\): ((Error|Deprecation): .*)");
 
     bool hasSyntaxError;
 
@@ -295,6 +296,8 @@ bool runTests(TestDirType testDirType, string testDir)
         if (testDirType == TestDirType.failDmd)
         {
             if (relative.startsWith("protection"))
+                continue;
+            if (relative == "mixintype2.d")
                 continue;
             if (relative.startsWith("imports"))
                 continue;

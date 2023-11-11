@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 5559619df556ab28ccf5f790f8deea3fc19bcd3c
+// Based on grammar from dlang.org commit fd7e1f50f4d2329f24313ea92bfcbd91af962cdb
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -239,8 +239,8 @@ PostfixExpression @directUnwrap
     | <CallExpression
     | TypeCtors BasicType Arguments
     | !QualifiedIdentifier BasicType Arguments
-    // | <IndexExpression // See SliceExpression
-    | <SliceExpression
+    // | PostfixExpression IndexExpression // See SliceExpression
+    | PostfixExpression SliceExpression
     ;
 ArgumentList @array @regArray
     = AssignExpression
@@ -263,12 +263,9 @@ Arguments
     = "(" NamedArgumentList? ")"
     ;
 /*IndexExpression
-    = PostfixExpression "[" ArgumentList "]"
+    = "[" ArgumentList "]"
     ;*/
 SliceExpression
-    = PostfixExpression SliceExpressionSuffix
-    ;
-SliceExpressionSuffix
     = "[" Slice2 "]"
     ;
 Slice @array @regArray
@@ -488,25 +485,16 @@ AggregateDeclaration
     | <UnionDeclaration
     ;
 VarDeclarations
-    = StorageClassesAttributesNoPragmaEmpty PostfixType @inheritTag(Bitfield) Declarators ";"
+    = StorageClassesAttributesNoPragmaEmpty PostfixType @inheritTag(Bitfield) IdentifierInitializers ";"
     | <AutoDeclaration
     ;
-Declarators @array @regArray
-    = @inheritTag(Bitfield) DeclaratorInitializer
-    | @inheritTag(Bitfield) DeclaratorInitializer "," @inheritTag(Bitfield) DeclaratorIdentifierList
+IdentifierInitializers @array @regArray
+    = @inheritTag(Bitfield) IdentifierInitializer
+    | @inheritTag(Bitfield) IdentifierInitializer "," @inheritTag(Bitfield) IdentifierInitializers
     ;
-DeclaratorInitializer @directUnwrap
-    = <VarDeclarator
-    | VarDeclarator @lookahead TemplateParameters? "=" Initializer
-    | <BitfieldDeclarator
-    ;
-DeclaratorIdentifierList @array @regArray
-    = @inheritTag(Bitfield) DeclaratorIdentifier
-    | @inheritTag(Bitfield) DeclaratorIdentifier "," @inheritTag(Bitfield) DeclaratorIdentifierList
-    ;
-DeclaratorIdentifier
+IdentifierInitializer @directUnwrap
     = Identifier
-    | Identifier TemplateParameters? "=" Initializer
+    | Identifier @lookahead TemplateParameters? "=" Initializer
     | <BitfieldDeclarator
     ;
 BitfieldDeclarator
@@ -515,9 +503,6 @@ BitfieldDeclarator
     | Identifier ":" ConditionalExpression "=" Initializer @tag(Bitfield)
     ;
 Declarator
-    = <VarDeclarator
-    ;
-VarDeclarator
     = <IdentifierExpression
     ;
 StorageClasses @array @regArray
@@ -599,12 +584,12 @@ AutoAssignments @array @regArray
     | AutoAssignments "," AutoAssignment
     ;
 AutoAssignment
-    = VarDeclarator @lookahead TemplateParameters? "=" Initializer
+    = IdentifierExpression @lookahead TemplateParameters? "=" Initializer
     ;
 AliasDeclaration
-    = AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType Declarators ";"
+    = AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType IdentifierInitializers ";"
     | AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType FuncDeclarator ";"
-    | AttributesNoPragmaEmpty "alias" "this" Declarators ";"   // something different from alias .. this;
+    | AttributesNoPragmaEmpty "alias" "this" IdentifierInitializers ";"   // something different from alias .. this;
     | AttributesNoPragmaEmpty "alias" AliasAssignments ";"
     ;
 AliasAssignments @array @regArray
@@ -1242,7 +1227,7 @@ ForeachRangeStatement
     = RangeForeach ScopeStatement
     ;
 SwitchStatement
-    = "switch" "(" Expression ")" ScopeStatement
+    = "switch" "(" IfCondition ")" ScopeStatement
     ;
 CaseStatement
     = "case" ArgumentList ":" @eager ScopeStatement?
@@ -1273,7 +1258,7 @@ LastExp
     = <AssignExpression
     ;*/
 FinalSwitchStatement
-    = "final" "switch" "(" Expression ")" ScopeStatement
+    = "final" "switch" "(" IfCondition ")" ScopeStatement
     ;
 ContinueStatement
     = "continue" Identifier? ";"
@@ -1545,7 +1530,7 @@ AutoFuncDeclaration
     = StorageClassesAttributesNoPragma FuncDeclarator FunctionBody
     ;
 FuncDeclarator
-    = VarDeclarator FuncDeclaratorSuffix
+    = IdentifierExpression FuncDeclaratorSuffix
     ;
 FuncDeclaratorSuffix
     = @lookahead TemplateParameters Parameters MemberFunctionAttributes? Constraint?
@@ -1839,7 +1824,7 @@ EnumDeclaration
     | <AnonymousEnumDeclaration
     ;
 EnumVarDeclaration
-    = EnumAttributes PostfixType @rejectTag(Bitfield) Declarators ";"
+    = EnumAttributes PostfixType @rejectTag(Bitfield) IdentifierInitializers ";"
     | EnumAttributes AutoAssignments ";"
     ;
 EnumBaseType

@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 5559619df556ab28ccf5f790f8deea3fc19bcd3c
+// Based on grammar from dlang.org commit fd7e1f50f4d2329f24313ea92bfcbd91af962cdb
 
 token ByteOrderMark
     = "\uFEFF"
@@ -162,6 +162,7 @@ StringLiteral
     = WysiwygString
     | AlternateWysiwygString
     | DoubleQuotedString
+    | HexString
     | DelimitedString
     | TokenString
     ;
@@ -222,6 +223,18 @@ fragment DelimitedStringLine
     ;
 TokenString
     = "q{" Tokens "}"
+    ;
+token HexString
+    = "x\"" HexStringChars? "\"" StringPostfix?
+    ;
+fragment HexStringChars
+    = HexStringChar
+    | HexStringChar HexStringChars
+    ;
+fragment HexStringChar
+    = HexDigit
+    | WhiteSpace
+    | EndOfLine
     ;
 fragment StringPostfix
     = "c"
