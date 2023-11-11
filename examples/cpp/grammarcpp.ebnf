@@ -497,9 +497,9 @@ StaticAssertDeclaration
     = StaticAssertDeclarationX ";"
     ;
 StaticAssertDeclarationX
-    = "static_assert" "(" ConstantExpression "," StringLiteral ")"
+    = "static_assert" "(" ConstantExpression "," StringLiteralSequence ")"
     | "static_assert" "(" ConstantExpression ")"
-    | "_Static_assert" "(" ConstantExpression "," StringLiteral ")"
+    | "_Static_assert" "(" ConstantExpression "," StringLiteralSequence ")"
     | "_Static_assert" "(" ConstantExpression ")"
     ;
 EmptyDeclaration
@@ -800,10 +800,10 @@ LinkageSpecification @array
     | LinkageSpecificationSingle
     ;
 LinkageSpecificationSingle
-    = "extern" StringLiteral Declaration2
+    = "extern" StringLiteralSequence Declaration2
     ;
 LinkageSpecificationBegin
-    = "extern" StringLiteral "{"
+    = "extern" StringLiteralSequence "{"
     ;
 LinkageSpecificationEnd
     = "}"
@@ -1255,7 +1255,7 @@ OverloadableOperator
 
 // Section over.Literal
 LiteralOperatorId
-    = "operator" StringLiteral Identifier
+    = "operator" StringLiteralSequence Identifier
     ;
 
 // Section temp
