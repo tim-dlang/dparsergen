@@ -22,7 +22,6 @@ DeclDef @directUnwrap
     | <Destructor
     // | <Postblit
     | <Allocator
-    | <Deallocator
     | <Invariant
     | <UnitTest
     | <AliasThis
@@ -1475,9 +1474,6 @@ Invariant
     ;
 Allocator // Removed in dlang.org commit e0f9fecab151613f7c21d13f83f462cf20b98056
     = AttributesNoPragmaEmpty "new" Parameters FunctionBody
-    ;
-Deallocator // Removed in dlang.org commit 557c0dfc918bfce505e46bd7c5aa1d0ffd3740ad
-    = AttributesNoPragmaEmpty "delete" Parameters FunctionBody
     ;
 NewAnonClassExpression
     = "new" "class" ConstructorArgs? AnonBaseClassList? AggregateBody
