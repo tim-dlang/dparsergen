@@ -1590,11 +1590,15 @@ const(char)[] createParserModule(LRGraph graph, string modulename, bool useRegex
         static assert(allProductions.length < ProductionID.max - startProductionID);
         enum ProductionID endProductionID = startProductionID + allProductions.length;
 
-        enum nonterminalIDFor(string name) = startNonterminalID + staticIndexOf!(name,
+        private enum nonterminalIDForImpl(string name) = staticIndexOf!(name,
             $$foreach (i, n; grammar.nonterminals.vals) {
-                    "$(nonterminalNameCode(n))",
+                "$(nonterminalNameCode(n))",
             $$}
-                );
+            );
+        template nonterminalIDFor(string name) if (nonterminalIDForImpl!name >= 0)
+        {
+            enum nonterminalIDFor = startNonterminalID + nonterminalIDForImpl!name;
+        }
         $$if (grammar.tags.vals.length) {
             enum Tag
             {

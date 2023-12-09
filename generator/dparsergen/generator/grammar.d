@@ -1704,9 +1704,9 @@ NonterminalID createGrammar(EBNFGrammar grammar, string name, Tree tree, EBNF eb
         }
         return grammar.nonterminals.id(name);
     }
-    else if (tree.nonterminalID == nonterminalIDFor!"VariadicList")
+    else if (tree.nonterminalID == nonterminalIDFor!"UnpackVariadicList")
     {
-        throw new Exception(text("can't use variadic parameter here ", tree));
+        throw new Exception(text("Error: Can't use variadic parameter here ", tree));
     }
     else
         production.symbols ~= createSymbol(grammar, tree, ebnf);

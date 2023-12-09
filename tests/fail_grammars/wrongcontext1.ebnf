@@ -2,7 +2,7 @@
 GENERATOR_OUTPUT:
 ---
 Warning: Unused symbol X
-Unexpected expression UnpackVariadicList
+Error: Can't use variadic parameter here UnpackVariadicList("X", "...")
 ---
 */
 S = X...;

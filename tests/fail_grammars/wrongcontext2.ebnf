@@ -1,7 +1,7 @@
 /*
 GENERATOR_OUTPUT:
 ---
-Unexpected expression UnpackVariadicList
+Error: Can't use variadic parameter here UnpackVariadicList("x", "...")
 ---
 */
 S = f("1");
