@@ -345,6 +345,21 @@ class TodoList(K)
 }
 
 /**
+Add `key` to todo list after calling `F`, but ignore adding `key` additionally
+during call to `F`.
+*/
+void addAfter(alias F, K)(TodoList!K todo, K key)
+{
+    if (key in todo.byKey)
+        return;
+    todo.byKey[key] = size_t.max; // prevent endless recursion
+    F();
+    size_t i = todo.app.data.length;
+    todo.app.put(key);
+    todo.byKey[key] = i;
+}
+
+/**
 Escape codepoint.
 
 Params:
