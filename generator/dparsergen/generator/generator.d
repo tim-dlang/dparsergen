@@ -401,6 +401,7 @@ int main(string[] args)
     string finalgrammarfilename;
     string docfilenamehtml;
     string docfilenamemd;
+    bool glrGlobalCache;
 
     auto helpInformation = getopt(
         args,
@@ -420,6 +421,7 @@ int main(string[] args)
         "optdescent", "Try to make decisions in the parser earlier", &globalOptions.optimizationDescent,
         "optempty", "Rewrite grammar to remove empty productions", &optimizationEmpty,
         "regexlookahead", "Try to resolve conflicts with arbitrary lookahead", &regexlookahead,
+        "glr-global-cache", "Use a global cache for the GLR parser (normally not needed)", &glrGlobalCache,
         );
 
     if (helpInformation.helpWanted || args.length != 2)
@@ -602,7 +604,7 @@ int main(string[] args)
 
         const(char)[] output;
         if (globalOptions.glrParser)
-            output = dparsergen.generator.glrparsercodegen.createParserModule(graph, parsermodule);
+            output = dparsergen.generator.glrparsercodegen.createParserModule(graph, parsermodule, glrGlobalCache);
         else
             output = dparsergen.generator.parsercodegen.createParserModule(graph,
                     parsermodule, regexlookahead);

@@ -300,7 +300,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         }));
 }
 
-void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* production)
+void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* production, bool glrGlobalCache)
 {
     auto grammar = graph.grammar;
     const RewriteRule[] rewriteRules = grammar.getRewriteRules(production);
@@ -334,6 +334,24 @@ void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* 
             parameterEdgesData.length = $(production.symbols.length);
             $$foreach (k; 0 .. production.symbols.length) {
                 parameterEdgesData[$(k)] = parameterEdges[$(k)].data;
+            $$}
+            $$if (glrGlobalCache) {
+                ReduceCacheKey cacheKey;
+                cacheKey.productionID = $(production.productionID);
+                cacheKey.parameters = parameterEdgesData;
+
+                Cache *cache2;
+                if (lastTokenEnd in this_.cacheByLoc)
+                    cache2 = this_.cacheByLoc[lastTokenEnd];
+                else
+                {
+                    cache2 = new Cache;
+                    cache2.currentStart = lastTokenEnd;
+                    this_.cacheByLoc[lastTokenEnd] = cache2;
+                }
+                auto cacheEntry = cacheKey in cache2.reduces;
+                if (cacheEntry)
+                    return *cacheEntry;
             $$}
             StackEdgeData* r = new StackEdgeData(false);
             $$foreach (k; 1 .. production.symbols.length + 1) {
@@ -439,6 +457,9 @@ void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* 
                 r.nonterminal = Creator.NonterminalUnionAny.create($(grammar.nonterminalIDCode(nonterminalOutForProduction(rewriteRules[$ - 1].applyProduction))), pt);
                 r.start = newTreeStart;
             $$}
+            $$if (glrGlobalCache) {
+                cache2.reduces[cacheKey] = r;
+            $$}
             return r;
         }
         $$if (tuple!(size_t, size_t)(production.productionID, production.symbols.length) in graph.statesWithProduction) {
@@ -514,7 +535,7 @@ void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* 
 }
 
 void createStartParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr,
-        const LRGraphNode node)
+        const LRGraphNode node, bool glrGlobalCache)
 {
     auto grammar = graph.grammar;
     immutable endTok = grammar.tokens.getID("$end");
@@ -530,6 +551,12 @@ void createStartParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr
             lastTokenEnd = Location.init;
             stackTops = [new StackNode($(stateNr))];
             acceptedStackTops = [];
+            $$if (glrGlobalCache) {
+                cacheByLoc[Location.init] = null;
+                cacheByLoc.remove(Location.init);
+                if (tmpData is null)
+                    tmpData = new TmpData;
+            $$}
             clearTmpData();
             pushToken(getTokenID!"$flushreduces", Token.init, lastTokenEnd, lastTokenEnd);
         }
@@ -626,13 +653,17 @@ void createWrapperParseFunction(ref CodeWriter code, LRGraph graph, size_t state
         }));
 }
 
-void createShiftFunctions(ref CodeWriter code, LRGraph graph)
+void createShiftFunctions(ref CodeWriter code, LRGraph graph,
+        bool glrGlobalCache)
 {
     EBNFGrammar grammar = graph.grammar;
 
     mixin(genCode("code", q{
         StackNode *shift(bool onStack)(StackNode *stackNode, Location start, size_t state, Token token)
         {
+            $$if (glrGlobalCache) {
+                assert(cache.currentStart == start);
+            $$}
             StackNode* n = null;
             n = tmpData.stackNodeByState[state];
             if (n is null)
@@ -651,8 +682,18 @@ void createShiftFunctions(ref CodeWriter code, LRGraph graph)
                     return n;
                 }
             }
-            StackEdgeData* data = new StackEdgeData(true, start);
-            data.token = token;
+            $$if (glrGlobalCache) {
+                StackEdgeData* data = cache.tokenData;
+                if (data is null)
+                {
+                    data = new StackEdgeData(true, start);
+                    data.token = token;
+                    cache.tokenData = data;
+                }
+            $$} else {
+                StackEdgeData* data = new StackEdgeData(true, start);
+                data.token = token;
+            $$}
             n.previous ~= new StackEdge(stackNode, data);
             return n;
         }
@@ -757,7 +798,8 @@ void createShiftFunctions(ref CodeWriter code, LRGraph graph)
     }));
 }
 
-void createParseFunctions(ref CodeWriter code, LRGraph graph)
+void createParseFunctions(ref CodeWriter code, LRGraph graph,
+        bool glrGlobalCache)
 {
     EBNFGrammar grammar = graph.grammar;
 
@@ -784,6 +826,10 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph)
         }
         do
         {
+            $$if (glrGlobalCache) {
+                setCacheStart(start);
+            $$}
+
             if (stackTops.length == 0)
             {
                 if (acceptedStackTops.length == 0)
@@ -1109,7 +1155,8 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph)
     }));
 }
 
-const(char)[] createParserModule(LRGraph graph, string modulename)
+const(char)[] createParserModule(LRGraph graph, string modulename,
+        bool glrGlobalCache)
 {
     EBNFGrammar grammar = graph.grammar;
 
@@ -1278,6 +1325,23 @@ const(char)[] createParserModule(LRGraph graph, string modulename)
                 size_t nextPendingReduce2;
             }
 
+            $$if (glrGlobalCache) {
+                static struct ReduceCacheKey
+                {
+                    ProductionID productionID;
+                    StackEdgeData*[] parameters;
+                }
+                static struct Cache
+                {
+                    Location currentStart; // for invalidation
+                    StackEdgeData* tokenData;
+                    StackEdgeData*[ReduceCacheKey] reduces;
+                    StackEdgeData*[ReduceCacheKey] merges;
+                }
+                Cache*[Location] cacheByLoc;
+                Cache *cache;
+            $$}
+
             static struct TmpData
             {
                 bool inUse;
@@ -1287,7 +1351,11 @@ const(char)[] createParserModule(LRGraph graph, string modulename)
                 SimpleArrayAllocator!(StackEdge*, 4 * 1024 - 32) stackEdgePointerAllocator;
                 Appender!(PendingReduce2[]) pendingReduces;
             }
-            TmpData tmpData;
+            $$if (glrGlobalCache) {
+                static TmpData *tmpData;
+            $$} else {
+                TmpData tmpData;
+            $$}
 
             void clearTmpData()
             {
@@ -1304,7 +1372,7 @@ const(char)[] createParserModule(LRGraph graph, string modulename)
             Location lastTokenEnd;
             bool hasAddedPendingReduce;
 
-            $$createShiftFunctions(code, graph);
+            $$createShiftFunctions(code, graph, glrGlobalCache);
 
             void dumpStates(string indent="")
             {
@@ -1326,7 +1394,7 @@ const(char)[] createParserModule(LRGraph graph, string modulename)
             enum canMerge(size_t nonterminalID) = Creator.canMerge!nonterminalID;
 
             $$foreach (production; graph.grammar.productions) {
-                $$createReduceFunction(code, graph, production);
+                $$createReduceFunction(code, graph, production, glrGlobalCache);
 
             $$}
 
@@ -1339,12 +1407,26 @@ const(char)[] createParserModule(LRGraph graph, string modulename)
 
             $$foreach (i, n; graph.states) {
                 $$if (n.isStartNode) {
-                    $$createStartParseFunction(code, graph, i, n);
+                    $$createStartParseFunction(code, graph, i, n, glrGlobalCache);
 
                 $$}
             $$}
 
-            $$createParseFunctions(code, graph);
+            $$if (glrGlobalCache) {
+                void setCacheStart(Location start)
+                {
+                    if (start in cacheByLoc)
+                        cache = cacheByLoc[start];
+                    else
+                    {
+                        cache = new Cache;
+                        cache.currentStart = start;
+                        cacheByLoc[start] = cache;
+                    }
+                }
+            $$}
+
+            $$createParseFunctions(code, graph, glrGlobalCache);
 
             Creator.Type getParseTree(string startNonterminal = "$(graph.grammar.getSymbolName(graph.grammar.startNonterminals[0].nonterminal).escapeD)")()
             {

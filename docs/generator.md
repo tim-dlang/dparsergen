@@ -21,6 +21,7 @@ dparsergen grammar.ebnf [OPTIONS]
    --optdescent         Try to make decisions in the parser earlier
    --optempty           Rewrite grammar to remove empty productions
    --regexlookahead     Try to resolve conflicts with arbitrary lookahead
+   --glr-global-cache   Use a global cache for the GLR parser (normally not needed)
 -h --help               Print this help and exit
 ```
 
