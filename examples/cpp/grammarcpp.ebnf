@@ -267,60 +267,60 @@ AdditiveExpression @directUnwrap
 // Section expr.shift
 ShiftExpression @directUnwrap
     = <AdditiveExpression
-    | ShiftExpression "<<" AdditiveExpression
-    | ShiftExpression ">" ">" AdditiveExpression
+    | @inheritTag(hasGreater) ShiftExpression "<<" AdditiveExpression
+    | @inheritTag(hasGreater) ShiftExpression ">" ">" AdditiveExpression @tag(hasGreater)
     ;
 
 // Section expr.rel
 RelationalExpression @directUnwrap
     = <ShiftExpression
-    | RelationalExpression "<" ShiftExpression
-    | RelationalExpression ">" ShiftExpression
-    | RelationalExpression "<=" ShiftExpression
-    | RelationalExpression ">=" ShiftExpression
+    | @inheritTag(hasGreater) RelationalExpression "<" ShiftExpression
+    | @inheritTag(hasGreater) RelationalExpression ">" ShiftExpression @tag(hasGreater)
+    | @inheritTag(hasGreater) RelationalExpression "<=" ShiftExpression
+    | @inheritTag(hasGreater) RelationalExpression ">=" ShiftExpression
     ;
 
 // Section expr.eq
 EqualityExpression @directUnwrap
     = <RelationalExpression
-    | EqualityExpression "==" RelationalExpression
-    | EqualityExpression "!=" RelationalExpression
+    | @inheritTag(hasGreater) EqualityExpression "==" RelationalExpression
+    | @inheritTag(hasGreater) EqualityExpression "!=" RelationalExpression
     ;
 
 // Section expr.bit.and
 AndExpression @directUnwrap
     = <EqualityExpression
-    | AndExpression "&" EqualityExpression
+    | @inheritTag(hasGreater) AndExpression "&" EqualityExpression
     ;
 
 // Section expr.xor
 ExclusiveOrExpression @directUnwrap
     = <AndExpression
-    | ExclusiveOrExpression "^" AndExpression
+    | @inheritTag(hasGreater) ExclusiveOrExpression "^" AndExpression
     ;
 
 // Section expr.or
 InclusiveOrExpression @directUnwrap
     = <ExclusiveOrExpression
-    | InclusiveOrExpression "|" ExclusiveOrExpression
+    | @inheritTag(hasGreater) InclusiveOrExpression "|" ExclusiveOrExpression
     ;
 
 // Section expr.log.and
 LogicalAndExpression @directUnwrap
     = <InclusiveOrExpression
-    | LogicalAndExpression "&&" InclusiveOrExpression
+    | @inheritTag(hasGreater) LogicalAndExpression "&&" InclusiveOrExpression
     ;
 
 // Section expr.log.or
 LogicalOrExpression @directUnwrap
     = <LogicalAndExpression
-    | LogicalOrExpression "||" LogicalAndExpression
+    | @inheritTag(hasGreater) LogicalOrExpression "||" LogicalAndExpression
     ;
 
 // Section expr.cond
 ConditionalExpression @directUnwrap
     = <LogicalOrExpression
-    | LogicalOrExpression "?" Expression ":" AssignmentExpression
+    | @inheritTag(hasGreater) LogicalOrExpression "?" Expression ":" AssignmentExpression
     ;
 
 // Section expr.ass
@@ -1300,7 +1300,7 @@ TemplateArgumentList @array
     ;
 TemplateArgument2
     = <TypeId
-    | <ConstantExpression
+    | @rejectTag(hasGreater) <ConstantExpression
     //| <IdExpression // subset of ConstantExpression
     ;
 TemplateArgument
