@@ -1,17 +1,5 @@
 // EXCLUDE_VARIANT: normal
 // EXCLUDE_VARIANT: optdescent
-/*
-GENERATOR_OUTPUT(normal):
----
-Warning: Parse conflict in state 9
----
-*/
-/*
-GENERATOR_OUTPUT(optdescent):
----
-Warning: Parse conflict in state 15
----
-*/
 S = "a" @needTag(TA) Y | "b" @rejectTag(TA) Y;
 Y = "y" @inheritTag(TA) @inheritTag(TB) X "y";
 X = <XA | <XB;

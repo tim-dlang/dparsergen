@@ -1,20 +1,6 @@
 // GENPASER_OPTS: --combinedreduce
 // EXCLUDE_VARIANT: normal
 // EXCLUDE_VARIANT: optdescent
-/*
-GENERATOR_OUTPUT(normal):
----
-Warning: Parse conflict in state 82
-Warning: Parse conflict in state 106
----
-*/
-/*
-GENERATOR_OUTPUT(optdescent):
----
-Warning: Parse conflict in state 97
-Warning: Parse conflict in state 124
----
-*/
 S = ^"1" <Test1 | ^"2" <Test2 | "3" <Test3 | "4" <Test4 | "5" <Test5 | ^"6" <Test6 | ^"7" <Test7
 // START REMOVE
       // | ^"8" <Test8

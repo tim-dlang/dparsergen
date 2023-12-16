@@ -1,25 +1,5 @@
 // EXCLUDE_VARIANT: normal
 // EXCLUDE_VARIANT: optdescent
-/*
-GENERATOR_OUTPUT(normal):
----
-Warning: Parse conflict in state 12
-Warning: Parse conflict in state 13
-Warning: Parse conflict in state 20
-Warning: Parse conflict in state 31
-Warning: Parse conflict in state 45
----
-*/
-/*
-GENERATOR_OUTPUT(optdescent):
----
-Warning: Parse conflict in state 15
-Warning: Parse conflict in state 16
-Warning: Parse conflict in state 20
-Warning: Parse conflict in state 22
-Warning: Parse conflict in state 46
----
-*/
 S = <Declaration;
 Declaration = <SimpleDeclaration | <FunctionDefinition;
 

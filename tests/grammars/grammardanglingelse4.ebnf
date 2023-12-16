@@ -1,11 +1,5 @@
 // EXCLUDE_VARIANT: normal
 // EXCLUDE_VARIANT: optdescent
-/*
-GENERATOR_OUTPUT(normal, optdescent):
----
-Warning: Parse conflict in state 13
----
-*/
 S = StmtList;
 StmtList @array
 	= @empty

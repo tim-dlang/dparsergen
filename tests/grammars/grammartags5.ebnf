@@ -1,17 +1,6 @@
 // EXCLUDE_VARIANT: normal
 // EXCLUDE_VARIANT: optdescent
 // Equivalent to grammarexprs2.ebnf.
-/*
-GENERATOR_OUTPUT(normal):
----
-Warning: Parse conflict in state 3
-Warning: Parse conflict in state 5
-Warning: Parse conflict in state 7
-Warning: Parse conflict in state 9
-Warning: Parse conflict in state 11
-Warning: Parse conflict in state 13
----
-*/
 
 E
 	= <Or
