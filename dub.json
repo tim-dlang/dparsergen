@@ -25,6 +25,7 @@
         "examples/calc",
         "examples/json",
         "examples/d",
-        "examples/cpp"
+        "examples/cpp",
+        "examples/python"
     ]
 }
