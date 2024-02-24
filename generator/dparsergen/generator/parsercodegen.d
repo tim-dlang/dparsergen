@@ -237,10 +237,11 @@ string parserStackType(LRGraph graph, size_t stateNr, size_t pos)
     return r;
 }
 
-void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, const LRGraphNode node, bool useRegexlookahead,
+void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, const LRGraphNode node,
+        ActionTable actionTable, bool useRegexlookahead,
         ref EBNFGrammar lookaheadGrammar,
         NonterminalID[immutable(NonterminalID[])] combinedReduceNonterminals,
-        ref RegexLookahead regexLookahead)
+        ref RegexLookahead regexLookahead, const bool[ProductionID] reduceConflictProductions)
 {
     auto grammar = graph.grammar;
     immutable endTok = grammar.tokens.getID("$end");
@@ -254,7 +255,6 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         return;
     }
 
-    ActionTable actionTable = genActionTable(graph, node);
     bool hasDelayedReduceOutput;
     foreach (t, x; actionTable.actions)
         foreach (s, a; x)
@@ -883,7 +883,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
             if (regexLookahead is null)
             {
                 regexLookahead = new RegexLookahead(grammar,
-                        actionTable.reduceConflictProductions, useRegexlookahead);
+                        reduceConflictProductions, useRegexlookahead);
             }
 
             RegexLookaheadGraph regexLookaheadGraph = new RegexLookaheadGraph;
@@ -1167,7 +1167,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         if (regexLookahead is null)
         {
             regexLookahead = new RegexLookahead(grammar,
-                    actionTable.reduceConflictProductions, useRegexlookahead);
+                    reduceConflictProductions, useRegexlookahead);
         }
 
         RegexLookaheadGraph regexLookaheadGraph = new RegexLookaheadGraph;
@@ -1231,7 +1231,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
             if (regexLookahead is null)
             {
                 regexLookahead = new RegexLookahead(grammar,
-                        actionTable.reduceConflictProductions, useRegexlookahead);
+                        reduceConflictProductions, useRegexlookahead);
             }
 
             RegexLookaheadGraph regexLookaheadGraph = new RegexLookaheadGraph;
@@ -1561,6 +1561,16 @@ const(char)[] createParserModule(LRGraph graph, string modulename, bool useRegex
         }
     }
 
+    ActionTable[] actionTables;
+    bool[ProductionID] reduceConflictProductions;
+    actionTables.length = graph.states.length;
+    foreach (i, n; graph.states)
+    {
+        actionTables[i] = genActionTable(graph, n);
+        foreach (k, v; actionTables[i].reduceConflictProductions)
+            reduceConflictProductions[k] = v;
+    }
+
     EBNFGrammar lookaheadGrammar;
 
     RegexLookahead regexLookahead;
@@ -1661,7 +1671,7 @@ const(char)[] createParserModule(LRGraph graph, string modulename, bool useRegex
             $$}
             $$foreach (i, n; graph.states) {
                 $$if (!trivialState(n)) {
-                    $$createParseFunction(code, graph, i, n, useRegexlookahead, lookaheadGrammar, combinedReduceNonterminals, regexLookahead);
+                    $$createParseFunction(code, graph, i, n, actionTables[i], useRegexlookahead, lookaheadGrammar, combinedReduceNonterminals, regexLookahead, reduceConflictProductions);
                 $$}
             $$}
             $$if (regexLookahead !is null) {
