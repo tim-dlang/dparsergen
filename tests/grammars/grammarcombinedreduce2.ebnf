@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --combinedreduce
+// GENPARSER_OPTS: --combinedreduce
 
 S = "1" QualifiedIdentifier | "2" PostfixExpression | "3" PostfixType;
 

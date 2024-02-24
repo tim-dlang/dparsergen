@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --regexlookahead
+// GENPARSER_OPTS: --regexlookahead
 S = "(" listo(S,",") ")"
   | Identifier
   | Identifier ^"!" ^"(" listo(S, ",") ^")"

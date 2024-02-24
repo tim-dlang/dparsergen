@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --combinedreduce
+// GENPARSER_OPTS: --combinedreduce
 // EXCLUDE_VARIANT: normal
 // EXCLUDE_VARIANT: optdescent
 S = ^"1" <Test1 | ^"2" <Test2 | "3" <Test3 | "4" <Test4 | "5" <Test5 | ^"6" <Test6 | ^"7" <Test7

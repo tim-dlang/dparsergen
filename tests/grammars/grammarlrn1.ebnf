@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --regexlookahead
+// GENPARSER_OPTS: --regexlookahead
 S = A "y" "a" | B "y" "b";
 A = "x";
 B = "x";

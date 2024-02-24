@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --mergesimilarstates
+// GENPARSER_OPTS: --mergesimilarstates
 S = <E;
 
 E @directUnwrap = <Cmp;

@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --optempty
+// GENPARSER_OPTS: --optempty
 S = Stmts;
 
 Label = "i" ":" @eager Stmt?;

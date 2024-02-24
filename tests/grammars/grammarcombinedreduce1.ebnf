@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --combinedreduce
+// GENPARSER_OPTS: --combinedreduce
 S = <Literal;
 Literal = <ArrayLiteral | <AssocArrayLiteral;
 ArrayLiteral

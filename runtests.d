@@ -208,9 +208,9 @@ void parseGrammarComments(ref Test test, string filename)
         else if (line.startsWith("/*"))
             line = line[2 .. $];
         line = line.strip();
-        if (line.startsWith("GENPASER_OPTS:"))
+        if (line.startsWith("GENPARSER_OPTS:"))
         {
-            test.generatorOpts ~= line["GENPASER_OPTS:".length .. $].splitter()
+            test.generatorOpts ~= line["GENPARSER_OPTS:".length .. $].splitter()
                 .filter!(m => m.length)
                 .map!(m => m.idup)
                 .array;

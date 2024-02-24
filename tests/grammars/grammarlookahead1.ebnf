@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --regexlookahead
+// GENPARSER_OPTS: --regexlookahead
 S = ^"test1" X;
 X = A LA | B LB;
 A = "x";

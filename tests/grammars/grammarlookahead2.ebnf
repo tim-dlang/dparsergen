@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --regexlookahead
+// GENPARSER_OPTS: --regexlookahead
 S = X3;
 X3 = A "(" X3 ")" "a" | B "(" X3 ")" "b" | @empty;
 

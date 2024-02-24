@@ -1,4 +1,4 @@
-// GENPASER_OPTS: --optempty
+// GENPARSER_OPTS: --optempty
 S = A? B?;
 A = "@" "a";
 B = "@" "b";
