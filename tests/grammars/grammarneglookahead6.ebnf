@@ -2,15 +2,15 @@
 /*
 GENERATOR_OUTPUT(normal):
 ---
-Warning: Parse conflict in state 24
-Warning: Parse conflict in state 29
+Warning: Parse conflict in state 19
+Warning: Parse conflict in state 33
 ---
 */
 /*
 GENERATOR_OUTPUT(optdescent):
 ---
-Warning: Parse conflict in state 21
-Warning: Parse conflict in state 27
+Warning: Parse conflict in state 15
+Warning: Parse conflict in state 25
 ---
 */
 S = <ScopeStatement;

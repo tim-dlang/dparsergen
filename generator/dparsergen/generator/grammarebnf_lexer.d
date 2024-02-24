@@ -75,7 +75,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         goto start;
 
     state0:
-        // (Identifier) (StringLiteral) (CharacterSetLiteral) (IntegerLiteral) (";") ("=") ("fragment") ("token") ("(") (")") (",") ("...") ("option") ("import") ("match") ("@") (":") ("{") ("}") ("?") ("!") ("<") (">") ("*") (">>") ("<<") ("-") ("anytoken") ("|") ("^") ("+") ("t(") (Space) (LineComment) (BlockComment) (NestingBlockComment)
+        // ("!") ("(") (")") ("*") ("+") (",") ("-") ("...") (":") (";") ("<") ("<<") ("=") (">") (">>") ("?") ("@") ("^") ("anytoken") ("fragment") ("import") ("match") ("option") ("t(") ("token") ("{") ("|") ("}") (CharacterSetLiteral) (Identifier) (IntegerLiteral) (StringLiteral) (Space) (LineComment) (BlockComment) (NestingBlockComment)
         // path:
     start:
         {
@@ -94,47 +94,47 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if (currentChar == '!')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state97;
+                    goto state9;
                 }
                 else if (currentChar == '\"')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state49;
+                    goto state96;
                 }
                 else if (currentChar == '(')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state86;
+                    goto state10;
                 }
                 else if (currentChar == ')')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state87;
+                    goto state11;
                 }
                 else if (currentChar == '*')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state102;
+                    goto state12;
                 }
                 else if (currentChar == '+')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state106;
+                    goto state13;
                 }
                 else if (currentChar == ',')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state88;
+                    goto state14;
                 }
                 else if (currentChar == '-')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state103;
+                    goto state15;
                 }
                 else if (currentChar == '.')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state89;
+                    goto state16;
                 }
                 else if (currentChar == '/')
                 {
@@ -144,102 +144,102 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if (currentChar == '0')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state83;
+                    goto state95;
                 }
                 else if (currentChar == ':')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state93;
+                    goto state19;
                 }
                 else if (currentChar == ';')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state84;
+                    goto state20;
                 }
                 else if (currentChar == '<')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state98;
+                    goto state21;
                 }
                 else if (currentChar == '=')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state85;
+                    goto state23;
                 }
                 else if (currentChar == '>')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state100;
+                    goto state24;
                 }
                 else if (currentChar == '?')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state96;
+                    goto state26;
                 }
                 else if (currentChar == '@')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state92;
+                    goto state27;
                 }
                 else if (currentChar == '[')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state60;
+                    goto state72;
                 }
                 else if (currentChar == '^')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state105;
+                    goto state28;
                 }
                 else if (currentChar == 'a')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state18;
+                    goto state29;
                 }
                 else if (currentChar == 'f')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state9;
+                    goto state38;
                 }
                 else if (currentChar == 'i')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state43;
+                    goto state46;
                 }
                 else if (currentChar == 'm')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state26;
+                    goto state52;
                 }
                 else if (currentChar == 'o')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state37;
+                    goto state57;
                 }
                 else if (currentChar == 't')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state31;
+                    goto state63;
                 }
                 else if (currentChar == '{')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state94;
+                    goto state69;
                 }
                 else if (currentChar == '|')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state104;
+                    goto state70;
                 }
                 else if (currentChar == '}')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state95;
+                    goto state71;
                 }
                 else if ((currentChar >= '1' && currentChar <= '9'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state82;
+                    goto state94;
                 }
                 else if ((currentChar >= '\t' && currentChar <= '\n') || currentChar == '\r' || currentChar == ' ')
                 {
@@ -249,7 +249,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'b' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -544,341 +544,151 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state9:
-        // Identifier ("fragment")
-        // path: [f]
+        // "!"
+        // path: [!]
         {
             if (inputCopy.length == 0)
                 goto endstate9;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'r')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state10;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate9;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate9;
-                }
-            }
+            goto endstate9;
         }
         endstate9:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"!\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state10:
-        // Identifier ("fragment")
-        // path: [f] [r]
+        // "("
+        // path: [(]
         {
             if (inputCopy.length == 0)
                 goto endstate10;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'a')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state11;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'b' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate10;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate10;
-                }
-            }
+            goto endstate10;
         }
         endstate10:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"(\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state11:
-        // Identifier ("fragment")
-        // path: [f] [r] [a]
+        // ")"
+        // path: [)]
         {
             if (inputCopy.length == 0)
                 goto endstate11;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'g')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state12;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate11;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate11;
-                }
-            }
+            goto endstate11;
         }
         endstate11:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\")\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state12:
-        // Identifier ("fragment")
-        // path: [f] [r] [a] [g]
+        // "*"
+        // path: [*]
         {
             if (inputCopy.length == 0)
                 goto endstate12;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'm')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state13;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate12;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate12;
-                }
-            }
+            goto endstate12;
         }
         endstate12:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"*\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state13:
-        // Identifier ("fragment")
-        // path: [f] [r] [a] [g] [m]
+        // "+"
+        // path: [+]
         {
             if (inputCopy.length == 0)
                 goto endstate13;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'e')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state14;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate13;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate13;
-                }
-            }
+            goto endstate13;
         }
         endstate13:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"+\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state14:
-        // Identifier ("fragment")
-        // path: [f] [r] [a] [g] [m] [e]
+        // ","
+        // path: [,]
         {
             if (inputCopy.length == 0)
                 goto endstate14;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'n')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state15;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate14;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate14;
-                }
-            }
+            goto endstate14;
         }
         endstate14:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\",\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state15:
-        // Identifier ("fragment")
-        // path: [f] [r] [a] [g] [m] [e] [n]
+        // "-"
+        // path: [\-]
         {
             if (inputCopy.length == 0)
                 goto endstate15;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 't')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state16;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate15;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate15;
-                }
-            }
+            goto endstate15;
         }
         endstate15:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"-\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state16:
-        // "fragment" Identifier
-        // path: [f] [r] [a] [g] [m] [e] [n] [t]
+        // ("...")
+        // path: [.]
         {
             if (inputCopy.length == 0)
-                goto endstate16;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[.]", inputCopy.ptr - input.ptr);
+            }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                if (currentChar == '.')
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"fragment\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
                     goto state17;
                 }
                 else
                 {
-                    goto endstate16;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -889,36 +699,41 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    goto endstate16;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
-        }
-        endstate16:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"fragment\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
         }
 
     state17:
-        // Identifier
-        // path: [A-Z_b-eg-hj-lnp-su-z]
+        // ("...")
+        // path: [.] [.]
         {
             if (inputCopy.length == 0)
-                goto endstate17;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[.]", inputCopy.ptr - input.ptr);
+            }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                if (currentChar == '.')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state18;
                 }
                 else
                 {
-                    goto endstate17;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -929,172 +744,82 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    goto endstate17;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
                 }
             }
-        }
-        endstate17:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
         }
 
     state18:
-        // Identifier ("anytoken")
-        // path: [a]
+        // "..."
+        // path: [.] [.] [.]
         {
             if (inputCopy.length == 0)
                 goto endstate18;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'n')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state19;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate18;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate18;
-                }
-            }
+            goto endstate18;
         }
         endstate18:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"...\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state19:
-        // Identifier ("anytoken")
-        // path: [a] [n]
+        // ":"
+        // path: [:]
         {
             if (inputCopy.length == 0)
                 goto endstate19;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'y')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state20;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate19;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate19;
-                }
-            }
+            goto endstate19;
         }
         endstate19:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\":\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state20:
-        // Identifier ("anytoken")
-        // path: [a] [n] [y]
+        // ";"
+        // path: [;]
         {
             if (inputCopy.length == 0)
                 goto endstate20;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 't')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state21;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate20;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate20;
-                }
-            }
+            goto endstate20;
         }
         endstate20:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\";\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state21:
-        // Identifier ("anytoken")
-        // path: [a] [n] [y] [t]
+        // "<" ("<<")
+        // path: [<]
         {
             if (inputCopy.length == 0)
                 goto endstate21;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'o')
+                if (currentChar == '<')
                 {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"<\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
                     goto state22;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
                 }
                 else
                 {
@@ -1116,120 +841,63 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate21:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"<\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state22:
-        // Identifier ("anytoken")
-        // path: [a] [n] [y] [t] [o]
+        // "<<"
+        // path: [<] [<]
         {
             if (inputCopy.length == 0)
                 goto endstate22;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'k')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state23;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate22;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate22;
-                }
-            }
+            goto endstate22;
         }
         endstate22:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"<<\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state23:
-        // Identifier ("anytoken")
-        // path: [a] [n] [y] [t] [o] [k]
+        // "="
+        // path: [=]
         {
             if (inputCopy.length == 0)
                 goto endstate23;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'e')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state24;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate23;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate23;
-                }
-            }
+            goto endstate23;
         }
         endstate23:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"=\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state24:
-        // Identifier ("anytoken")
-        // path: [a] [n] [y] [t] [o] [k] [e]
+        // ">" (">>")
+        // path: [>]
         {
             if (inputCopy.length == 0)
                 goto endstate24;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'n')
+                if (currentChar == '>')
                 {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\">\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
                     goto state25;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
                 }
                 else
                 {
@@ -1251,201 +919,90 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate24:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\">\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state25:
-        // "anytoken" Identifier
-        // path: [a] [n] [y] [t] [o] [k] [e] [n]
+        // ">>"
+        // path: [>] [>]
         {
             if (inputCopy.length == 0)
                 goto endstate25;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"anytoken\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate25;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate25;
-                }
-            }
+            goto endstate25;
         }
         endstate25:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"anytoken\"";
+            foundSymbol = tokenID!"\">>\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state26:
-        // Identifier ("match")
-        // path: [m]
+        // "?"
+        // path: [?]
         {
             if (inputCopy.length == 0)
                 goto endstate26;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'a')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state27;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'b' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate26;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate26;
-                }
-            }
+            goto endstate26;
         }
         endstate26:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"?\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state27:
-        // Identifier ("match")
-        // path: [m] [a]
+        // "@"
+        // path: [@]
         {
             if (inputCopy.length == 0)
                 goto endstate27;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 't')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state28;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate27;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate27;
-                }
-            }
+            goto endstate27;
         }
         endstate27:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"@\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state28:
-        // Identifier ("match")
-        // path: [m] [a] [t]
+        // "^"
+        // path: [\^]
         {
             if (inputCopy.length == 0)
                 goto endstate28;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if (currentChar == 'c')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state29;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
-                }
-                else
-                {
-                    goto endstate28;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate28;
-                }
-            }
+            goto endstate28;
         }
         endstate28:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"^\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state29:
-        // Identifier ("match")
-        // path: [m] [a] [t] [c]
+        // Identifier ("anytoken")
+        // path: [a]
         {
             if (inputCopy.length == 0)
                 goto endstate29;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'h')
+                if (currentChar == 'n')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state30;
@@ -1453,7 +1010,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1482,22 +1039,23 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state30:
-        // "match" Identifier
-        // path: [m] [a] [t] [c] [h]
+        // Identifier ("anytoken")
+        // path: [a] [n]
         {
             if (inputCopy.length == 0)
                 goto endstate30;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                if (currentChar == 'y')
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"match\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state31;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
                 }
                 else
                 {
@@ -1519,31 +1077,22 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate30:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"match\"";
+            foundSymbol = tokenID!"Identifier";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state31:
-        // Identifier ("token") ("t(")
-        // path: [t]
+        // Identifier ("anytoken")
+        // path: [a] [n] [y]
         {
             if (inputCopy.length == 0)
                 goto endstate31;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == '(')
-                {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"Identifier";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
-                    inputCopy = inputCopy[1 .. $];
-                    goto state36;
-                }
-                else if (currentChar == 'o')
+                if (currentChar == 't')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state32;
@@ -1551,7 +1100,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1580,15 +1129,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state32:
-        // Identifier ("token")
-        // path: [t] [o]
+        // Identifier ("anytoken")
+        // path: [a] [n] [y] [t]
         {
             if (inputCopy.length == 0)
                 goto endstate32;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'k')
+                if (currentChar == 'o')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state33;
@@ -1596,7 +1145,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1625,15 +1174,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state33:
-        // Identifier ("token")
-        // path: [t] [o] [k]
+        // Identifier ("anytoken")
+        // path: [a] [n] [y] [t] [o]
         {
             if (inputCopy.length == 0)
                 goto endstate33;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'e')
+                if (currentChar == 'k')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state34;
@@ -1641,7 +1190,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1670,15 +1219,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state34:
-        // Identifier ("token")
-        // path: [t] [o] [k] [e]
+        // Identifier ("anytoken")
+        // path: [a] [n] [y] [t] [o] [k]
         {
             if (inputCopy.length == 0)
                 goto endstate34;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'n')
+                if (currentChar == 'e')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state35;
@@ -1686,7 +1235,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1715,22 +1264,23 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state35:
-        // "token" Identifier
-        // path: [t] [o] [k] [e] [n]
+        // Identifier ("anytoken")
+        // path: [a] [n] [y] [t] [o] [k] [e]
         {
             if (inputCopy.length == 0)
                 goto endstate35;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                if (currentChar == 'n')
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"token\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state36;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
                 }
                 else
                 {
@@ -1752,47 +1302,69 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate35:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"token\"";
+            foundSymbol = tokenID!"Identifier";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state36:
-        // "t("
-        // path: [t] [(]
+        // "anytoken" Identifier
+        // path: [a] [n] [y] [t] [o] [k] [e] [n]
         {
             if (inputCopy.length == 0)
                 goto endstate36;
-            goto endstate36;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"anytoken\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate36;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate36;
+                }
+            }
         }
         endstate36:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"t(\"";
+            foundSymbol = tokenID!"\"anytoken\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state37:
-        // Identifier ("option")
-        // path: [o]
+        // Identifier
+        // path: [A-Z_b-eg-hj-lnp-su-z]
         {
             if (inputCopy.length == 0)
                 goto endstate37;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'p')
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state38;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1821,15 +1393,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state38:
-        // Identifier ("option")
-        // path: [o] [p]
+        // Identifier ("fragment")
+        // path: [f]
         {
             if (inputCopy.length == 0)
                 goto endstate38;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 't')
+                if (currentChar == 'r')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state39;
@@ -1837,7 +1409,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1866,23 +1438,23 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state39:
-        // Identifier ("option")
-        // path: [o] [p] [t]
+        // Identifier ("fragment")
+        // path: [f] [r]
         {
             if (inputCopy.length == 0)
                 goto endstate39;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'i')
+                if (currentChar == 'a')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state40;
                 }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'b' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1911,15 +1483,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state40:
-        // Identifier ("option")
-        // path: [o] [p] [t] [i]
+        // Identifier ("fragment")
+        // path: [f] [r] [a]
         {
             if (inputCopy.length == 0)
                 goto endstate40;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'o')
+                if (currentChar == 'g')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state41;
@@ -1927,7 +1499,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -1956,15 +1528,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state41:
-        // Identifier ("option")
-        // path: [o] [p] [t] [i] [o]
+        // Identifier ("fragment")
+        // path: [f] [r] [a] [g]
         {
             if (inputCopy.length == 0)
                 goto endstate41;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'n')
+                if (currentChar == 'm')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state42;
@@ -1972,7 +1544,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -2001,22 +1573,23 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state42:
-        // "option" Identifier
-        // path: [o] [p] [t] [i] [o] [n]
+        // Identifier ("fragment")
+        // path: [f] [r] [a] [g] [m]
         {
             if (inputCopy.length == 0)
                 goto endstate42;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                if (currentChar == 'e')
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"option\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state43;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
                 }
                 else
                 {
@@ -2038,22 +1611,22 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate42:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"option\"";
+            foundSymbol = tokenID!"Identifier";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state43:
-        // Identifier ("import")
-        // path: [i]
+        // Identifier ("fragment")
+        // path: [f] [r] [a] [g] [m] [e]
         {
             if (inputCopy.length == 0)
                 goto endstate43;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'm')
+                if (currentChar == 'n')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state44;
@@ -2061,7 +1634,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -2090,15 +1663,15 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state44:
-        // Identifier ("import")
-        // path: [i] [m]
+        // Identifier ("fragment")
+        // path: [f] [r] [a] [g] [m] [e] [n]
         {
             if (inputCopy.length == 0)
                 goto endstate44;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'p')
+                if (currentChar == 't')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state45;
@@ -2106,7 +1679,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -2135,23 +1708,22 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state45:
-        // Identifier ("import")
-        // path: [i] [m] [p]
+        // "fragment" Identifier
+        // path: [f] [r] [a] [g] [m] [e] [n] [t]
         {
             if (inputCopy.length == 0)
                 goto endstate45;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'o')
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"fragment\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
-                    goto state46;
-                }
-                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -2173,7 +1745,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate45:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"Identifier";
+            foundSymbol = tokenID!"\"fragment\"";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
@@ -2181,14 +1753,14 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
     state46:
         // Identifier ("import")
-        // path: [i] [m] [p] [o]
+        // path: [i]
         {
             if (inputCopy.length == 0)
                 goto endstate46;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'r')
+                if (currentChar == 'm')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state47;
@@ -2196,7 +1768,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -2226,14 +1798,14 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
     state47:
         // Identifier ("import")
-        // path: [i] [m] [p] [o] [r]
+        // path: [i] [m]
         {
             if (inputCopy.length == 0)
                 goto endstate47;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 't')
+                if (currentChar == 'p')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state48;
@@ -2241,7 +1813,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state37;
                 }
                 else
                 {
@@ -2270,22 +1842,23 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state48:
-        // "import" Identifier
-        // path: [i] [m] [p] [o] [r] [t]
+        // Identifier ("import")
+        // path: [i] [m] [p]
         {
             if (inputCopy.length == 0)
                 goto endstate48;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                if (currentChar == 'o')
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"import\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
-                    goto state17;
+                    goto state49;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
                 }
                 else
                 {
@@ -2307,49 +1880,34 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate48:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"import\"";
+            foundSymbol = tokenID!"Identifier";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state49:
-        // (StringLiteral)
-        // path: [\"]
+        // Identifier ("import")
+        // path: [i] [m] [p] [o]
         {
             if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[^\\n\\r]", inputCopy.ptr - input.ptr);
-            }
+                goto endstate49;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == '\"')
+                if (currentChar == 'r')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state50;
                 }
-                else if (currentChar == '\\')
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state51;
-                }
-                else if (currentChar == '\n' || currentChar == '\r')
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[^\\n\\r]", inputCopy.ptr - input.ptr);
+                    goto state37;
                 }
                 else
                 {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state49;
+                    goto endstate49;
                 }
             }
             else
@@ -2360,71 +1918,85 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    inputCopy = inputCopyNext;
-                    goto state49;
+                    goto endstate49;
                 }
             }
         }
+        endstate49:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
 
     state50:
-        // StringLiteral
-        // path: [\"] [\"]
+        // Identifier ("import")
+        // path: [i] [m] [p] [o] [r]
         {
             if (inputCopy.length == 0)
                 goto endstate50;
-            goto endstate50;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 't')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state51;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate50;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate50;
+                }
+            }
         }
         endstate50:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"StringLiteral";
+            foundSymbol = tokenID!"Identifier";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state51:
-        // (StringLiteral)
-        // path: [\"] [\\]
+        // "import" Identifier
+        // path: [i] [m] [p] [o] [r] [t]
         {
             if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
-            }
+                goto endstate51;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == 'U')
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
                 {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"import\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
                     inputCopy = inputCopy[1 .. $];
-                    goto state56;
-                }
-                else if (currentChar == 'u')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state54;
-                }
-                else if (currentChar == 'x')
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state52;
-                }
-                else if (currentChar == '\"' || currentChar == '\'' || currentChar == '-' || currentChar == '0' || (currentChar >= '[' && currentChar <= ']') || (currentChar >= 'a' && currentChar <= 'b') || currentChar == 'f' || currentChar == 'n' || currentChar == 'r' || (currentChar >= 't' && currentChar <= 'v'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state49;
+                    goto state37;
                 }
                 else
                 {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                    goto endstate51;
                 }
             }
             else
@@ -2435,41 +2007,41 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                    goto endstate51;
                 }
             }
         }
+        endstate51:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"import\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
 
     state52:
-        // (StringLiteral)
-        // path: [\"] [\\] [x]
+        // Identifier ("match")
+        // path: [m]
         {
             if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
+                goto endstate52;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                if (currentChar == 'a')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state53;
                 }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'b' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
                 else
                 {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                    goto endstate52;
                 }
             }
             else
@@ -2480,311 +2052,41 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                    goto endstate52;
                 }
             }
+        }
+        endstate52:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
         }
 
     state53:
-        // (StringLiteral)
-        // path: [\"] [\\] [x] [0-9A-Fa-f]
+        // Identifier ("match")
+        // path: [m] [a]
         {
             if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
+                goto endstate53;
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state49;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state54:
-        // (StringLiteral)
-        // path: [\"] [\\] [u]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state55;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state55:
-        // (StringLiteral)
-        // path: [\"] [\\] [u] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state52;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state56:
-        // (StringLiteral)
-        // path: [\"] [\\] [U]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state57;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state57:
-        // (StringLiteral)
-        // path: [\"] [\\] [U] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state58;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state58:
-        // (StringLiteral)
-        // path: [\"] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state59;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state59:
-        // (StringLiteral)
-        // path: [\"] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                if (currentChar == 't')
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state54;
                 }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
                 else
                 {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                    goto endstate53;
                 }
             }
             else
@@ -2795,15 +2097,724 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                    goto endstate53;
                 }
             }
         }
+        endstate53:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state54:
+        // Identifier ("match")
+        // path: [m] [a] [t]
+        {
+            if (inputCopy.length == 0)
+                goto endstate54;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'c')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state55;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate54;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate54;
+                }
+            }
+        }
+        endstate54:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state55:
+        // Identifier ("match")
+        // path: [m] [a] [t] [c]
+        {
+            if (inputCopy.length == 0)
+                goto endstate55;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'h')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state56;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate55;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate55;
+                }
+            }
+        }
+        endstate55:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state56:
+        // "match" Identifier
+        // path: [m] [a] [t] [c] [h]
+        {
+            if (inputCopy.length == 0)
+                goto endstate56;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"match\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate56;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate56;
+                }
+            }
+        }
+        endstate56:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"match\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state57:
+        // Identifier ("option")
+        // path: [o]
+        {
+            if (inputCopy.length == 0)
+                goto endstate57;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'p')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state58;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate57;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate57;
+                }
+            }
+        }
+        endstate57:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state58:
+        // Identifier ("option")
+        // path: [o] [p]
+        {
+            if (inputCopy.length == 0)
+                goto endstate58;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 't')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state59;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate58;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate58;
+                }
+            }
+        }
+        endstate58:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state59:
+        // Identifier ("option")
+        // path: [o] [p] [t]
+        {
+            if (inputCopy.length == 0)
+                goto endstate59;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'i')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state60;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate59;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate59;
+                }
+            }
+        }
+        endstate59:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
 
     state60:
+        // Identifier ("option")
+        // path: [o] [p] [t] [i]
+        {
+            if (inputCopy.length == 0)
+                goto endstate60;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'o')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state61;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate60;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate60;
+                }
+            }
+        }
+        endstate60:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state61:
+        // Identifier ("option")
+        // path: [o] [p] [t] [i] [o]
+        {
+            if (inputCopy.length == 0)
+                goto endstate61;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'n')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state62;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate61;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate61;
+                }
+            }
+        }
+        endstate61:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state62:
+        // "option" Identifier
+        // path: [o] [p] [t] [i] [o] [n]
+        {
+            if (inputCopy.length == 0)
+                goto endstate62;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"option\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate62;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate62;
+                }
+            }
+        }
+        endstate62:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"option\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state63:
+        // Identifier ("t(") ("token")
+        // path: [t]
+        {
+            if (inputCopy.length == 0)
+                goto endstate63;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == '(')
+                {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"Identifier";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state64;
+                }
+                else if (currentChar == 'o')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state65;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate63;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate63;
+                }
+            }
+        }
+        endstate63:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state64:
+        // "t("
+        // path: [t] [(]
+        {
+            if (inputCopy.length == 0)
+                goto endstate64;
+            goto endstate64;
+        }
+        endstate64:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"t(\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state65:
+        // Identifier ("token")
+        // path: [t] [o]
+        {
+            if (inputCopy.length == 0)
+                goto endstate65;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'k')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state66;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate65;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate65;
+                }
+            }
+        }
+        endstate65:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state66:
+        // Identifier ("token")
+        // path: [t] [o] [k]
+        {
+            if (inputCopy.length == 0)
+                goto endstate66;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'e')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state67;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate66;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate66;
+                }
+            }
+        }
+        endstate66:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state67:
+        // Identifier ("token")
+        // path: [t] [o] [k] [e]
+        {
+            if (inputCopy.length == 0)
+                goto endstate67;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == 'n')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state68;
+                }
+                else if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate67;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate67;
+                }
+            }
+        }
+        endstate67:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"Identifier";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state68:
+        // "token" Identifier
+        // path: [t] [o] [k] [e] [n]
+        {
+            if (inputCopy.length == 0)
+                goto endstate68;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'Z') || currentChar == '_' || (currentChar >= 'a' && currentChar <= 'z'))
+                {
+                    assert(inputCopy.ptr >= input.ptr);
+                    foundSymbol = tokenID!"\"token\"";
+                    foundLength = inputCopy.ptr - input.ptr;
+                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state37;
+                }
+                else
+                {
+                    goto endstate68;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate68;
+                }
+            }
+        }
+        endstate68:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"token\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state69:
+        // "{"
+        // path: [{]
+        {
+            if (inputCopy.length == 0)
+                goto endstate69;
+            goto endstate69;
+        }
+        endstate69:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"{\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state70:
+        // "|"
+        // path: [|]
+        {
+            if (inputCopy.length == 0)
+                goto endstate70;
+            goto endstate70;
+        }
+        endstate70:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"|\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state71:
+        // "}"
+        // path: [}]
+        {
+            if (inputCopy.length == 0)
+                goto endstate71;
+            goto endstate71;
+        }
+        endstate71:
+        {
+            assert(inputCopy.ptr >= input.ptr);
+            foundSymbol = tokenID!"\"}\"";
+            foundLength = inputCopy.ptr - input.ptr;
+            foundIsIgnore = false;
+            goto lexerend;
+        }
+
+    state72:
         // (CharacterSetLiteral)
         // path: [\[]
         {
@@ -2822,12 +2833,12 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if (currentChar == '\\')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state63;
+                    goto state75;
                 }
                 else if (currentChar == ']')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state62;
+                    goto state74;
                 }
                 else if (currentChar == '-' || currentChar == '[')
                 {
@@ -2839,7 +2850,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state61;
+                    goto state73;
                 }
             }
             else
@@ -2851,12 +2862,12 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
                 {
                     inputCopy = inputCopyNext;
-                    goto state61;
+                    goto state73;
                 }
             }
         }
 
-    state61:
+    state73:
         // (CharacterSetLiteral)
         // path: [\[] [^\-\[-\]]
         {
@@ -2875,7 +2886,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if (currentChar == '-')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state64;
+                    goto state76;
                 }
                 else if (currentChar == '[')
                 {
@@ -2887,17 +2898,17 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if (currentChar == '\\')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state63;
+                    goto state75;
                 }
                 else if (currentChar == ']')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state62;
+                    goto state74;
                 }
                 else
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state61;
+                    goto state73;
                 }
             }
             else
@@ -2909,20 +2920,20 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
                 {
                     inputCopy = inputCopyNext;
-                    goto state61;
+                    goto state73;
                 }
             }
         }
 
-    state62:
+    state74:
         // CharacterSetLiteral
         // path: [\[] [\]]
         {
             if (inputCopy.length == 0)
-                goto endstate62;
-            goto endstate62;
+                goto endstate74;
+            goto endstate74;
         }
-        endstate62:
+        endstate74:
         {
             assert(inputCopy.ptr >= input.ptr);
             foundSymbol = tokenID!"CharacterSetLiteral";
@@ -2931,7 +2942,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
             goto lexerend;
         }
 
-    state63:
+    state75:
         // (CharacterSetLiteral)
         // path: [\[] [\\]
         {
@@ -2950,22 +2961,22 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if (currentChar == 'U')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state78;
+                    goto state90;
                 }
                 else if (currentChar == 'u')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state76;
+                    goto state88;
                 }
                 else if (currentChar == 'x')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state74;
+                    goto state86;
                 }
                 else if (currentChar == '\"' || currentChar == '\'' || currentChar == '-' || currentChar == '0' || (currentChar >= '[' && currentChar <= ']') || (currentChar >= 'a' && currentChar <= 'b') || currentChar == 'f' || currentChar == 'n' || currentChar == 'r' || (currentChar >= 't' && currentChar <= 'v'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state61;
+                    goto state73;
                 }
                 else
                 {
@@ -2991,7 +3002,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
             }
         }
 
-    state64:
+    state76:
         // (CharacterSetLiteral)
         // path: [\[] [^\-\[-\]] [\-]
         {
@@ -3010,7 +3021,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if (currentChar == '\\')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state65;
+                    goto state77;
                 }
                 else if (currentChar == '-' || (currentChar >= '[' && currentChar <= ']'))
                 {
@@ -3022,7 +3033,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state60;
+                    goto state72;
                 }
             }
             else
@@ -3034,12 +3045,12 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
                 {
                     inputCopy = inputCopyNext;
-                    goto state60;
+                    goto state72;
                 }
             }
         }
 
-    state65:
+    state77:
         // (CharacterSetLiteral)
         // path: [\[] [^\-\[-\]] [\-] [\\]
         {
@@ -3058,22 +3069,22 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if (currentChar == 'U')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state70;
+                    goto state82;
                 }
                 else if (currentChar == 'u')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state68;
+                    goto state80;
                 }
                 else if (currentChar == 'x')
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state66;
+                    goto state78;
                 }
                 else if (currentChar == '\"' || currentChar == '\'' || currentChar == '-' || currentChar == '0' || (currentChar >= '[' && currentChar <= ']') || (currentChar >= 'a' && currentChar <= 'b') || currentChar == 'f' || currentChar == 'n' || currentChar == 'r' || (currentChar >= 't' && currentChar <= 'v'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state60;
+                    goto state72;
                 }
                 else
                 {
@@ -3099,549 +3110,9 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
             }
         }
 
-    state66:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [x]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state67;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state67:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [x] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state60;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state68:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [u]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state69;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state69:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [u] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state66;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state70:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [U]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state71;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state71:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [U] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state72;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state72:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state73;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state73:
-        // (CharacterSetLiteral)
-        // path: [\[] [^\-\[-\]] [\-] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state68;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state74:
-        // (CharacterSetLiteral)
-        // path: [\[] [\\] [x]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state75;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state75:
-        // (CharacterSetLiteral)
-        // path: [\[] [\\] [x] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state61;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state76:
-        // (CharacterSetLiteral)
-        // path: [\[] [\\] [u]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state77;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
-    state77:
-        // (CharacterSetLiteral)
-        // path: [\[] [\\] [u] [0-9A-Fa-f]
-        {
-            if (inputCopy.length == 0)
-            {
-                if (input.ptr == inputCopy.ptr)
-                    goto lexerend;
-                else if (foundSymbol != SymbolID.max)
-                    goto lexerend;
-                else
-                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-            }
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state74;
-                }
-                else
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    if (foundSymbol != SymbolID.max)
-                        goto lexerend;
-                    else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
-                }
-            }
-        }
-
     state78:
         // (CharacterSetLiteral)
-        // path: [\[] [\\] [U]
+        // path: [\[] [^\-\[-\]] [\-] [\\] [x]
         {
             if (inputCopy.length == 0)
             {
@@ -3686,7 +3157,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
     state79:
         // (CharacterSetLiteral)
-        // path: [\[] [\\] [U] [0-9A-Fa-f]
+        // path: [\[] [^\-\[-\]] [\-] [\\] [x] [0-9A-Fa-f]
         {
             if (inputCopy.length == 0)
             {
@@ -3703,7 +3174,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state80;
+                    goto state72;
                 }
                 else
                 {
@@ -3731,7 +3202,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
     state80:
         // (CharacterSetLiteral)
-        // path: [\[] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f]
+        // path: [\[] [^\-\[-\]] [\-] [\\] [u]
         {
             if (inputCopy.length == 0)
             {
@@ -3776,7 +3247,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
     state81:
         // (CharacterSetLiteral)
-        // path: [\[] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f]
+        // path: [\[] [^\-\[-\]] [\-] [\\] [u] [0-9A-Fa-f]
         {
             if (inputCopy.length == 0)
             {
@@ -3793,7 +3264,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state76;
+                    goto state78;
                 }
                 else
                 {
@@ -3820,150 +3291,8 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         }
 
     state82:
-        // IntegerLiteral
-        // path: [1-9]
-        {
-            if (inputCopy.length == 0)
-                goto endstate82;
-            char currentChar = inputCopy[0];
-            if (currentChar < 0x80)
-            {
-                if ((currentChar >= '0' && currentChar <= '9'))
-                {
-                    inputCopy = inputCopy[1 .. $];
-                    goto state82;
-                }
-                else
-                {
-                    goto endstate82;
-                }
-            }
-            else
-            {
-                string inputCopyNext = inputCopy;
-                import std.utf;
-
-                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
-
-                {
-                    goto endstate82;
-                }
-            }
-        }
-        endstate82:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"IntegerLiteral";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state83:
-        // IntegerLiteral
-        // path: [0]
-        {
-            if (inputCopy.length == 0)
-                goto endstate83;
-            goto endstate83;
-        }
-        endstate83:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"IntegerLiteral";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state84:
-        // ";"
-        // path: [;]
-        {
-            if (inputCopy.length == 0)
-                goto endstate84;
-            goto endstate84;
-        }
-        endstate84:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\";\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state85:
-        // "="
-        // path: [=]
-        {
-            if (inputCopy.length == 0)
-                goto endstate85;
-            goto endstate85;
-        }
-        endstate85:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"=\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state86:
-        // "("
-        // path: [(]
-        {
-            if (inputCopy.length == 0)
-                goto endstate86;
-            goto endstate86;
-        }
-        endstate86:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"(\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state87:
-        // ")"
-        // path: [)]
-        {
-            if (inputCopy.length == 0)
-                goto endstate87;
-            goto endstate87;
-        }
-        endstate87:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\")\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state88:
-        // ","
-        // path: [,]
-        {
-            if (inputCopy.length == 0)
-                goto endstate88;
-            goto endstate88;
-        }
-        endstate88:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\",\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state89:
-        // ("...")
-        // path: [.]
+        // (CharacterSetLiteral)
+        // path: [\[] [^\-\[-\]] [\-] [\\] [U]
         {
             if (inputCopy.length == 0)
             {
@@ -3972,22 +3301,22 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if (foundSymbol != SymbolID.max)
                     goto lexerend;
                 else
-                    throw lexerException("EOF", "[.]", inputCopy.ptr - input.ptr);
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
             }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == '.')
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
                 {
                     inputCopy = inputCopy[1 .. $];
-                    goto state90;
+                    goto state83;
                 }
                 else
                 {
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -4001,14 +3330,329 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state83:
+        // (CharacterSetLiteral)
+        // path: [\[] [^\-\[-\]] [\-] [\\] [U] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state84;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state84:
+        // (CharacterSetLiteral)
+        // path: [\[] [^\-\[-\]] [\-] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state85;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state85:
+        // (CharacterSetLiteral)
+        // path: [\[] [^\-\[-\]] [\-] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state80;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state86:
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [x]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state87;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state87:
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [x] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state73;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state88:
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [u]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state89;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state89:
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [u] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state86;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
 
     state90:
-        // ("...")
-        // path: [.] [.]
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [U]
         {
             if (inputCopy.length == 0)
             {
@@ -4017,12 +3661,12 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 else if (foundSymbol != SymbolID.max)
                     goto lexerend;
                 else
-                    throw lexerException("EOF", "[.]", inputCopy.ptr - input.ptr);
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
             }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == '.')
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
                 {
                     inputCopy = inputCopy[1 .. $];
                     goto state91;
@@ -4032,7 +3676,7 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -4046,82 +3690,189 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                     if (foundSymbol != SymbolID.max)
                         goto lexerend;
                     else
-                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[.]", inputCopy.ptr - input.ptr);
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
 
     state91:
-        // "..."
-        // path: [.] [.] [.]
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [U] [0-9A-Fa-f]
         {
             if (inputCopy.length == 0)
-                goto endstate91;
-            goto endstate91;
-        }
-        endstate91:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"...\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state92;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
         }
 
     state92:
-        // "@"
-        // path: [@]
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f]
         {
             if (inputCopy.length == 0)
-                goto endstate92;
-            goto endstate92;
-        }
-        endstate92:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"@\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state93;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
         }
 
     state93:
-        // ":"
-        // path: [:]
+        // (CharacterSetLiteral)
+        // path: [\[] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f]
         {
             if (inputCopy.length == 0)
-                goto endstate93;
-            goto endstate93;
-        }
-        endstate93:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\":\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state88;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
         }
 
     state94:
-        // "{"
-        // path: [{]
+        // IntegerLiteral
+        // path: [1-9]
         {
             if (inputCopy.length == 0)
                 goto endstate94;
-            goto endstate94;
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state94;
+                }
+                else
+                {
+                    goto endstate94;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    goto endstate94;
+                }
+            }
         }
         endstate94:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"{\"";
+            foundSymbol = tokenID!"IntegerLiteral";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state95:
-        // "}"
-        // path: [}]
+        // IntegerLiteral
+        // path: [0]
         {
             if (inputCopy.length == 0)
                 goto endstate95;
@@ -4130,32 +3881,68 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate95:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"}\"";
+            foundSymbol = tokenID!"IntegerLiteral";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state96:
-        // "?"
-        // path: [?]
+        // (StringLiteral)
+        // path: [\"]
         {
             if (inputCopy.length == 0)
-                goto endstate96;
-            goto endstate96;
-        }
-        endstate96:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"?\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[^\\n\\r]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if (currentChar == '\"')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state97;
+                }
+                else if (currentChar == '\\')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state98;
+                }
+                else if (currentChar == '\n' || currentChar == '\r')
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[^\\n\\r]", inputCopy.ptr - input.ptr);
+                }
+                else
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state96;
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    inputCopy = inputCopyNext;
+                    goto state96;
+                }
+            }
         }
 
     state97:
-        // "!"
-        // path: [!]
+        // StringLiteral
+        // path: [\"] [\"]
         {
             if (inputCopy.length == 0)
                 goto endstate97;
@@ -4164,33 +3951,234 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
         endstate97:
         {
             assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"!\"";
+            foundSymbol = tokenID!"StringLiteral";
             foundLength = inputCopy.ptr - input.ptr;
             foundIsIgnore = false;
             goto lexerend;
         }
 
     state98:
-        // "<" ("<<")
-        // path: [<]
+        // (StringLiteral)
+        // path: [\"] [\\]
         {
             if (inputCopy.length == 0)
-                goto endstate98;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+            }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == '<')
+                if (currentChar == 'U')
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\"<\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state103;
+                }
+                else if (currentChar == 'u')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state101;
+                }
+                else if (currentChar == 'x')
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state99;
+                }
+                else if (currentChar == '\"' || currentChar == '\'' || currentChar == '-' || currentChar == '0' || (currentChar >= '[' && currentChar <= ']') || (currentChar >= 'a' && currentChar <= 'b') || currentChar == 'f' || currentChar == 'n' || currentChar == 'r' || (currentChar >= 't' && currentChar <= 'v'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state96;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[\\\"\\\'\\-0U\\[-\\]a-bfnrt-vx]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state99:
+        // (StringLiteral)
+        // path: [\"] [\\] [x]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state100;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state100:
+        // (StringLiteral)
+        // path: [\"] [\\] [x] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state96;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state101:
+        // (StringLiteral)
+        // path: [\"] [\\] [u]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state102;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state102:
+        // (StringLiteral)
+        // path: [\"] [\\] [u] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
                     inputCopy = inputCopy[1 .. $];
                     goto state99;
                 }
                 else
                 {
-                    goto endstate98;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -4201,57 +4189,176 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    goto endstate98;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
         }
-        endstate98:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"<\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
 
-    state99:
-        // "<<"
-        // path: [<] [<]
+    state103:
+        // (StringLiteral)
+        // path: [\"] [\\] [U]
         {
             if (inputCopy.length == 0)
-                goto endstate99;
-            goto endstate99;
-        }
-        endstate99:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"<<\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state100:
-        // ">" (">>")
-        // path: [>]
-        {
-            if (inputCopy.length == 0)
-                goto endstate100;
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
             char currentChar = inputCopy[0];
             if (currentChar < 0x80)
             {
-                if (currentChar == '>')
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
                 {
-                    assert(inputCopy.ptr >= input.ptr);
-                    foundSymbol = tokenID!"\">\"";
-                    foundLength = inputCopy.ptr - input.ptr;
-                    foundIsIgnore = false;
+                    inputCopy = inputCopy[1 .. $];
+                    goto state104;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state104:
+        // (StringLiteral)
+        // path: [\"] [\\] [U] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state105;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state105:
+        // (StringLiteral)
+        // path: [\"] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
+                    inputCopy = inputCopy[1 .. $];
+                    goto state106;
+                }
+                else
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+            else
+            {
+                string inputCopyNext = inputCopy;
+                import std.utf;
+
+                dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
+
+                {
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+                }
+            }
+        }
+
+    state106:
+        // (StringLiteral)
+        // path: [\"] [\\] [U] [0-9A-Fa-f] [0-9A-Fa-f] [0-9A-Fa-f]
+        {
+            if (inputCopy.length == 0)
+            {
+                if (input.ptr == inputCopy.ptr)
+                    goto lexerend;
+                else if (foundSymbol != SymbolID.max)
+                    goto lexerend;
+                else
+                    throw lexerException("EOF", "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
+            }
+            char currentChar = inputCopy[0];
+            if (currentChar < 0x80)
+            {
+                if ((currentChar >= '0' && currentChar <= '9') || (currentChar >= 'A' && currentChar <= 'F') || (currentChar >= 'a' && currentChar <= 'f'))
+                {
                     inputCopy = inputCopy[1 .. $];
                     goto state101;
                 }
                 else
                 {
-                    goto endstate100;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentChar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
             else
@@ -4262,119 +4369,12 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
                 dchar currentDchar = decodeFront!(Yes.useReplacementDchar)(inputCopyNext);
 
                 {
-                    goto endstate100;
+                    if (foundSymbol != SymbolID.max)
+                        goto lexerend;
+                    else
+                        throw lexerException(text("Error unexpected \'", currentDchar.escapeChar(false), "\'"), "[0-9A-Fa-f]", inputCopy.ptr - input.ptr);
                 }
             }
-        }
-        endstate100:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\">\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state101:
-        // ">>"
-        // path: [>] [>]
-        {
-            if (inputCopy.length == 0)
-                goto endstate101;
-            goto endstate101;
-        }
-        endstate101:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\">>\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state102:
-        // "*"
-        // path: [*]
-        {
-            if (inputCopy.length == 0)
-                goto endstate102;
-            goto endstate102;
-        }
-        endstate102:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"*\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state103:
-        // "-"
-        // path: [\-]
-        {
-            if (inputCopy.length == 0)
-                goto endstate103;
-            goto endstate103;
-        }
-        endstate103:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"-\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state104:
-        // "|"
-        // path: [|]
-        {
-            if (inputCopy.length == 0)
-                goto endstate104;
-            goto endstate104;
-        }
-        endstate104:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"|\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state105:
-        // "^"
-        // path: [\^]
-        {
-            if (inputCopy.length == 0)
-                goto endstate105;
-            goto endstate105;
-        }
-        endstate105:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"^\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
-        }
-
-    state106:
-        // "+"
-        // path: [+]
-        {
-            if (inputCopy.length == 0)
-                goto endstate106;
-            goto endstate106;
-        }
-        endstate106:
-        {
-            assert(inputCopy.ptr >= input.ptr);
-            foundSymbol = tokenID!"\"+\"";
-            foundLength = inputCopy.ptr - input.ptr;
-            foundIsIgnore = false;
-            goto lexerend;
         }
 
         lexerend:
@@ -4608,38 +4608,38 @@ struct Lexer(Location, bool includeIgnoredTokens = false)
 
 immutable allNonterminalTokens = [
     /* 0: */ immutable(Nonterminal)("$null", NonterminalFlags.none, [], []),
-    /* 1: */ immutable(Nonterminal)("Identifier", NonterminalFlags.none, ["lowPrio"], []),
-    /* 2: */ immutable(Nonterminal)("StringLiteral", NonterminalFlags.none, [], []),
-    /* 3: */ immutable(Nonterminal)("CharacterSetLiteral", NonterminalFlags.none, [], []),
-    /* 4: */ immutable(Nonterminal)("IntegerLiteral", NonterminalFlags.none, [], []),
-    /* 5: */ immutable(Nonterminal)("\";\"", NonterminalFlags.none, [], []),
-    /* 6: */ immutable(Nonterminal)("\"=\"", NonterminalFlags.none, [], []),
-    /* 7: */ immutable(Nonterminal)("\"fragment\"", NonterminalFlags.none, [], []),
-    /* 8: */ immutable(Nonterminal)("\"token\"", NonterminalFlags.none, [], []),
-    /* 9: */ immutable(Nonterminal)("\"(\"", NonterminalFlags.none, [], []),
-    /* 10: */ immutable(Nonterminal)("\")\"", NonterminalFlags.none, [], []),
-    /* 11: */ immutable(Nonterminal)("\",\"", NonterminalFlags.none, [], []),
-    /* 12: */ immutable(Nonterminal)("\"...\"", NonterminalFlags.none, [], []),
-    /* 13: */ immutable(Nonterminal)("\"option\"", NonterminalFlags.none, [], []),
-    /* 14: */ immutable(Nonterminal)("\"import\"", NonterminalFlags.none, [], []),
-    /* 15: */ immutable(Nonterminal)("\"match\"", NonterminalFlags.none, [], []),
-    /* 16: */ immutable(Nonterminal)("\"@\"", NonterminalFlags.none, [], []),
-    /* 17: */ immutable(Nonterminal)("\":\"", NonterminalFlags.none, [], []),
-    /* 18: */ immutable(Nonterminal)("\"{\"", NonterminalFlags.none, [], []),
-    /* 19: */ immutable(Nonterminal)("\"}\"", NonterminalFlags.none, [], []),
-    /* 20: */ immutable(Nonterminal)("\"?\"", NonterminalFlags.none, [], []),
-    /* 21: */ immutable(Nonterminal)("\"!\"", NonterminalFlags.none, [], []),
-    /* 22: */ immutable(Nonterminal)("\"<\"", NonterminalFlags.none, [], []),
-    /* 23: */ immutable(Nonterminal)("\">\"", NonterminalFlags.none, [], []),
-    /* 24: */ immutable(Nonterminal)("\"*\"", NonterminalFlags.none, [], []),
-    /* 25: */ immutable(Nonterminal)("\">>\"", NonterminalFlags.none, [], []),
-    /* 26: */ immutable(Nonterminal)("\"<<\"", NonterminalFlags.none, [], []),
-    /* 27: */ immutable(Nonterminal)("\"-\"", NonterminalFlags.none, [], []),
-    /* 28: */ immutable(Nonterminal)("\"anytoken\"", NonterminalFlags.none, [], []),
-    /* 29: */ immutable(Nonterminal)("\"|\"", NonterminalFlags.none, [], []),
-    /* 30: */ immutable(Nonterminal)("\"^\"", NonterminalFlags.none, [], []),
-    /* 31: */ immutable(Nonterminal)("\"+\"", NonterminalFlags.none, [], []),
-    /* 32: */ immutable(Nonterminal)("\"t(\"", NonterminalFlags.none, [], []),
+    /* 1: */ immutable(Nonterminal)("\"!\"", NonterminalFlags.none, [], []),
+    /* 2: */ immutable(Nonterminal)("\"(\"", NonterminalFlags.none, [], []),
+    /* 3: */ immutable(Nonterminal)("\")\"", NonterminalFlags.none, [], []),
+    /* 4: */ immutable(Nonterminal)("\"*\"", NonterminalFlags.none, [], []),
+    /* 5: */ immutable(Nonterminal)("\"+\"", NonterminalFlags.none, [], []),
+    /* 6: */ immutable(Nonterminal)("\",\"", NonterminalFlags.none, [], []),
+    /* 7: */ immutable(Nonterminal)("\"-\"", NonterminalFlags.none, [], []),
+    /* 8: */ immutable(Nonterminal)("\"...\"", NonterminalFlags.none, [], []),
+    /* 9: */ immutable(Nonterminal)("\":\"", NonterminalFlags.none, [], []),
+    /* 10: */ immutable(Nonterminal)("\";\"", NonterminalFlags.none, [], []),
+    /* 11: */ immutable(Nonterminal)("\"<\"", NonterminalFlags.none, [], []),
+    /* 12: */ immutable(Nonterminal)("\"<<\"", NonterminalFlags.none, [], []),
+    /* 13: */ immutable(Nonterminal)("\"=\"", NonterminalFlags.none, [], []),
+    /* 14: */ immutable(Nonterminal)("\">\"", NonterminalFlags.none, [], []),
+    /* 15: */ immutable(Nonterminal)("\">>\"", NonterminalFlags.none, [], []),
+    /* 16: */ immutable(Nonterminal)("\"?\"", NonterminalFlags.none, [], []),
+    /* 17: */ immutable(Nonterminal)("\"@\"", NonterminalFlags.none, [], []),
+    /* 18: */ immutable(Nonterminal)("\"^\"", NonterminalFlags.none, [], []),
+    /* 19: */ immutable(Nonterminal)("\"anytoken\"", NonterminalFlags.none, [], []),
+    /* 20: */ immutable(Nonterminal)("\"fragment\"", NonterminalFlags.none, [], []),
+    /* 21: */ immutable(Nonterminal)("\"import\"", NonterminalFlags.none, [], []),
+    /* 22: */ immutable(Nonterminal)("\"match\"", NonterminalFlags.none, [], []),
+    /* 23: */ immutable(Nonterminal)("\"option\"", NonterminalFlags.none, [], []),
+    /* 24: */ immutable(Nonterminal)("\"t(\"", NonterminalFlags.none, [], []),
+    /* 25: */ immutable(Nonterminal)("\"token\"", NonterminalFlags.none, [], []),
+    /* 26: */ immutable(Nonterminal)("\"{\"", NonterminalFlags.none, [], []),
+    /* 27: */ immutable(Nonterminal)("\"|\"", NonterminalFlags.none, [], []),
+    /* 28: */ immutable(Nonterminal)("\"}\"", NonterminalFlags.none, [], []),
+    /* 29: */ immutable(Nonterminal)("CharacterSetLiteral", NonterminalFlags.none, [], []),
+    /* 30: */ immutable(Nonterminal)("Identifier", NonterminalFlags.none, ["lowPrio"], []),
+    /* 31: */ immutable(Nonterminal)("IntegerLiteral", NonterminalFlags.none, [], []),
+    /* 32: */ immutable(Nonterminal)("StringLiteral", NonterminalFlags.none, [], []),
     /* 33: */ immutable(Nonterminal)("StringPart", NonterminalFlags.none, [], []),
     /* 34: */ immutable(Nonterminal)("CharacterSetPart", NonterminalFlags.none, [], []),
     /* 35: */ immutable(Nonterminal)("CharacterSetPart2", NonterminalFlags.none, [], []),

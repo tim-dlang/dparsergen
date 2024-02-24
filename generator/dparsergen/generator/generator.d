@@ -562,6 +562,8 @@ int main(string[] args)
         if (hasRegArray)
             grammar = createRegArrayGrammar(ebnf, grammar);
 
+        grammar = createSortedGrammar(grammar);
+
         if (optimizationEmpty)
             grammar = createOptEmptyGrammar(ebnf, grammar);
 

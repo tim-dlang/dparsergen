@@ -1,6 +1,12 @@
 // EXCLUDE_VARIANT: glr
 /*
-GENERATOR_OUTPUT(normal, optdescent):
+GENERATOR_OUTPUT(normal):
+---
+Warning: Parse conflict in state 8
+---
+*/
+/*
+GENERATOR_OUTPUT(optdescent):
 ---
 Warning: Parse conflict in state 6
 ---

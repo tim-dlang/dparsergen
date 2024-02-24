@@ -1,13 +1,13 @@
 /*
 GENERATOR_OUTPUT(normal):
 ---
-Warning: Parse conflict in state 2
+Warning: Parse conflict in state 3
 ---
 */
 /*
 GENERATOR_OUTPUT(optdescent):
 ---
-Warning: Parse conflict in state 6
+Warning: Parse conflict in state 5
 ---
 */
 S = <X;

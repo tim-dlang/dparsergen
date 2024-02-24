@@ -2556,6 +2556,125 @@ EBNFGrammar createRegArrayGrammar(EBNF ebnf, EBNFGrammar realGrammar)
     return newGrammar;
 }
 
+EBNFGrammar createSortedGrammar(EBNFGrammar realGrammar)
+{
+    EBNFGrammar newGrammar = new EBNFGrammar(realGrammar.symbolInfos /*, realGrammar*/ );
+    newGrammar.tags = realGrammar.tags;
+    newGrammar.allowTokenNonterminals = realGrammar.allowTokenNonterminals;
+    newGrammar.inContextOnlyTokens = realGrammar.inContextOnlyTokens;
+
+    newGrammar.startTokenID = realGrammar.startTokenID;
+    newGrammar.startNonterminalID = realGrammar.startNonterminalID;
+    newGrammar.startProductionID = realGrammar.startProductionID;
+
+    NonterminalID[] nonterminalOrder;
+    NonterminalID[] nonterminalOrderBack;
+    nonterminalOrder.length = realGrammar.nonterminals.vals.length;
+    nonterminalOrderBack.length = realGrammar.nonterminals.vals.length;
+    foreach (i; 0 .. realGrammar.nonterminals.vals.length)
+        nonterminalOrder[i] = NonterminalID(cast(SymbolID) i);
+    nonterminalOrder.sort!((a, b) {
+        string name1 = realGrammar.nonterminals[a].name;
+        string name2 = realGrammar.nonterminals[b].name;
+        if (name1.startsWith("$") != name2.startsWith("$"))
+            return name2.startsWith("$");
+        return name1 < name2;
+    });
+    foreach (i, id; nonterminalOrder)
+        nonterminalOrderBack[id.id] = NonterminalID(cast(SymbolID) (i));
+
+    newGrammar.nonterminals.vals.length = realGrammar.nonterminals.vals.length;
+    foreach (i, id; nonterminalOrder)
+    {
+        newGrammar.nonterminals.vals[i] = realGrammar.nonterminals[id];
+        newGrammar.nonterminals.ids[realGrammar.nonterminals[id].name] = cast(SymbolID) i;
+    }
+
+    TokenID[] tokenOrder;
+    TokenID[] tokenOrderBack;
+    tokenOrder.length = realGrammar.tokens.vals.length;
+    tokenOrderBack.length = realGrammar.tokens.vals.length;
+    foreach (i; 0 .. realGrammar.tokens.vals.length)
+        tokenOrder[i] = TokenID(cast(SymbolID) i);
+    tokenOrder[1 .. $].sort!((a, b) {
+        string name1 = realGrammar.tokens[a].name;
+        string name2 = realGrammar.tokens[b].name;
+        if (name1.startsWith("$") != name2.startsWith("$"))
+            return name2.startsWith("$");
+        return name1 < name2;
+    });
+    foreach (i, id; tokenOrder)
+        tokenOrderBack[id.id] = TokenID(cast(SymbolID) (i));
+
+    newGrammar.tokens.vals.length = realGrammar.tokens.vals.length;
+    foreach (i, id; tokenOrder)
+    {
+        newGrammar.tokens.vals[i] = realGrammar.tokens[id];
+        newGrammar.tokens.ids[realGrammar.tokens[id].name] = cast(SymbolID) i;
+    }
+
+    Symbol translateSymbol(Symbol s)
+    {
+        if (s.isToken)
+            return tokenOrderBack[s.id];
+        else
+            return nonterminalOrderBack[s.id];
+    }
+
+    size_t[] productionOrder;
+    foreach (i, p; realGrammar.productionsData)
+    {
+        if (p is null)
+            continue;
+        productionOrder ~= i;
+    }
+    productionOrder.sort!((a, b) {
+        auto p1 = realGrammar.productionsData[a];
+        auto p2 = realGrammar.productionsData[b];
+        if (p1.nonterminalID != p2.nonterminalID)
+            return nonterminalOrderBack[p1.nonterminalID.id] < nonterminalOrderBack[p2.nonterminalID.id];
+        return a < b;
+    });
+
+    foreach (s; realGrammar.startNonterminals)
+        newGrammar.startNonterminals ~= StartNonterminal(nonterminalOrderBack[s.nonterminal.id], s.needsEmptyProduction);
+
+    foreach (i; productionOrder)
+    {
+        auto p1 = realGrammar.productionsData[i];
+        assert(p1.rewriteRules.length == 0);
+        auto p2 = new Production;
+        p2.nonterminalID = nonterminalOrderBack[p1.nonterminalID.id];
+        p2.annotations = p1.annotations;
+        foreach (s; p1.negLookaheads)
+            p2.negLookaheads ~= translateSymbol(s);
+        p2.negLookaheadsAnytoken = p1.negLookaheadsAnytoken;
+        p2.isVirtual = p1.isVirtual;
+        p2.tags = p1.tags;
+        foreach (s; p1.symbols)
+        {
+            SymbolInstance s2 = s;
+            s2.symbol = translateSymbol(s.symbol);
+            s2.negLookaheads = [];
+            foreach (s3; s.negLookaheads)
+                s2.negLookaheads ~= translateSymbol(s3);
+            p2.symbols ~= s2;
+        }
+        newGrammar.addProduction(p2);
+    }
+
+    foreach (m; realGrammar.matchingTokens)
+        newGrammar.matchingTokens ~= [tokenOrderBack[m[0].id], tokenOrderBack[m[1].id]];
+
+    newGrammar.calcNonterminalCanBeEmpty();
+    newGrammar.fillProductionsForNonterminal();
+    newGrammar.calcNonterminalTypes();
+
+    checkGrammar(newGrammar);
+
+    return newGrammar;
+}
+
 void writeFinalGrammarFile(string finalgrammarfilename, const EBNFGrammar grammar,
         const EBNFGrammar lexerGrammar)
 {

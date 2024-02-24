@@ -1,13 +1,13 @@
 /*
 GENERATOR_OUTPUT(normal):
 ---
-Warning: Parse conflict in state 17
+Warning: Parse conflict in state 26
 ---
 */
 /*
 GENERATOR_OUTPUT(optdescent):
 ---
-Warning: Parse conflict in state 19
+Warning: Parse conflict in state 24
 ---
 */
 S = <Test1 | <Test2 | <Test3;
