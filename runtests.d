@@ -121,9 +121,11 @@ bool runCommand(string[] args, string desc, Verbosity verbosity, Mutex outputMut
     }
 
     bool hasOutput;
-    if ((verbosity & Verbosity.outputCommandAlways) || (!r && (verbosity & Verbosity.outputOnError)))
+    if (!r && (verbosity & Verbosity.outputOnError))
         hasOutput = true;
-    if ((verbosity & Verbosity.outputAlways) || (!r && (verbosity & Verbosity.outputOnError)))
+    if (verbosity & Verbosity.outputCommandAlways)
+        hasOutput = true;
+    if ((verbosity & Verbosity.outputAlways) && (app.data.length || wrongOutput))
         hasOutput = true;
 
     bool anyOutput;
@@ -438,7 +440,7 @@ bool runGrammarTests(Test[] tests, string model, Verbosity verbosity,
         foreach (ref testBundle; parallel(testBundles, 1))
         {
             if (!runCommand(testBundle.dmdArgs,
-                    "Compiling " ~ testBundle.filename, verbosity, outputMutex))
+                    "Compiling " ~ testBundle.filename, verbosity | Verbosity.outputAlways, outputMutex))
                 testBundle.failed = true;
         }
     }
@@ -447,7 +449,7 @@ bool runGrammarTests(Test[] tests, string model, Verbosity verbosity,
         foreach (ref testBundle; testBundles)
         {
             if (!runCommand(testBundle.dmdArgs,
-                    "Compiling " ~ testBundle.filename, verbosity, outputMutex))
+                    "Compiling " ~ testBundle.filename, verbosity | Verbosity.outputAlways, outputMutex))
                 testBundle.failed = true;
         }
     }
@@ -648,7 +650,7 @@ int main(string[] args)
             compiler, "-g", "-w", "-m" ~ model, "-i=dparsergen", "-Icore",
             "-Igenerator", "generator/dparsergen/generator/generator.d",
             "-of" ~ generator
-        ], "Compiling dparsergen", verbosity, outputMutex))
+        ], "Compiling dparsergen", verbosity | Verbosity.outputAlways, outputMutex))
         return 1;
 
     if (!runCommand([
@@ -711,7 +713,7 @@ int main(string[] args)
     {
         dmdArgsGeneratortests ~= e.name;
     }
-    if (!runCommand(dmdArgsGeneratortests, "Compiling generatortests", verbosity, outputMutex))
+    if (!runCommand(dmdArgsGeneratortests, "Compiling generatortests", verbosity | Verbosity.outputAlways, outputMutex))
     {
         anyFailure = true;
     }
