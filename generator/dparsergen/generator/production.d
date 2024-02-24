@@ -217,6 +217,7 @@ struct Nonterminal
     Annotations annotations;
     immutable(SymbolID)[] buildNonterminals;
     immutable(TagID)[] possibleTags;
+    immutable(TagID)[] relevantTags;
 }
 
 struct Tag

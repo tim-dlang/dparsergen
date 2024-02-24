@@ -1030,34 +1030,6 @@ class LRGraphNode
         return n.bitsSet.array;
     }
 
-    NonterminalID[] directUnwrapNonterminalsOnStack(EBNFGrammar grammar, size_t pos) const
-    {
-        BitSet!NonterminalID n;
-        foreach (e; elements)
-        {
-            auto s = e.stackSymbols;
-            if (s.length < pos)
-                continue;
-            if (s[$ - pos].isToken)
-                continue;
-            BitSet!NonterminalID tmp;
-            tmp.length = grammar.nonterminals.vals.length;
-            if (s[$ - pos].annotations.contains!"excludeDirectUnwrap")
-                tmp[s[$ - pos].toNonterminalID] = true;
-            else
-            {
-                foreach (m2; grammar.directUnwrapClosure(grammar.nextNonterminalWithConstraint(e.extraConstraint,
-                        s[$ - pos], e.dotPos == 0)))
-                    tmp[m2.nonterminalID] = true;
-            }
-            if (n.length == 0)
-                n = tmp;
-            else
-                n &= tmp;
-        }
-        return n.bitsSet.array;
-    }
-
     bool hasTags(LRGraph graph) const
     {
         foreach (e; elements)
@@ -1148,6 +1120,8 @@ struct LRGraphNodeKey
                     return false;
                 if (e1.production.symbols.length != e2.production.symbols.length)
                     return false;
+                if (e1.production.tags != e2.production.tags)
+                    return false;
                 foreach (i; 0 .. e1.production.symbols.length)
                 {
                     auto s1 = e1.production.symbols[i];
@@ -1184,9 +1158,13 @@ bool similarElements(const LRElement e1, const LRElement e2)
         return false;
     if (e1.production.symbols.length != e2.production.symbols.length)
         return false;
+    if (e1.production.tags != e2.production.tags)
+        return false;
     foreach (i; 0 .. e1.production.symbols.length)
     {
         if (e1.production.symbols[i].isToken != e2.production.symbols[i].isToken)
+            return false;
+        if (e1.production.symbols[i].tags != e2.production.symbols[i].tags)
             return false;
         if (e1.production.symbols[i].isToken)
         {

@@ -239,6 +239,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                 $$foreach (nonterminalID; actionTable.jumps.sortedKeys) {
                     $$auto jumps2 = actionTable.jumps[nonterminalID];
                     case $(grammar.nonterminalIDCode(nonterminalID)):
+                        $$filterTagsForShift(code, graph, "tags", stateNr, nonterminalID);
                         $$if (nonterminalID in actionTable.usedNegLookahead) {
                             stackNode.$(parseFunctionName(graph, stateNr, "stateData")).disallow$(symbolNameCode(grammar, nonterminalID)) = true;
                         $$}
@@ -1007,8 +1008,8 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                 foreach (i; 0 .. pendingReducesHere.length/2)
                 {
                     auto tmp = pendingReducesHere[i];
-                    pendingReducesHere[i] = pendingReducesHere[$ - 1-i];
-                    pendingReducesHere[$ - 1-i] = tmp;
+                    pendingReducesHere[i] = pendingReducesHere[$ - 1 - i];
+                    pendingReducesHere[$ - 1 - i] = tmp;
                 }
                 pendingReducesHere.sort!((a, b) => a.productionID < b.productionID);
 
@@ -1028,28 +1029,37 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                     if (nonterminalStarts[i] < nonterminalStart)
                         nonterminalStart = nonterminalStarts[i];
 
-                $$if (graph.globalOptions.directUnwrap) {
-                    switch (pendingReduce.stackNode.state)
-                    {
-                        $$foreach (i, n; graph.states) {
-                            $$if (n.stackSize() >= 0) {
-                                $$NonterminalID[] possible = n.directUnwrapNonterminalsOnStack(graph.grammar, 1);
-                                $$if (possible.length) {
-                                    static if (canMerge!($(grammar.nonterminalIDCode(possible[0]))))
-                                    {
-                                        case $(i):
-                                        {
-                                            onPendingReduce$(i)(pendingReduce, end, nonterminals, nonterminalStarts, nonterminalStart);
-                                        }
-                                        break;
-                                    }
-                                $$}
-                            $$}
-                        $$}
-                        default: assert(false);
-                    }
+                bool sameNonterminalIDs = true;
+                foreach (i; 1 .. pendingReducesHere.length)
+                    if (pendingReducesHere[0].nonterminalID != pendingReducesHere[i].nonterminalID)
+                        sameNonterminalIDs = false;
 
-                $$} else {
+                bool allMergeable = true;
+                foreach (i; 0 .. pendingReducesHere.length)
+                {
+                    bool isMergeable;
+                    switchlabel2: switch (pendingReducesHere[i].nonterminalID)
+                    {
+                        static foreach (nonterminalID; startNonterminalID .. endNonterminalID)
+                        {
+                            static if (canMerge!nonterminalID)
+                            {
+                                case nonterminalID:
+                                {
+                                    isMergeable = true;
+                                }
+                                break switchlabel2;
+                            }
+                        }
+                        default:
+                            assert(0);
+                    }
+                    if (!isMergeable)
+                        allMergeable = false;
+                }
+
+                if (sameNonterminalIDs && allMergeable)
+                {
                     switchlabel: switch (pendingReducesHere[0].nonterminalID)
                     {
                         static foreach (nonterminalID; startNonterminalID .. endNonterminalID)
@@ -1061,11 +1071,7 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                                     ParseStackElem!(Location, NonterminalType!nonterminalID)[] pts;
                                     pts.length = nonterminals.length;
                                     foreach (i; 0 .. nonterminals.length)
-                                        $$if (graph.globalOptions.directUnwrap) {
-                                            pts[i] = ParseStackElem!(Location, NonterminalType!nonterminalID)(nonterminalStarts[i], nonterminals[i].get!(arrayToAliasSeq!(NonterminalClosures[nonterminalID])));
-                                        $$} else {
-                                            pts[i] = ParseStackElem!(Location, NonterminalType!nonterminalID)(nonterminalStarts[i], nonterminals[i].get!nonterminalID);
-                                        $$}
+                                        pts[i] = ParseStackElem!(Location, NonterminalType!nonterminalID)(nonterminalStarts[i], nonterminals[i].get!nonterminalID);
                                     NonterminalType!nonterminalID pt = creator.mergeParseTrees!nonterminalID(nonterminalStart, pendingReduce.alreadyShifted?end:lastTokenEnd, pts);
                                     pendingReduce.stackEdge.data = new StackEdgeData(false);
                                     pendingReduce.stackEdge.data.start = nonterminalStart;
@@ -1078,49 +1084,9 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                         default:
                             assert(0);
                     }
-                $$}
+                }
             }
         }
-
-        $$if (graph.globalOptions.directUnwrap) {
-            $$foreach (i, n; graph.states) {
-                $$if (n.stackSize() >= 0) {
-                    $$NonterminalID[] possible = n.directUnwrapNonterminalsOnStack(graph.grammar, 1);
-                    $$if (possible.length) {
-                        void onPendingReduce$(i)(ref PendingReduce2 pendingReduce, Location end, Creator.NonterminalUnionAny[] nonterminals, Location[] nonterminalStarts, Location nonterminalStart)
-                        {
-                            static if (canMerge!($(grammar.nonterminalIDCode(possible[0]))))
-                            {
-                                ParseStackElem!(Location, NonterminalType!$(grammar.nonterminalIDCode(possible[0])))[] pts;
-                                pts.length = nonterminals.length;
-                                foreach (i; 0 .. nonterminals.length)
-                                {
-                                    bool found;
-                                    static foreach (nonterminalID; [  _
-                                        $$foreach (nonterminal; possible) {
-                                            $(grammar.nonterminalIDCode(nonterminal)),   _
-                                        $$}
-                                    ])
-                                    {
-                                        if (nonterminals[i].nonterminalID == nonterminalID)
-                                        {
-                                            pts[i] = ParseStackElem!(Location, NonterminalType!nonterminalID)(nonterminalStarts[i], nonterminals[i].get!(nonterminalID));
-                                            found = true;
-                                        }
-                                    }
-                                    assert(found);
-                                }
-                                NonterminalType!$(grammar.nonterminalIDCode(possible[0])) pt = creator.mergeParseTrees!$(grammar.nonterminalIDCode(possible[0]))(nonterminalStart, pendingReduce.alreadyShifted?end:lastTokenEnd, pts);
-                                pendingReduce.stackEdge.data = new StackEdgeData(false);
-                                pendingReduce.stackEdge.data.start = nonterminalStart;
-                                pendingReduce.stackEdge.data.nonterminal =
-                                    Creator.NonterminalUnionAny.create($(grammar.nonterminalIDCode(possible[0])), pt);
-                            }
-                        }
-                    $$}
-                $$}
-            $$}
-        $$}
 
         void pushToken(StackNode *stackNode, PendingReduce pendingReduce, Location tokenStart, Location tokenEnd, bool alreadyShifted$(grammar.tags.vals.length?", Tag tags":""))
         in

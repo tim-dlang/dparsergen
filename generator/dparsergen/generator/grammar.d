@@ -674,6 +674,36 @@ class EBNFGrammar
             return tuple!(NonterminalFlags, SymbolID[])(r, buildNonterminals);
         }
 
+        void distributeRelevantTags(NonterminalID n, immutable(TagID)[] tags, bool first)
+        {
+            if (!nonterminals[n].relevantTags.addOnce(tags) && !first)
+                return;
+            foreach (p; getProductions(n))
+            {
+                foreach (s; p.symbols)
+                {
+                    if (s.isToken)
+                        continue;
+                    immutable(TagID)[] tags2;
+                    if (s.annotations.contains!"inheritAnyTag" || isSimpleProduction(*p))
+                        tags2 = tags;
+                    foreach (tagUsage; s.tags)
+                    {
+                        if (tagUsage.reject || tagUsage.needed)
+                            tags2.addOnce(tagUsage.tag);
+                        if (tagUsage.inherit && tags.canFind(tagUsage.tag))
+                            tags2.addOnce(tagUsage.tag);
+                    }
+                    distributeRelevantTags(s.toNonterminalID, tags2, false);
+                }
+            }
+        }
+
+        foreach (n; nonterminals.allIDs)
+        {
+            distributeRelevantTags(n, [], true);
+        }
+
         foreach (n; nonterminals.allIDs)
         {
             TagID[] possibleTags;
@@ -685,6 +715,10 @@ class EBNFGrammar
             nonterminals[n].buildNonterminals = r[1].idup;
             possibleTags.sort();
             nonterminals[n].possibleTags = possibleTags.idup;
+
+            TagID[] relevantTags = nonterminals[n].relevantTags.dup;
+            relevantTags.sort();
+            nonterminals[n].relevantTags = relevantTags.idup;
         }
     }
 

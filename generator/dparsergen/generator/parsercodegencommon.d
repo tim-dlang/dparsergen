@@ -389,16 +389,24 @@ string reduceTagsCode(alias stackTagVar)(EBNFGrammar grammar, const Production* 
 {
     assert(grammar.tags.vals.length);
 
+    auto relevantTags = grammar.nonterminals[production.nonterminalID].relevantTags;
+
     string r;
     bool isEmpty = true;
     foreach (t; production.tags)
     {
+        bool isRelevant = relevantTags.canFind(t);
         if (r.length)
             r ~= " ";
+        if (!isRelevant)
+            r ~= "/+";
         if (!isEmpty)
             r ~= "| ";
-        isEmpty = false;
         r ~= "Tag." ~ grammar.tags[t].name;
+        if (!isRelevant)
+            r ~= "+/";
+        if (isRelevant)
+            isEmpty = false;
     }
 
     foreach (k; 1 .. production.symbols.length + 1)
@@ -414,14 +422,24 @@ string reduceTagsCode(alias stackTagVar)(EBNFGrammar grammar, const Production* 
         {
             if (r.length)
                 r ~= " ";
-            if (possibleTags.length == 0)
+            if (possibleTags.length == 0 || relevantTags.length == 0)
                 r ~= "/+";
             if (!isEmpty)
                 r ~= "| ";
+            r ~= "(";
             r ~= stackTagVar(k);
-            if (possibleTags.length == 0)
+            r ~= " & (";
+            foreach (i, t; relevantTags)
+            {
+                if (i)
+                    r ~= " | ";
+                r ~= "Tag." ~ grammar.tags[t].name;
+            }
+            r ~= ")";
+            r ~= ")";
+            if (possibleTags.length == 0 || relevantTags.length == 0)
                 r ~= "+/";
-            if (possibleTags.length)
+            if (possibleTags.length && relevantTags.length)
                 isEmpty = false;
         }
         else
@@ -430,17 +448,18 @@ string reduceTagsCode(alias stackTagVar)(EBNFGrammar grammar, const Production* 
             {
                 if (t.inherit)
                 {
+                    bool isRelevant = relevantTags.canFind(t.tag);
                     if (r.length)
                         r ~= " ";
                     bool possible = possibleTags.canFind(t.tag);
-                    if (!possible)
+                    if (!possible || !isRelevant)
                         r ~= "/+";
                     if (!isEmpty)
                         r ~= "| ";
                     r ~= text("(", stackTagVar(k), " & Tag.", grammar.tags[t.tag].name, ")");
-                    if (!possible)
+                    if (!possible || !isRelevant)
                         r ~= "+/";
-                    if (possible)
+                    if (possible && isRelevant)
                         isEmpty = false;
                 }
             }
@@ -453,6 +472,55 @@ string reduceTagsCode(alias stackTagVar)(EBNFGrammar grammar, const Production* 
         r ~= "Tag.init";
     }
     return r;
+}
+
+void filterTagsForShift(ref CodeWriter code, LRGraph graph, string tagsVar, size_t stateNr, NonterminalID nonterminalID)
+{
+    auto grammar = graph.grammar;
+    if (grammar.tags.vals.length == 0)
+        return;
+
+    immutable(TagID)[] relevantTags;
+    foreach (e; graph.states[stateNr].elements)
+    {
+        if (!e.isNextNonterminal(grammar))
+            continue;
+
+        bool found;
+        foreach (n; e.nextNonterminals(grammar,
+                graph.globalOptions.directUnwrap))
+        {
+            if (n.nonterminalID == nonterminalID)
+                found = true;
+        }
+        if (!found)
+            continue;
+        auto productionRelevantTags = grammar.nonterminals[e.production.nonterminalID].relevantTags;
+        if (e.next(grammar).annotations.contains!"inheritAnyTag" || grammar.isSimpleProduction(*e.production))
+            relevantTags.addOnce(productionRelevantTags);
+        foreach (t; e.next(grammar).tags)
+        {
+            if (t.reject || t.needed)
+                relevantTags.addOnce(t.tag);
+            if (t.inherit && productionRelevantTags.canFind(t.tag))
+                relevantTags.addOnce(t.tag);
+        }
+    }
+
+    code.write(tagsVar, " &= ");
+
+    bool isEmpty = true;
+    foreach (t; relevantTags)
+    {
+        bool isRelevant = relevantTags.canFind(t);
+        if (!isEmpty)
+            code.write(" | ");
+        code.write("Tag.", grammar.tags[t].name);
+        isEmpty = false;
+    }
+    if (isEmpty)
+        code.write("Tag.init");
+    code.writeln(";");
 }
 
 bool checkTagsCode(alias stackTagVar)(ref CodeWriter code, EBNFGrammar grammar,
