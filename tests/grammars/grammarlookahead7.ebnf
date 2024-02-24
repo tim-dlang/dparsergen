@@ -7,7 +7,7 @@ Warning: Parse conflict in state 2
 /*
 GENERATOR_OUTPUT(optdescent):
 ---
-Warning: Parse conflict in state 4
+Warning: Parse conflict in state 6
 ---
 */
 S = <X;

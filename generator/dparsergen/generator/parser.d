@@ -594,6 +594,11 @@ do
         return 100;
     }
 
+    bool[NonterminalID] startNonterminals;
+    foreach (i; 0 .. result.data.length)
+        if (result.data[i].isStartElement)
+            startNonterminals[result.data[i].production.nonterminalID] = true;
+
     mapping.sort!((ia, ib) {
         auto a = &result.data[ia];
         auto b = &result.data[ib];
@@ -613,6 +618,11 @@ do
 
         auto pA = a.production;
         auto pB = b.production;
+
+        if (pA.nonterminalID in startNonterminals && pB.nonterminalID !in startNonterminals)
+            return true;
+        if (pA.nonterminalID !in startNonterminals && pB.nonterminalID in startNonterminals)
+            return false;
 
         if (pA.nonterminalID.id < pB.nonterminalID.id)
             return true;
