@@ -220,6 +220,16 @@ struct Nonterminal
     Nonterminals reachable through unwrap productions, which can be created.
     */
     immutable(SymbolID)[] buildNonterminals;
+
+    /**
+    ID of first production for this nonterminal.
+    */
+    ProductionID firstProduction;
+
+    /**
+    Number of productions for this nonterminal.
+    */
+    ProductionID numProductions;
 }
 
 /**

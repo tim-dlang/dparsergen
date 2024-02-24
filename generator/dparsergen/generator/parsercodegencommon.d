@@ -129,12 +129,28 @@ string createAllTokensCode(EBNFGrammar grammar)
 string createAllNonterminalsCode(EBNFGrammar grammar)
 {
     string allNonterminalsCode;
+    auto productionsData = grammar.origGrammar.productionsData;
+    ProductionID nextProduction = 0;
     foreach (i, n; grammar.nonterminals.vals)
     {
+        ProductionID startProductionID = nextProduction;
+        if (!grammar.isLexerGrammar)
+        {
+            if (nextProduction < productionsData.length)
+                assert(productionsData[nextProduction].nonterminalID.id >= i);
+            while (nextProduction < productionsData.length && productionsData[nextProduction].nonterminalID.id == i)
+                nextProduction++;
+        }
+        ProductionID numProductions = cast(ProductionID) (nextProduction - startProductionID);
+        if (numProductions == 0)
+            startProductionID = 0;
         allNonterminalsCode ~= text("    /* ", i + grammar.startNonterminalID, ": */ immutable(Nonterminal)(", "\"",
                 n.name.escapeD, "\", ", n.flags.nonterminalFlagsToCode, ", ",
                 n.annotations.toString, ", [", n.buildNonterminals.map!(
-                    x => (x + grammar.startNonterminalID).text).joiner(", "), "]),\n");
+                    x => (x + grammar.startNonterminalID).text).joiner(", "), "]");
+        if (!grammar.isLexerGrammar)
+            allNonterminalsCode ~= text(", ", grammar.startProductionID + startProductionID, ", ", numProductions);
+        allNonterminalsCode ~= "),\n";
     }
     return allNonterminalsCode;
 }
