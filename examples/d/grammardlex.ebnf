@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit fd7e1f50f4d2329f24313ea92bfcbd91af962cdb
+// Based on grammar from dlang.org commit d4bd82903f7b5f15875162a0383b4703a30f73de
 
 token ByteOrderMark
     = "\uFEFF"
@@ -162,9 +162,9 @@ StringLiteral
     = WysiwygString
     | AlternateWysiwygString
     | DoubleQuotedString
-    | HexString
     | DelimitedString
     | TokenString
+    | HexString
     ;
 token WysiwygString
     = "r\"" [^\"]* "\"" StringPostfix?
@@ -262,6 +262,16 @@ fragment EscapeSequence
     | "\\U" HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
     | "\\" NamedCharacterEntity
     ;
+fragment OctalDigit
+    = "0"
+    | "1"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    ;
 token CharacterLiteral
     = "\'" SingleQuotedCharacter "\'"
     ;
@@ -297,16 +307,6 @@ fragment Underscores
     = "_"
     | Underscores "_"
     ;
-fragment BinaryInteger
-    = BinPrefix BinaryDigitsNoSingleUS
-    ;
-fragment BinPrefix
-    = "0b"
-    | "0B"
-    ;
-fragment HexadecimalInteger
-    = HexPrefix HexDigitsNoSingleUS
-    ;
 fragment NonZeroDigit
     = "1"
     | "2"
@@ -341,6 +341,13 @@ fragment DecimalDigitUS
     = DecimalDigit
     | "_"
     ;
+fragment BinaryInteger
+    = BinPrefix BinaryDigitsNoSingleUS
+    ;
+fragment BinPrefix
+    = "0b"
+    | "0B"
+    ;
 fragment BinaryDigitsNoSingleUS
     = BinaryDigitsUS? BinaryDigit BinaryDigitsUS?
     ;
@@ -356,15 +363,8 @@ fragment BinaryDigitUS
     = BinaryDigit
     | "_"
     ;
-fragment OctalDigit
-    = "0"
-    | "1"
-    | "2"
-    | "3"
-    | "4"
-    | "5"
-    | "6"
-    | "7"
+fragment HexadecimalInteger
+    = HexPrefix HexDigitsNoSingleUS
     ;
 fragment OctalInteger
     = "0" OctalDigit

@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit fd7e1f50f4d2329f24313ea92bfcbd91af962cdb
+// Based on grammar from dlang.org commit d4bd82903f7b5f15875162a0383b4703a30f73de
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -1336,6 +1336,19 @@ TemplateArgumentList @array @regArray
     | TemplateArgument ","
     | TemplateArgument "," TemplateArgumentList
     ;
+TemplateSingleArgument @directUnwrap
+    = IdentifierExpression
+    | <FundamentalType
+    | CharacterLiteral
+    | <StringLiteral
+    | IntegerLiteral
+    | FloatLiteral
+    | "true"
+    | "false"
+    | "null"
+    | "this"
+    | <SpecialKeyword
+    ;
 TemplateArgument @backtrack
     = <Type
     | <AssignExpression
@@ -1351,19 +1364,6 @@ SymbolTail @directUnwrap
     | <TemplateInstance
     | TemplateInstance "." SymbolTail
     ;*/
-TemplateSingleArgument @directUnwrap
-    = IdentifierExpression
-    | <FundamentalType
-    | CharacterLiteral
-    | <StringLiteral
-    | IntegerLiteral
-    | FloatLiteral
-    | "true"
-    | "false"
-    | "null"
-    | "this"
-    | <SpecialKeyword
-    ;
 TemplateParameter @directUnwrap
     = <TemplateTypeParameter
     | <TemplateValueParameter
