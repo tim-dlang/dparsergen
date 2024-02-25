@@ -76,3 +76,22 @@ unittest
             Token(";", L.tokenID!"\";\"", 13, 14),
             ]);
 }
+
+// Running at CTFE requires a new compiler, because of https://issues.dlang.org/show_bug.cgi?id=24316
+static if (__VERSION__ >= 2108L || __traits(compiles, {
+            import P = grammarexprs1;
+            immutable grammarInfo = &P.grammarInfo;
+            enum dummy = grammarInfo.allNonterminals.length;
+        }))
+    enum ctfeResult = () {
+        import P = grammarexprs1;
+
+        alias L = grammarexprs1_lexer.Lexer!LocationBytes;
+        alias test = testOnce!(P, L);
+
+        test("expr x*2+24*x*32", q{S(P(V("x"), Z("2")), "+", P(P(Z("24"), V("x")), Z("32")))});
+
+        return true;
+    }();
+else
+    pragma(msg, "Warning: Skipping CTFE test for old compiler");

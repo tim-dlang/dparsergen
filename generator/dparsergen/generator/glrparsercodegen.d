@@ -1267,6 +1267,13 @@ const(char)[] createParserModule(LRGraph graph, string modulename,
                     Creator.NonterminalUnionAny nonterminal;
                     Token token;
                 }
+
+                // Workaround for https://issues.dlang.org/show_bug.cgi?id=24409
+                this(bool isToken, Location start = Location.init)
+                {
+                    this.isToken = isToken;
+                    this.start = start;
+                }
             }
             static struct StackEdge
             {

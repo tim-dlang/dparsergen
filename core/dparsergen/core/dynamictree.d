@@ -422,6 +422,152 @@ string treeToString(Location, alias LocationRangeImpl = LocationRangeStartLength
     return app.data;
 }
 
+enum PossibleNonterminalTypes
+{
+    none = 0,
+    tree = 1,
+    string = 2,
+    array = 4,
+    all = tree | string | array
+}
+
+template NonterminalUnionImpl(alias CreatorInstance)
+{
+    struct Union(PossibleNonterminalTypes possibleNonterminalTypes)
+    {
+        alias Location = CreatorInstance.Location;
+        alias LocationRangeImpl = CreatorInstance.LocationRangeImpl;
+
+        template NonterminalType(SymbolID nonterminalID)
+                if ((nonterminalID >= CreatorInstance.startNonterminalID
+                    && nonterminalID < CreatorInstance.endNonterminalID)
+                    || nonterminalID == SymbolID.max)
+        {
+            alias NonterminalType = CreatorInstance.NonterminalType!nonterminalID;
+        }
+
+        union
+        {
+            static if (possibleNonterminalTypes & PossibleNonterminalTypes.array)
+                CreatorInstance.NonterminalArray valueArray;
+            static if (possibleNonterminalTypes & PossibleNonterminalTypes.string)
+                string valueString;
+            static if (possibleNonterminalTypes & PossibleNonterminalTypes.tree)
+                CreatorInstance.NonterminalTree valueTree;
+        }
+
+        SymbolID nonterminalID = SymbolID.max;
+
+        inout(NonterminalType!nonterminalID2) get(SymbolID nonterminalID2)() inout
+        in
+        {
+            assert(nonterminalID2 == nonterminalID, text(nonterminalID2, "  ", nonterminalID));
+        }
+        do
+        {
+            static if (CreatorInstance.allNonterminals[nonterminalID2 - CreatorInstance.startNonterminalID].flags & NonterminalFlags.array)
+                return valueArray;
+            else static if (CreatorInstance.allNonterminals[nonterminalID2 - CreatorInstance.startNonterminalID].flags & NonterminalFlags.string)
+                return valueString;
+            else
+                return valueTree;
+        }
+
+        auto get(nonterminalID2s...)() inout if (nonterminalID2s.length >= 2)
+        {
+            foreach (nonterminalID2; nonterminalID2s)
+            {
+                if (nonterminalID2 == nonterminalID)
+                    return get!nonterminalID2();
+            }
+            assert(false);
+        }
+
+        static if (possibleNonterminalTypes & PossibleNonterminalTypes.tree)
+            static Union create(SymbolID nonterminalID, CreatorInstance.NonterminalTree tree)
+            in (CreatorInstance.isNonterminalTree(nonterminalID))
+            {
+                Union r;
+                r.valueTree = tree;
+                r.nonterminalID = nonterminalID;
+                return r;
+            }
+
+        static if (possibleNonterminalTypes & PossibleNonterminalTypes.string)
+            static Union create(SymbolID nonterminalID, string tree)
+            in (CreatorInstance.isNonterminalString(nonterminalID))
+            {
+                Union r;
+                r.valueString = tree;
+                r.nonterminalID = nonterminalID;
+                return r;
+            }
+
+        static if (possibleNonterminalTypes & PossibleNonterminalTypes.array)
+            static Union create(SymbolID nonterminalID, CreatorInstance.NonterminalArray tree)
+            in (CreatorInstance.isNonterminalArray(nonterminalID))
+            {
+                Union r;
+                r.valueArray = tree;
+                r.nonterminalID = nonterminalID;
+                return r;
+            }
+
+        static Union create()(SymbolID nonterminalID)
+        in (nonterminalID >= CreatorInstance.startNonterminalID && nonterminalID < CreatorInstance.endNonterminalID)
+        {
+            Union r;
+            r.nonterminalID = nonterminalID;
+            return r;
+        }
+
+        void opAssign(PossibleNonterminalTypes possibleNonterminalTypes2)(
+                Union!(possibleNonterminalTypes2) rhs)
+                if (possibleNonterminalTypes2 != possibleNonterminalTypes)
+        {
+            static if ((possibleNonterminalTypes & PossibleNonterminalTypes.tree) && (possibleNonterminalTypes2 & PossibleNonterminalTypes.tree))
+                if (CreatorInstance.isNonterminalTree(rhs.nonterminalID))
+                {
+                    valueTree = rhs.valueTree;
+                    nonterminalID = rhs.nonterminalID;
+                    return;
+                }
+            static if ((possibleNonterminalTypes & PossibleNonterminalTypes.string) && (possibleNonterminalTypes2 & PossibleNonterminalTypes.string))
+                if (CreatorInstance.isNonterminalString(rhs.nonterminalID))
+                {
+                    valueString = rhs.valueString;
+                    nonterminalID = rhs.nonterminalID;
+                    return;
+                }
+            static if ((possibleNonterminalTypes & PossibleNonterminalTypes.array) && (possibleNonterminalTypes2 & PossibleNonterminalTypes.array))
+                if (CreatorInstance.isNonterminalArray(rhs.nonterminalID))
+                {
+                    valueArray = rhs.valueArray;
+                    nonterminalID = rhs.nonterminalID;
+                    return;
+                }
+            assert(0);
+        }
+    }
+
+    template Union(alias nonterminalIDs)
+    {
+        alias Union = Union!(() {
+            PossibleNonterminalTypes possibleNonterminalTypes;
+            static foreach (n; nonterminalIDs)
+            {
+                static if (CreatorInstance.allNonterminals[n - CreatorInstance.startNonterminalID].flags & NonterminalFlags.array)
+                    possibleNonterminalTypes |= PossibleNonterminalTypes.array;
+                else static if (CreatorInstance.allNonterminals[n - CreatorInstance.startNonterminalID].flags & NonterminalFlags.string)
+                    possibleNonterminalTypes |= PossibleNonterminalTypes.string;
+                else
+                    possibleNonterminalTypes |= PossibleNonterminalTypes.tree;
+            }
+            return possibleNonterminalTypes;
+        }());
+    }
+}
+
 /**
 Class for creating trees during parsing.
 
@@ -432,15 +578,18 @@ Params:
         stored (start + length, start + end, ...).
 */
 class DynamicParseTreeCreator(alias GrammarModule, Location_,
-        alias LocationRangeImpl = LocationRangeStartLength)
+        alias LocationRangeImpl_ = LocationRangeStartLength)
 {
     alias Location = Location_;
+    alias LocationRangeImpl = LocationRangeImpl_;
     alias LocationDiff = typeof(Location.init - Location.init);
     alias allTokens = GrammarModule.allTokens;
     alias allNonterminals = GrammarModule.allNonterminals;
     alias allProductions = GrammarModule.allProductions;
     alias Type = DynamicParseTree!(Location, LocationRangeImpl);
     alias NonterminalArray = DynamicParseTreeTmpArray!(Location,
+            LocationRangeImpl);
+    alias NonterminalTree = DynamicParseTree!(Location,
             LocationRangeImpl);
     enum startNonterminalID = GrammarModule.startNonterminalID;
     enum endNonterminalID = GrammarModule.endNonterminalID;
@@ -454,8 +603,7 @@ class DynamicParseTreeCreator(alias GrammarModule, Location_,
     {
         static if (
             allNonterminals[nonterminalID - startNonterminalID].flags & NonterminalFlags.array)
-            alias NonterminalType = DynamicParseTreeTmpArray!(Location,
-                    LocationRangeImpl);
+            alias NonterminalType = NonterminalArray;
         else static if (
             allNonterminals[nonterminalID - startNonterminalID].flags & NonterminalFlags.string)
             alias NonterminalType = string;
@@ -463,7 +611,31 @@ class DynamicParseTreeCreator(alias GrammarModule, Location_,
             || allNonterminals[nonterminalID - startNonterminalID].flags == NonterminalFlags.empty)
             alias NonterminalType = typeof(null);*/
         else
-            alias NonterminalType = DynamicParseTree!(Location, LocationRangeImpl);
+            alias NonterminalType = NonterminalTree;
+    }
+
+    static bool isNonterminalTree(SymbolID nonterminalID)
+    {
+        if (nonterminalID < startNonterminalID || nonterminalID >= endNonterminalID)
+            return false;
+        auto flags = allNonterminals[nonterminalID - startNonterminalID].flags;
+        return (flags & (NonterminalFlags.array | NonterminalFlags.string)) == 0;
+    }
+
+    static bool isNonterminalArray(SymbolID nonterminalID)
+    {
+        if (nonterminalID < startNonterminalID || nonterminalID >= endNonterminalID)
+            return false;
+        auto flags = allNonterminals[nonterminalID - startNonterminalID].flags;
+        return (flags & NonterminalFlags.array) != 0;
+    }
+
+    static bool isNonterminalString(SymbolID nonterminalID)
+    {
+        if (nonterminalID < startNonterminalID || nonterminalID >= endNonterminalID)
+            return false;
+        auto flags = allNonterminals[nonterminalID - startNonterminalID].flags;
+        return (flags & (NonterminalFlags.array | NonterminalFlags.string)) == NonterminalFlags.string;
     }
 
     /**
@@ -484,14 +656,13 @@ class DynamicParseTreeCreator(alias GrammarModule, Location_,
     the parser. The union can allow more nonterminals than necessary,
     which can reduce template bloat.
     */
-    alias NonterminalUnion = GenericNonterminalUnion!(DynamicParseTreeCreator).Union;
+    alias NonterminalUnion = NonterminalUnionImpl!(DynamicParseTreeCreator).Union;
 
     /**
     Tagged union of all possible nonterminals, which is used internally by
     the parser.
     */
-    alias NonterminalUnionAny = GenericNonterminalUnion!(DynamicParseTreeCreator).Union!(
-            SymbolID.max, size_t.max);
+    alias NonterminalUnionAny = NonterminalUnionImpl!(DynamicParseTreeCreator).Union!(PossibleNonterminalTypes.all);
 
     /**
     Create a tree node for one production.
