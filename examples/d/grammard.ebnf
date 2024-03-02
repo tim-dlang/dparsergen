@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit d4bd82903f7b5f15875162a0383b4703a30f73de
+// Based on grammar from dlang.org commit 9607293a246a0dc7a96417a84266cd0803675dcd
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -298,6 +298,7 @@ PrimaryExpression @directUnwrap
     | FloatLiteral
     | CharacterLiteral
     | <StringLiterals
+    | <InterpolationExpressionSequence
     | <ArrayLiteral
     | <AssocArrayLiteral
     | <FunctionLiteralNoParen
@@ -1341,6 +1342,7 @@ TemplateSingleArgument @directUnwrap
     | <FundamentalType
     | CharacterLiteral
     | <StringLiteral
+    | <InterpolationExpressionSequence
     | IntegerLiteral
     | FloatLiteral
     | "true"
@@ -1994,3 +1996,4 @@ match "(" ")";
 match "[" "]";
 match "{" "}";
 match "q{" "}";
+match "iq{" "}";

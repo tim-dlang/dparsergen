@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit d4bd82903f7b5f15875162a0383b4703a30f73de
+// Based on grammar from dlang.org commit 9607293a246a0dc7a96417a84266cd0803675dcd
 
 token ByteOrderMark
     = "\uFEFF"
@@ -87,6 +87,7 @@ TokenNoBraces
 TokenNoParens
     = Identifier
     | StringLiteral
+    | InterpolationExpressionSequence
     | CharacterLiteral
     | IntegerLiteral
     | FloatLiteral
@@ -604,6 +605,48 @@ fragment Filespec
     ;
 fragment NamedCharacterEntity
     = "&" Identifier ";"
+    ;
+InterpolationExpressionSequence
+    = InterpolatedDoubleQuotedLiteral
+    | InterpolatedWysiwygLiteral
+    | InterpolatedTokenLiteral
+    ;
+token InterpolatedDoubleQuotedLiteral
+    = "i\""
+        // The following is implemented manually in LexerWrapper.lexInterpolationSequence in testgrammard.d.
+        // InterpolatedDoubleQuotedCharacters? "\""
+    ;
+/*fragment InterpolatedDoubleQuotedCharacters
+    = InterpolatedDoubleQuotedCharacter
+    | InterpolatedDoubleQuotedCharacter InterpolatedDoubleQuotedCharacters
+    ;
+fragment InterpolatedDoubleQuotedCharacter
+    = DoubleQuotedCharacter
+    | InterpolationEscapeSequence
+    | InterpolationExpression
+    ;
+fragment InterpolationEscapeSequence
+    = EscapeSequence
+    | "\\$"
+    ;
+fragment InterpolationExpression
+    = "$(" AssignExpression ")"
+    ;*/
+token InterpolatedWysiwygLiteral
+    = "i`"
+        // The following is implemented manually in LexerWrapper.lexInterpolationSequence in testgrammard.d.
+        // InterpolatedWysiwygCharacters? "`"
+    ;
+/*fragment InterpolatedWysiwygCharacters
+    = InterpolatedWysiwygCharacter
+    | InterpolatedWysiwygCharacter InterpolatedWysiwygCharacters
+    ;
+fragment InterpolatedWysiwygCharacter
+    = [^`$]
+    | InterpolationExpression
+    ;*/
+InterpolatedTokenLiteral
+    = "iq{" Tokens "}"
     ;
 fragment Letter = [a-zA-Z];
 

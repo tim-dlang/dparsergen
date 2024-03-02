@@ -58,11 +58,71 @@ struct LexerWrapper
         filterTokens();
     }
 
+    void lexInterpolationSequence()
+    {
+        assert(front.content.length == 2);
+        assert(front.content[0] == 'i');
+        assert(front.content[1].among('"', '`'));
+        assert(lexer.input.startsWith(front.content));
+
+        auto bakFront = front;
+        auto input = lexer.input;
+        const stringType = input[1];
+
+        size_t i = 2;
+        while (1)
+        {
+            if (i >= input.length)
+            {
+                throw lexer.lexerException("EOF", null, 1);
+            }
+            if (input[i] == stringType)
+            {
+                bakFront.content = input[0 .. i + 1];
+                lexer.front = bakFront;
+                lexer.input = input;
+                return;
+            }
+            if (stringType != '`' && input[0] == '\\')
+            {
+                i += 2;
+                continue;
+            }
+            if (i + 1 < input.length && input[i] == '$' && input[i + 1] == '(')
+            {
+                lexer.input = input[i + 2 .. $];
+                lexer.front.content = "";
+                size_t parens = 1;
+                while (parens)
+                {
+                    popFront;
+                    if (lexer.empty)
+                    {
+                        throw lexer.lexerException("EOF", null, 1);
+                    }
+                    if (lexer.front.symbol == tokenID!"\"(\"")
+                        parens++;
+                    else if (lexer.front.symbol == tokenID!"\")\"")
+                        parens--;
+                }
+                i = lexer.input.ptr - input.ptr;
+            }
+            i++;
+        }
+    }
+
     void filterTokens()
     {
+        if (lexer.empty)
+            return;
         if (front.content == "__EOF__")
         {
             lexer.empty = true;
+            return;
+        }
+        if (front.symbol.among(tokenID!"InterpolatedDoubleQuotedLiteral", tokenID!"InterpolatedWysiwygLiteral"))
+        {
+            lexInterpolationSequence();
             return;
         }
     }
@@ -184,6 +244,7 @@ immutable string[] syntaxErrorExtra = [
     "only parameters, functions and `foreach` declarations can be `ref`",
     "function cannot have enum storage class",
     "token is not allowed in postfix position",
+    "String postfixes on interpolated expression sequences are not allowed.",
 ];
 
 size_t[syntaxErrorExceptions.length] syntaxErrorExceptionsUsed;

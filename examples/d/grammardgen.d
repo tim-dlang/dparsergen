@@ -600,7 +600,7 @@ int main(string[] args)
 
     Context contextLex = new Context();
     contextLex.isLexer = true;
-    foreach (f; ["lex", "entity"])
+    foreach (f; ["lex", "entity", "istring"])
     {
         string filename = dlangRepo ~ "/spec/" ~ f ~ ".dd";
 
