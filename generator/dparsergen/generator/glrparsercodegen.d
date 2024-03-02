@@ -1423,8 +1423,10 @@ const(char)[] createParserModule(LRGraph graph, string modulename,
         SymbolID translateTokenIdFromLexer(alias Lexer)(SymbolID t)
         {
             $$foreach (t2; grammar.tokens.allIDs) {
-                if (t == Lexer.tokenID!$(tokenDCode(grammar.tokens[t2])))
-                    return $(t2.id + grammar.startTokenID);
+                $$if (!grammar.tokens[t2].name.among("$end", "$flushreduces")) {
+                    if (t == Lexer.tokenID!$(tokenDCode(grammar.tokens[t2])))
+                        return $(t2.id + grammar.startTokenID);
+                $$}
             $$}
             return SymbolID.max;
         }

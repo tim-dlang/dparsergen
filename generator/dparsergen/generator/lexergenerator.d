@@ -1569,7 +1569,10 @@ const(char)[] createLexerCode(EBNFGrammar lexerGrammar, string modulename, strin
                 popFront;
             }
 
-            enum tokenID(string tok) = getTokenID(tok);
+            template tokenID(string tok) if (getTokenID(tok) != SymbolID.max)
+            {
+                enum tokenID = getTokenID(tok);
+            }
             string tokenName(size_t id)
             {
                 return allNonterminalTokens[id - startTokenID].name;
