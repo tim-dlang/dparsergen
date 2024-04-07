@@ -39,7 +39,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         persist-credentials: false
 
@@ -50,7 +50,7 @@ jobs:
 
     - name: Checkout DMD
       if: ${{ matrix.extra_args != 'win32' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: dmd
         repository: dlang/dmd
@@ -59,7 +59,7 @@ jobs:
 
     - name: Checkout JSONTestSuite
       if: ${{ matrix.platform != 'win32' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: JSONTestSuite
         repository: nst/JSONTestSuite
@@ -68,7 +68,7 @@ jobs:
 
     - name: Checkout CPython
       if: ${{ matrix.platform != 'win32' }}
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: cpython
         repository: python/cpython
