@@ -46,7 +46,8 @@ enum StdAnnotations = [
     "recursiveLexer",
     "inheritAnyTag",
     "minimalMatch",
-    "noOptDescent"
+    "noOptDescent",
+    "noGlrEarlyReduce"
 ];
 
 mixin(() {

@@ -53,7 +53,8 @@ bool isSingleReduceState(LRGraph graph, size_t stateNr)
     auto grammar = graph.grammar;
     const LRGraphNode node = graph.states[stateNr];
     return node.elements.length == 1 && node.elements[0].isFinished(grammar)
-        && !node.elements[0].isStartElement;
+        && !node.elements[0].isStartElement
+        && !grammar.nonterminals[node.elements[0].production.nonterminalID].annotations.contains!"noGlrEarlyReduce";
 }
 
 void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, const LRGraphNode node)

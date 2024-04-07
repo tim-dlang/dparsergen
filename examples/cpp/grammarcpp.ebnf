@@ -170,7 +170,7 @@ PseudoDestructorName
     ;
 
 // Section expr.unary
-UnaryExpression
+UnaryExpression @noGlrEarlyReduce
     = <PostfixExpression
     | "++" CastExpression
     | "--" CastExpression

@@ -1,0 +1,46 @@
+/*
+GENERATOR_OUTPUT(normal):
+---
+Warning: Parse conflict in state 14
+---
+*/
+/*
+GENERATOR_OUTPUT(optdescent):
+---
+Warning: Parse conflict in state 20
+---
+*/
+Start
+    = InitializerClause ";"
+    ;
+
+PrimaryExpression
+    = "(" UnaryExpression ")"
+    | <IdExpression
+    ;
+
+IdExpression
+    = Identifier
+    ;
+
+PostfixExpression
+    = <PrimaryExpression
+    | PostfixExpression "++"
+    ;
+
+UnaryExpression @noGlrEarlyReduce
+    = <PostfixExpression
+    | "sizeof" UnaryExpression
+    | "sizeof" "(" TypeId ")"
+    ;
+
+TypeId
+    = Identifier
+    ;
+
+InitializerClause
+    = UnaryExpression
+    ;
+
+token Space @ignoreToken = [ \n\r\t]+;
+token Identifier @lowPrio = [a-zA-Z_] [a-zA-Z_0-9]*;
