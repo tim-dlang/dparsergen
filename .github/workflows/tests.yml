@@ -54,7 +54,7 @@ jobs:
       with:
         path: dmd
         repository: dlang/dmd
-        ref: 7bff453b5e3b16c5eab2874984ed7d973a4f9e5b
+        ref: 83adb8aeab12ef7902eefae81223fdd300cfc1e0
         persist-credentials: false
 
     - name: Checkout JSONTestSuite

@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 9607293a246a0dc7a96417a84266cd0803675dcd
+// Based on grammar from dlang.org commit 2c3088b5b6c1f35dfb3a0b2a37d4a0fe891d4350
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -288,12 +288,32 @@ PrimaryExpression @directUnwrap
     | "." IdentifierExpression
     | <TemplateInstance
     | "." TemplateInstance
-    | <ThisExpression
+    | "$"
+    | <LiteralExpression
+    | <AssertExpression
+    | <MixinExpression
+    | <ImportExpression
+    | <NewExpression
+    | FundamentalType "." Identifier
+    // | TypeCtor? "(" Type ")" "." Identifier
+    // | "(" Type ")" "." TemplateInstance
+    // | FundamentalType "(" NamedArgumentList? ")"
+    | TypeCtor "(" Type ")" "." Identifier
+    // | TypeCtor? "(" Type ")" "(" NamedArgumentList? ")"
+    | <Typeof
+    | <TypeidExpression
+    | <IsExpression
+    | <SpecialKeyword
+    | <TraitsExpression
+    | <Vector
+    | <PrimaryExpressionParen
+    ;
+LiteralExpression
+    = <ThisExpression
     | "super"
     | "null"
     | "true"
     | "false"
-    | "$"
     | IntegerLiteral
     | FloatLiteral
     | CharacterLiteral
@@ -302,23 +322,6 @@ PrimaryExpression @directUnwrap
     | <ArrayLiteral
     | <AssocArrayLiteral
     | <FunctionLiteralNoParen
-    | <AssertExpression
-    | <MixinExpression
-    | <ImportExpression
-    | <NewExpression
-    | FundamentalType "." Identifier
-    // | "(" Type ")" "." Identifier
-    // | "(" Type ")" "." TemplateInstance
-    // | FundamentalType "(" NamedArgumentList? ")"
-    | TypeCtor "(" Type ")" "." Identifier
-    // | TypeCtor "(" Type ")" "(" NamedArgumentList? ")"
-    | <Typeof
-    | <TypeidExpression
-    | <IsExpression
-    | <SpecialKeyword
-    | <TraitsExpression
-    | <Vector
-    | <PrimaryExpressionParen
     ;
 PrimaryExpressionParen @backtrack
     = <FunctionLiteralParen
@@ -400,8 +403,10 @@ AssertExpression
     = "assert" "(" AssertArguments ")"
     ;
 AssertArguments
-    = AssignExpression ","?
-    | AssignExpression "," AssignExpression ","?
+    = <AssignExpression
+    | AssignExpression ","
+    | AssignExpression "," AssignExpression
+    | AssignExpression "," AssignExpression ","
     ;
 MixinExpression @directUnwrap
     = <Mixin
@@ -560,6 +565,9 @@ NonVoidInitializer @backtrack
     = <ArrayStructInitializer
     | <AssignExpression
     ;
+VoidInitializer
+    = "void"
+    ;
 ArrayInitializer
     = "[" ArrayMemberInitializations? "]"
     ;
@@ -618,9 +626,6 @@ AliasReassignment
     = IdentifierExpression "=" StorageClasses? PostfixType ";"
     | IdentifierExpression "=" FunctionLiteral ";"
     | IdentifierExpression "=" StorageClasses? BasicType Parameters MemberFunctionAttributes? ";"
-    ;
-VoidInitializer
-    = "void"
     ;
 AsmStatement
     = "asm" FunctionAttributes? "{" AsmInstructionList? "}"
@@ -986,6 +991,7 @@ FunctionAttributeKwd @directUnwrap
     ;
 AtAttribute @directUnwrap
     = "@" Identifier>>"disable"
+    | "@" Identifier>>"__future"
     | "@" Identifier>>"nogc"
     | "@" Identifier>>"live"
     | <Property
@@ -1149,10 +1155,18 @@ IfCondition @backtrack
     | <Expression
     ;
 IfConditionDecl
-    = Auto Identifier "=" Expression
-    | Scope Identifier "=" Expression
-    | TypeCtors Identifier "=" Expression
-    | TypeCtors? PostfixType Declarator "=" Expression
+    = IfConditionStorageClasses Identifier "=" Expression
+    | IfConditionStorageClasses? PostfixType Declarator "=" Expression
+    ;
+IfConditionStorageClasses
+    = <IfConditionStorageClass
+    | IfConditionStorageClass IfConditionStorageClasses
+    ;
+IfConditionStorageClass
+    = "scope"
+    | "auto"
+    | "ref"
+    | <TypeCtor
     ;
 ThenStatement @directUnwrap
     = <ScopeStatement
@@ -1548,15 +1562,14 @@ VariadicParameter
     = VariadicArgumentsAttributes? "..."
     ;
 Parameter
+    = ParameterDeclaration
+    | ParameterDeclaration "..."
+    | ParameterDeclaration "=" AssignExpression
+    | ParameterDeclaration "=" AssignExpression "..."
+    ;
+ParameterDeclaration
     = ParameterAttributes? PostfixType Declarator
-    | ParameterAttributes? PostfixType Declarator "..."
-    | ParameterAttributes? PostfixType Declarator "=" AssignExpression
-    | ParameterAttributes? PostfixType Declarator "=" AssignExpression "..."
-    | ParameterAttributes PostfixType
-    | ParameterAttributes? PostfixType "=" AssignExpression
-    | ParameterAttributes? PostfixType "=" AssignExpression "..."
-    | PostfixType
-    | ParameterAttributes? PostfixType "..."
+    | ParameterAttributes? PostfixType
     ;
 ParameterAttributes @array @regArray
     = ParameterStorageClass
@@ -1662,12 +1675,12 @@ InOutStatement @directUnwrap
 InContractExpression
     = "in" "(" AssertArguments ")"
     ;
+InStatement
+    = "in" BlockStatement
+    ;
 OutContractExpression
     = "out" "(" ";" AssertArguments ")"
     | "out" "(" Identifier ";" AssertArguments ")"
-    ;
-InStatement
-    = "in" BlockStatement
     ;
 OutStatement
     = "out" BlockStatement

@@ -241,10 +241,10 @@ immutable string[] syntaxErrorExtra = [
     "C style cast illegal",
     "instead of `long ",
     "instead of C-style syntax, use D-style",
-    "only parameters, functions and `foreach` declarations can be `ref`",
     "function cannot have enum storage class",
     "token is not allowed in postfix position",
     "String postfixes on interpolated expression sequences are not allowed.",
+    "use `{ }` for an empty statement, not `;`",
 ];
 
 size_t[syntaxErrorExceptions.length] syntaxErrorExceptionsUsed;
@@ -358,8 +358,6 @@ bool runTests(TestDirType testDirType, string testDir)
         {
             if (relative.startsWith("protection"))
                 continue;
-            if (relative == "mixintype2.d")
-                continue;
             if (relative.startsWith("imports"))
                 continue;
         }
@@ -386,12 +384,14 @@ bool runTests(TestDirType testDirType, string testDir)
             expectFailure = true;
         }
 
-        if (testDirType == TestDirType.failDmd && relative.among(
+        if (relative.among(
                 "fail18228.d",
                 "test12228.d",
                 "fail_typeof.d",
                 "fail19912d.d",
                 "fail54.d",
+                "ident_all.d",
+                "ident_c11.d",
                 ))
         {
             if (expectFailure)
@@ -403,7 +403,8 @@ bool runTests(TestDirType testDirType, string testDir)
         if (testDirType == TestDirType.failDmd && relative.among(
             "fail11751.d",
             "t1252.d",
-            "fail14009.d"
+            "fail14009.d",
+            "mixintype2.d"
             ))
         {
             if (!expectFailure)
