@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 2c3088b5b6c1f35dfb3a0b2a37d4a0fe891d4350
+// Based on grammar from dlang.org commit 8501a0e5faf73a4e211a21d61333bb0de40de965
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -374,8 +374,8 @@ FunctionLiteral @directUnwrap
     | <FunctionLiteralParen
     ;
 FunctionLiteralNoParen @directUnwrap
-    = "function" RefOrAutoRef? Type? ParameterWithAttributes? FunctionLiteralBody2
-    | "delegate" RefOrAutoRef? Type? ParameterWithMemberAttributes? FunctionLiteralBody2
+    = "function" RefOrAutoRef? PostfixType? ParameterWithAttributes? FunctionLiteralBody2
+    | "delegate" RefOrAutoRef? PostfixType? ParameterWithMemberAttributes? FunctionLiteralBody2
     | RefOrAutoRef ParameterWithMemberAttributes FunctionLiteralBody2
     | <BlockStatement // <FunctionLiteralBody
     | Identifier "=>" @eager AssignExpression
@@ -1810,6 +1810,7 @@ TemplateMixinDeclaration
     ;
 TemplateMixin
     = AttributesNoPragmaEmpty "mixin" MixinTemplateName /* TemplateArguments? */ Identifier? ";"
+    | AttributesNoPragmaEmpty "mixin" Identifier "=" MixinTemplateName /* TemplateArguments? */ ";"
     ;
 MixinTemplateName
     = "." MixinQualifiedIdentifier
