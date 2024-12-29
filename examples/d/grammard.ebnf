@@ -294,7 +294,7 @@ PrimaryExpression @directUnwrap
     | <MixinExpression
     | <ImportExpression
     | <NewExpression
-    | FundamentalType "." Identifier
+    | FundamentalType TypeSuffixes? "." Identifier
     // | TypeCtor? "(" Type ")" "." Identifier
     // | "(" Type ")" "." TemplateInstance
     // | FundamentalType "(" NamedArgumentList? ")"
@@ -1962,16 +1962,19 @@ FundamentalType
     | "creal"
     | "void"
     ;
+TypeSuffixes
+    = TypeSuffix TypeSuffixes?
+    ;
 PostfixType @directUnwrap
     = <BasicType
-    | PostfixType "*"
-    | PostfixType ArrayTypeSuffix
-    | PostfixType "delegate" Parameters MemberFunctionAttributes?
-    | PostfixType "function" Parameters FunctionAttributes?
+    | PostfixType TypeSuffix
     ;
-ArrayTypeSuffix
-    = "[" "]"
+TypeSuffix
+    = "*"
+    | "[" "]"
     | "[" ArrayTypeSuffixContent "]"
+    | "delegate" Parameters MemberFunctionAttributes?
+    | "function" Parameters FunctionAttributes?
     ;
 ArrayTypeSuffixContent @backtrack
     = <Type

@@ -616,6 +616,8 @@ int main(string[] args)
                     "--test-dir", buildPath(dmdDir, "compiler/test/runnable_cxx"),
                     "--test-dir-fail-dmd",
                     buildPath(dmdDir, "compiler/test/fail_compilation"),
+                    "--test-dir", buildPath(dmdDir, "druntime/src"),
+                    "--test-dir", buildPath(dmdDir, "compiler/src"),
                 ]);
         version (Windows)
         {
