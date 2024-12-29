@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 8501a0e5faf73a4e211a21d61333bb0de40de965
+// Based on grammar from dlang.org commit d74f36300c42568a6c6b22cab645184e223bfa73
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -304,6 +304,7 @@ PrimaryExpression @directUnwrap
     | <TypeidExpression
     | <IsExpression
     | <SpecialKeyword
+    | <RvalueExpression
     | <TraitsExpression
     | <Vector
     | <PrimaryExpressionParen
@@ -459,6 +460,9 @@ TypeSpecialization
     | "__parameters"
     | "module"
     | "package"
+    ;
+RvalueExpression
+    = "__rvalue" "(" AssignExpression ")"
     ;
 SpecialKeyword
     = "__FILE__"

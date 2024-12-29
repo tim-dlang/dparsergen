@@ -209,6 +209,7 @@ immutable string[] syntaxErrorExceptions = [
     "expected as third argument of",
     "at least one argument expected",
     "`string` expected for pragma mangle argument, not",
+    "bitfield symbol expected",
 ];
 
 immutable string[] syntaxErrorExtra = [
@@ -245,6 +246,7 @@ immutable string[] syntaxErrorExtra = [
     "token is not allowed in postfix position",
     "String postfixes on interpolated expression sequences are not allowed.",
     "use `{ }` for an empty statement, not `;`",
+    "must have at least one member",
 ];
 
 size_t[syntaxErrorExceptions.length] syntaxErrorExceptionsUsed;

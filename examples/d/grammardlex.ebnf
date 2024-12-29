@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 8501a0e5faf73a4e211a21d61333bb0de40de965
+// Based on grammar from dlang.org commit d74f36300c42568a6c6b22cab645184e223bfa73
 
 token ByteOrderMark
     = "\uFEFF"
@@ -586,14 +586,15 @@ Keyword
     | "with"
     | "__FILE__"
     | "__FILE_FULL_PATH__"
-    | "__MODULE__"
-    | "__LINE__"
     | "__FUNCTION__"
+    | "__LINE__"
+    | "__MODULE__"
     | "__PRETTY_FUNCTION__"
     | "__gshared"
+    | "__parameters"
+    | "__rvalue"
     | "__traits"
     | "__vector"
-    | "__parameters"
     ;
 token SpecialTokenSequence @ignoreToken
     = "#" " "? "line" WS? IntegerLiteral WS? Filespec? WS? EndOfLine
