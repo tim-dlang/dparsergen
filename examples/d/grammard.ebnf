@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 14f341810a368b8ca1f6ecee28da36c130119cb3
+// Based on grammar from dlang.org commit 243dfc0d62ccc434d9692fa6c93b5bfa206f23ab
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -1310,7 +1310,6 @@ WithStatement
 WithContent @directUnwrap
     = <Expression
     // | <Symbol
-    // | <TemplateInstance
     ;
 SynchronizedStatement
     = SynchronizedSingleArray !"(" !"class" ScopeStatement
