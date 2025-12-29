@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 64d1f2b973ead2d486239f3058608c06014f65f4
+// Based on grammar from dlang.org commit 49796a0839e0d9ccfdfa1b8adc0cd379ac9c716f
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -387,6 +387,10 @@ FunctionLiteralNoParen @directUnwrap
 FunctionLiteralParen @directUnwrap
     = ParameterWithMemberAttributes FunctionLiteralBody2
     ;
+RefOrAutoRef
+    = <Ref
+    | "auto" "ref"
+    ;
 ParameterWithAttributes @directUnwrap
     = <Parameters
     | Parameters FunctionAttributes
@@ -398,10 +402,6 @@ ParameterWithMemberAttributes @directUnwrap
 FunctionLiteralBody2
     = "=>" @eager AssignExpression
     | <SpecifiedFunctionBody
-    ;
-RefOrAutoRef
-    = <Ref
-    | "auto" "ref"
     ;
 AssertExpression
     = "assert" "(" AssertArguments ")"
