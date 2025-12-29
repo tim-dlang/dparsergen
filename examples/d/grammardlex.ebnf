@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit c2a58ec9197a3e6f4109d875fa624a7636f278b7
+// Based on grammar from dlang.org commit 21e4cb56b6ffb5971fb87e5a6632bdcc265bb346
 
 token ByteOrderMark
     = "\uFEFF"
@@ -448,6 +448,7 @@ fragment HexFloat
     = HexPrefix HexDigitsNoSingleUS "." HexDigitsNoStartingUS HexExponent
     | HexPrefix "." HexDigitsNoStartingUS HexExponent
     | HexPrefix HexDigitsNoSingleUS HexExponent
+    | HexPrefix HexExponent
     ;
 fragment HexPrefix
     = "0x"
