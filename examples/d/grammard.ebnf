@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 05e7f8c1b992c760265035c92c0a24373b0d6fb0
+// Based on grammar from dlang.org commit 9889e854acff9a9ac3746f12714520dfaf6196e8
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -925,26 +925,30 @@ GccAsmInstruction
     | <GccGotoAsmInstruction
     ;
 GccBasicAsmInstruction
-    = <AssignExpression
+    = <GccAsmStringExpression
     ;
 GccExtAsmInstruction
-    = AssignExpression ":" GccAsmOperands?
-    | AssignExpression ":" GccAsmOperands? ":" GccAsmOperands?
-    | AssignExpression ":" GccAsmOperands? ":" GccAsmOperands? ":" GccAsmClobbers?
+    = GccAsmStringExpression ":" GccAsmOperands?
+    | GccAsmStringExpression ":" GccAsmOperands? ":" GccAsmOperands?
+    | GccAsmStringExpression ":" GccAsmOperands? ":" GccAsmOperands? ":" GccAsmClobbers?
     ;
 GccGotoAsmInstruction
-    = AssignExpression ":" ":" GccAsmOperands? ":" GccAsmClobbers? ":" GccAsmGotoLabels?
+    = GccAsmStringExpression ":" ":" GccAsmOperands? ":" GccAsmClobbers? ":" GccAsmGotoLabels?
+    ;
+GccAsmStringExpression
+    = <StringLiteral
+    | "(" ConditionalExpression ")"
     ;
 GccAsmOperands
-    = GccSymbolicName? StringLiteral "(" AssignExpression ")"
-    | GccSymbolicName? StringLiteral "(" AssignExpression ")" "," GccAsmOperands
+    = GccSymbolicName? GccAsmStringExpression "(" AssignExpression ")"
+    | GccSymbolicName? GccAsmStringExpression "(" AssignExpression ")" "," GccAsmOperands
     ;
 GccSymbolicName
     = "[" Identifier "]"
     ;
 GccAsmClobbers
-    = <StringLiteral
-    | StringLiteral "," GccAsmClobbers
+    = <GccAsmStringExpression
+    | GccAsmStringExpression "," GccAsmClobbers
     ;
 GccAsmGotoLabels
     = Identifier
