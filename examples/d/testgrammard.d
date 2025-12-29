@@ -203,17 +203,19 @@ immutable string[] syntaxErrorExceptions = [
     "`return` expression expected",
     "single type expected for trait",
     "pragma(`inline`, `true` or `false`) expected,",
-    "expected for mangled name",
     "expected valid identifier",
     "compile time string constant (or sequence) expected, not",
     "expected as third argument of",
     "at least one argument expected",
-    "`string` expected for pragma mangle argument, not",
     "bitfield symbol expected",
+    "`pragma(mangle)` expects string literal argument for mangled name",
+    "`string` expected for pragma mangle argument",
+    "Argument is expected to be non-null but was null",
 ];
 
 immutable string[] syntaxErrorExtra = [
-    "cannot declare",
+    "cannot declare `out` loop variable",
+    "cannot declare `auto` loop variable",
     "no identifier for declarator",
     "variadic parameter cannot have",
     "template constraints only allowed for templates",
@@ -247,6 +249,8 @@ immutable string[] syntaxErrorExtra = [
     "String postfixes on interpolated expression sequences are not allowed.",
     "use `{ }` for an empty statement, not `;`",
     "must have at least one member",
+    "statement must be inside function scope",
+    "undefined identifier `this`, did you mean `typeof(this)`",
 ];
 
 size_t[syntaxErrorExceptions.length] syntaxErrorExceptionsUsed;
@@ -387,9 +391,6 @@ bool runTests(TestDirType testDirType, string testDir)
         }
 
         if (relative.among(
-                "fail18228.d",
-                "test12228.d",
-                "fail_typeof.d",
                 "fail19912d.d",
                 "fail54.d",
                 "ident_all.d",
