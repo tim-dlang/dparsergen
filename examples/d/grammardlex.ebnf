@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit bcff9027e26662e3d3d77cdf794dfd795a653a2d
+// Based on grammar from dlang.org commit c2a58ec9197a3e6f4109d875fa624a7636f278b7
 
 token ByteOrderMark
     = "\uFEFF"
