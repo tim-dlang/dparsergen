@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 243dfc0d62ccc434d9692fa6c93b5bfa206f23ab
+// Based on grammar from dlang.org commit 691447c8214764d1647f1d4e6da6c2d110143072
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -42,7 +42,7 @@ EmptyDeclaration
     = ";"
     ;
 ModuleDeclaration
-    = ModuleAttributes? "module" ModuleFullyQualifiedName ";"
+    = ModuleAttributes? "module" ModuleFullyQualifiedName Edition? ";"
     ;
 ModuleAttributes @array @regArray
     = ModuleAttribute
@@ -95,6 +95,9 @@ ModuleAliasIdentifier
     ;
 MixinDeclaration
     = AttributesNoPragmaEmpty Mixin ";"
+    ;
+Edition
+    = IntegerLiteral
     ;
 Expression @directUnwrap
     = <CommaExpression
