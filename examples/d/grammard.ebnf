@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 9889e854acff9a9ac3746f12714520dfaf6196e8
+// Based on grammar from dlang.org commit 14f341810a368b8ca1f6ecee28da36c130119cb3
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -419,10 +419,13 @@ ImportExpression
     = "import" "(" AssignExpression ")"
     ;
 NewExpression
-    = "new" Type !"(" !"[" !"." !"*" // TODO: sometimes it should be parsed differently. See new S[2].ptr in dmd/test/compilable/b1215.d
-    //| "new" Type "[" AssignExpression "]"
-    //| "new" Type "(" NamedArgumentList? ")"
+    = "new" PlacementExpression? Type !"(" !"[" !"." !"*" // TODO: sometimes it should be parsed differently. See new S[2].ptr in dmd/test/compilable/b1215.d
+    //| "new" PlacementExpression? Type "[" AssignExpression "]"
+    //| "new" PlacementExpression? Type "(" NamedArgumentList? ")"
     | <NewAnonClassExpression
+    ;
+PlacementExpression
+    = "(" AssignExpression ")"
     ;
 TypeidExpression @backtrack
     = "typeid" "(" Type ")"
@@ -1511,7 +1514,7 @@ Allocator // Removed in dlang.org commit e0f9fecab151613f7c21d13f83f462cf20b9805
     | AttributesNoPragmaEmpty "new" Parameters MissingFunctionBody
     ;
 NewAnonClassExpression
-    = "new" "class" ConstructorArgs? AnonBaseClassList? AggregateBody
+    = "new" PlacementExpression? "class" ConstructorArgs? AnonBaseClassList? AggregateBody
     ;
 ConstructorArgs
     = "(" NamedArgumentList? ")"
