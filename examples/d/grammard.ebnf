@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 888c37be740ec380b04b0374335a0d9c7c46ce3c
+// Based on grammar from dlang.org commit bcff9027e26662e3d3d77cdf794dfd795a653a2d
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -1446,6 +1446,7 @@ UnionTemplateDeclaration
     ;
 ConstructorTemplate
     = AttributesNoPragmaEmpty "this" @lookahead TemplateParameters Parameters MemberFunctionAttributes? Constraint? FunctionBody
+    | AttributesNoPragmaEmpty "this" @lookahead TemplateParameters Parameters MemberFunctionAttributes? Constraint? MissingFunctionBody
     ;
 Constraint
     = "if" "(" Expression ")"
@@ -1472,21 +1473,26 @@ Interface @directUnwrap
 Constructor
     = <ConstructorTemplate
     | AttributesNoPragmaEmpty "this" @lookahead Parameters MemberFunctionAttributes? FunctionBody
+    | AttributesNoPragmaEmpty "this" @lookahead Parameters MemberFunctionAttributes? MissingFunctionBody
     ;
 Destructor
     = AttributesNoPragmaEmpty "~" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    | AttributesNoPragmaEmpty "~" "this" "(" ")" MemberFunctionAttributes? MissingFunctionBody
     ;
 /*StaticConstructor
     = "static" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    | "static" "this" "(" ")" MemberFunctionAttributes? MissingFunctionBody
     ;
 StaticDestructor
     = "static" "~" "this" "(" ")" MemberFunctionAttributes? FunctionBody
     ;
 SharedStaticConstructor
     = "shared" "static" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    | "shared" "static" "this" "(" ")" MemberFunctionAttributes? MissingFunctionBody
     ;
 SharedStaticDestructor
     = "shared" "static" "~" "this" "(" ")" MemberFunctionAttributes? FunctionBody
+    | "shared" "static" "~" "this" "(" ")" MemberFunctionAttributes? MissingFunctionBody
     ;*/
 Invariant
     = AttributesNoPragmaEmpty "invariant" "(" ")" BlockStatement
@@ -1495,6 +1501,7 @@ Invariant
     ;
 Allocator // Removed in dlang.org commit e0f9fecab151613f7c21d13f83f462cf20b98056
     = AttributesNoPragmaEmpty "new" Parameters FunctionBody
+    | AttributesNoPragmaEmpty "new" Parameters MissingFunctionBody
     ;
 NewAnonClassExpression
     = "new" "class" ConstructorArgs? AnonBaseClassList? AggregateBody
@@ -1525,6 +1532,7 @@ TraitsArgument @backtrack
     ;
 FuncDeclaration
     = StorageClassesAttributesNoPragmaEmpty PostfixType FuncDeclarator FunctionBody
+    | StorageClassesAttributesNoPragmaEmpty PostfixType FuncDeclarator MissingFunctionBody
     | <AutoFuncDeclaration
     ;
 StorageClassesAttributes @array @regArray
@@ -1545,6 +1553,7 @@ StorageClassesAttributesNoPragmaEmpty @array @regArray
     ;
 AutoFuncDeclaration
     = StorageClassesAttributesNoPragma FuncDeclarator FunctionBody
+    | StorageClassesAttributesNoPragma FuncDeclarator MissingFunctionBody
     ;
 FuncDeclarator
     = IdentifierExpression FuncDeclaratorSuffix
@@ -1632,7 +1641,6 @@ MemberFunctionAttribute @directUnwrap
 FunctionBody @directUnwrap
     = <SpecifiedFunctionBody
     | <ShortenedFunctionBody
-    | <MissingFunctionBody
     ;
 SpecifiedFunctionBody @directUnwrap
     = "do" BlockStatement
@@ -1692,18 +1700,14 @@ OutStatement
     | "out" "(" Identifier ")" BlockStatement
     ;
 /*MainFunction
-    = MainReturnDecl "main()" MainFunctionBody
-    | MainReturnDecl "main(string[]" "Identifier)" MainFunctionBody
+    = MainReturnDecl "main()" FunctionBody
+    | MainReturnDecl "main(string[]" "Identifier)" FunctionBody
     ;
 MainReturnDecl
     = "void"
     | "int"
     | <noreturn
     | "auto"
-    ;
-MainFunctionBody
-    = <ShortenedFunctionBody
-    | <SpecifiedFunctionBody
     ;
 CMainFunction
     = "extern" "(C)" MainReturnDecl "main(CmainParameters$(OPT))" BlockStatement
@@ -1751,6 +1755,7 @@ StructMemberInitializerExpr @directUnwrap
     ;
 /*Postblit
     | "this" "(" "this" ")" MemberFunctionAttributes? FunctionBody
+    | "this" "(" "this" ")" MemberFunctionAttributes? MissingFunctionBody
     ;*/
 AliasThis
     = AttributesNoPragmaEmpty "alias" IdentifierExpression "this" ";"
