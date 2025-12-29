@@ -510,7 +510,7 @@ Keyword
     | "debug"
     | "default"
     | "delegate"
-    | "delete" // deprecated
+    //| "delete" // deprecated
     | "deprecated"
     | "do"
     | "double"

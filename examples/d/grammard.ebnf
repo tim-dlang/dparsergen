@@ -206,7 +206,7 @@ UnaryExpression @directUnwrap
     | "+" UnaryExpression
     | "!" UnaryExpression
     | <ComplementExpression
-    | <DeleteExpression
+    //| <DeleteExpression
     | <CastExpression
     | <ThrowExpression
     | <PowExpression
@@ -214,9 +214,9 @@ UnaryExpression @directUnwrap
 ComplementExpression
     = "~" UnaryExpression
     ;
-DeleteExpression
+/*DeleteExpression
     = "delete" UnaryExpression
-    ;
+    ;*/
 CastExpression
     = "cast" "(" Type ")" UnaryExpression
     | <CastQual
