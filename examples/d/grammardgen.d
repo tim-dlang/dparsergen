@@ -379,6 +379,12 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
                 findSymbols(trees2);
                 productions[$-1].comment = "reserved";
             }
+            else if (c.name == "Macro" && c.childs[1].content == "GLEGACY")
+            {
+                Tree[] trees2 = c.childs[2].childs;
+                findSymbols(trees2);
+                productions[$-1].comment = "legacy";
+            }
             else
             {
                 printSymbol(c, productions[$ - 1].symbols);
@@ -542,24 +548,32 @@ void analyzeGrammar(Tree tree, Context context)
         return;
     size_t start = size_t.max;
     bool isToken = context.isLexer;
-    foreach (i, c; tree.childs[2].childs)
+    Tree[] childs = tree.childs[2].childs;
+    for (size_t i = 0; i < childs.length;)
     {
+        Tree c = childs[i];
         if (c.name == "Macro" && c.childs[1].content == "GDEPRECATED")
         {
             c = c.childs[2].childs[1];
+        }
+        if (c.name == "Macro" && c.childs[1].content == "GLEGACY")
+        {
+           childs = childs[0 .. i] ~ c.childs[2].childs ~ childs[i + 1 .. $];
+           continue;
         }
         if (c.name == "Macro" && c.childs[1].content == "GNAME")
         {
             if (start != size_t.max)
             {
-                analyzeNonterminal(tree.childs[2].childs[start .. i], context, context.isLexer, isToken);
+                analyzeNonterminal(childs[start .. i], context, context.isLexer, isToken);
                 isToken = false;
             }
             start = i;
         }
+        i++;
     }
     if (start != size_t.max)
-        analyzeNonterminal(tree.childs[2].childs[start .. $], context, context.isLexer, isToken);
+        analyzeNonterminal(childs[start .. $], context, context.isLexer, isToken);
 }
 
 void findGrammar(Tree tree, Context context)
