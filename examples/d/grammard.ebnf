@@ -1,4 +1,4 @@
-// Based on grammar from dlang.org commit 49796a0839e0d9ccfdfa1b8adc0cd379ac9c716f
+// Based on grammar from dlang.org commit fcf00751c19dfdf45dded513947f4e5e10dcdeab
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -1956,6 +1956,10 @@ VectorBaseType
     = <Type
     ;
 FundamentalType
+    = "void"
+    | <ArithmeticType
+    ;
+ArithmeticType
     = "bool"
     | "byte"
     | "ubyte"
@@ -1979,7 +1983,6 @@ FundamentalType
     | "cfloat"
     | "cdouble"
     | "creal"
-    | "void"
     ;
 TypeSuffixes
     = TypeSuffix TypeSuffixes?
