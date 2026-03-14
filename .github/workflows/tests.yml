@@ -39,18 +39,18 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         persist-credentials: false
 
     - name: Install D compiler
-      uses: dlang-community/setup-dlang@v1
+      uses: dlang-community/setup-dlang@v2
       with:
         compiler: ${{ matrix.dc }}
 
     - name: Checkout DMD
       if: ${{ matrix.extra_args != 'win32' }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: dmd
         repository: dlang/dmd
@@ -59,7 +59,7 @@ jobs:
 
     - name: Checkout JSONTestSuite
       if: ${{ matrix.platform != 'win32' }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: JSONTestSuite
         repository: nst/JSONTestSuite
@@ -68,7 +68,7 @@ jobs:
 
     - name: Checkout CPython
       if: ${{ matrix.platform != 'win32' }}
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         path: cpython
         repository: python/cpython

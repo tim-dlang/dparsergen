@@ -366,7 +366,7 @@ bool runGrammarTests(Test[] tests, string model, Verbosity verbosity,
     }
 
     string versionArg = "-version";
-    if (compiler.endsWith("ldc2"))
+    if (compiler.endsWith("ldc2") || compiler.endsWith("ldc2.exe"))
         versionArg = "--d-version";
 
     TestBundle[] testBundles;
