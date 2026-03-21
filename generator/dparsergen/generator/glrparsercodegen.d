@@ -104,7 +104,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                         code.writeln("{").incIndent;
                         code.writeln("// early reduce ", grammar.productionString(e.production));
                         code.writeln(reduceFunctionName(graph, e.production),
-                                "(nextNode, start, end, end, true);");
+                                "(nextNode, start, end, end, true, exception);");
                         code.decIndent.writeln("}");
                     }
                 }
@@ -113,7 +113,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
         else if (bestAction.type == ActionType.reduce)
         {
             code.writeln(reduceFunctionName(graph, bestAction.production),
-                    "(stackNode, start, end, lastTokenEnd, false);");
+                    "(stackNode, start, end, lastTokenEnd, false, exception);");
         }
         else if (bestAction.type == ActionType.delayedReduce)
         {
@@ -136,19 +136,25 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                 try
                 {
                     $$actionCode(a2);
-                    anyGood = true;
+                    if (exception is null)
+                        anyGood = true;
+                    else
+                    {
+                        exceptions ~= exception;
+                        exception = null;
+                    }
                 }
                 catch(ParseException e)
                 {
-                    exceptions ~= e;
+                    assert(false, e.toString);
                 }
             $$}
             if (!anyGood)
             {
                 if (exceptions.length == 1)
-                    throw exceptions[0];
+                    exception = exceptions[0];
                 else
-                    throw new MultiParseException("", exceptions);
+                    exception = new MultiParseException("", exceptions);
             }
             }));
         }
@@ -166,7 +172,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
 
     mixin(genCode("code", q{
         private void $(parseFunctionName(graph, stateNr, "pushTokenState"))(  _
-        StackNode *stackNode, size_t tokenId, Token tokenContent, Location start, Location end)
+        StackNode *stackNode, size_t tokenId, Token tokenContent, Location start, Location end, ref ParseException exception)
         {
             $$if (node.type == LRGraphNodeType.backtrack) {
                 assert(false, "Not used for GLR parser");
@@ -209,17 +215,17 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     $(ifPrefix == "else " ? "else" : ifPrefix)
                     {
                         $$if (endTok in actionTable.actions) {
-                            throw new SingleParseException!Location(text("unexpected Token \"", tokenContent, "\"  \"", getTokenName(tokenId), "\""),
+                            exception = new SingleParseException!Location(text("unexpected Token \"", tokenContent, "\"  \"", getTokenName(tokenId), "\""),
                                 start, end);
                         $$} else {
                             if (tokenId == getTokenID!$(grammar.tokens[endTok].tokenDCode))
-                                throw new SingleParseException!Location("EOF",
+                                exception = new SingleParseException!Location("EOF",
                                     start, end);
                             else
-                                throw new SingleParseException!Location(text("unexpected Token \"", tokenContent, "\"  \"", getTokenName(tokenId), "\""),
+                                exception = new SingleParseException!Location(text("unexpected Token \"", tokenContent, "\"  \"", getTokenName(tokenId), "\""),
                                     start, end);
                         $$}
-                        assert(0);
+                        return;
                     }
                 $$}
             $$}
@@ -468,7 +474,7 @@ void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* 
             private   _
             void   _
             $(reduceFunctionName(graph, production))(  _
-            StackNode *stackNode, Location tokenStart, Location tokenEnd, Location lastTokenEnd, bool alreadyShifted  _
+            StackNode *stackNode, Location tokenStart, Location tokenEnd, Location lastTokenEnd, bool alreadyShifted, ref ParseException exception  _
             )
             {
                 ParseException[] exceptions;
@@ -525,11 +531,11 @@ void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* 
                 if (!anyGood)
                 {
                     if (exceptions.length == 1)
-                        throw exceptions[0];
+                        exception = exceptions[0];
                     else if (exceptions.length == 0)
-                        throw new SingleParseException!Location("no reduce", tokenStart, tokenEnd);
+                        exception = new SingleParseException!Location("no reduce", tokenStart, tokenEnd);
                     else
-                        throw new MultiParseException("", exceptions);
+                        exception = new MultiParseException("", exceptions);
                 }
             }
         $$}
@@ -806,14 +812,14 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
     EBNFGrammar grammar = graph.grammar;
 
     mixin(genCode("code", q{
-        private void pushToken(StackNode *stackNode, size_t tokenId, Token tokenContent, Location start, Location end)
+        private void pushToken(StackNode *stackNode, size_t tokenId, Token tokenContent, Location start, Location end, ref ParseException exception)
         {
             switch (stackNode.state)
             {
                 $$foreach (i, n; graph.states) {
                     $$if (!n.hasSetStackSymbols || graph.globalOptions.directUnwrap) {
                         case $(i): $(parseFunctionName(graph, i, "pushTokenState"))  _
-                        (stackNode, tokenId, tokenContent, start, end); break;
+                        (stackNode, tokenId, tokenContent, start, end, exception); break;
                     $$}
                 $$}
                 default: assert(false, text("state=", stackNode.state));
@@ -883,7 +889,10 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                                             $$if (e.production.symbols.length && e.production.symbols[$ - 1].isToken) {
                                                 // Nothing to do for token
                                             $$} else {
-                                                $(reduceFunctionName(graph, e.production))(stackNode, start, end, end, true);
+                                                ParseException exception;
+                                                $(reduceFunctionName(graph, e.production))(stackNode, start, end, end, true, exception);
+                                                if (exception !is null)
+                                                    throw exception;
                                             $$}
                                         $$}
                                     $$}
@@ -898,14 +907,17 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
             {
                 foreach (stackNode; savedStackTops)
                 {
+                    ParseException exception;
                     try
                     {
-                        pushToken(stackNode, tokenId, tokenContent, start, end);
+                        pushToken(stackNode, tokenId, tokenContent, start, end, exception);
                     }
                     catch(ParseException e)
                     {
-                        exceptions ~= e;
+                        assert(false, e.toString);
                     }
+                    if (exception !is null)
+                        exceptions ~= exception;
                 }
             }
 
@@ -928,7 +940,13 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                                                     $$if (e.production.symbols.length && e.production.symbols[$ - 1].isToken) {
                                                         // Nothing to do for token
                                                     $$} else {
-                                                        $(reduceFunctionName(graph, e.production))(tmpData.pendingReduces.data[i].stackNode, start, end, end, true);
+                                                        ParseException exception;
+                                                        $(reduceFunctionName(graph, e.production))(tmpData.pendingReduces.data[i].stackNode, start, end, end, true, exception);
+                                                        if (exception !is null)
+                                                        {
+                                                            exceptions ~= exception;
+                                                            break;
+                                                        }
                                                     $$}
                                                 $$}
                                             $$}
@@ -940,20 +958,16 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                         }
                         catch(ParseException e)
                         {
-                            exceptions ~= e;
+                            assert(false, e.toString);
                         }
 
                         continue;
                     }
 
-                    try
-                    {
-                        pushToken(tmpData.pendingReduces.data[i].stackNode, tokenId, tokenContent, start, end);
-                    }
-                    catch(ParseException e)
-                    {
-                        exceptions ~= e;
-                    }
+                    ParseException exception;
+                    pushToken(tmpData.pendingReduces.data[i].stackNode, tokenId, tokenContent, start, end, exception);
+                    if (exception !is null)
+                        exceptions ~= exception;
                 }
             } while (hasAddedPendingReduce);
 
