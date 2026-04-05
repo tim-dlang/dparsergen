@@ -605,7 +605,7 @@ int main(string[] args)
 
     if (args.length != 4)
     {
-        stderr.writeln("Usage: grammardgen dlang.org grammard.ebnf grammardlex.ebnf");
+        stderr.writeln("Usage: grammardgen dmd grammard.ebnf grammardlex.ebnf");
         return 1;
     }
     string dlangRepo = args[1];
@@ -658,7 +658,7 @@ int main(string[] args)
 
     File of = File(args[3], "w");
     if (git.status == 0)
-        of.writeln("// Based on grammar from dlang.org commit ", git.output.strip(), "\n");
+        of.writeln("// Based on grammar from dmd commit ", git.output.strip(), "\n");
     foreach (name; contextLex.nonterminalsOrder)
     {
         if (name == "SourceFile")
@@ -670,7 +670,7 @@ int main(string[] args)
 
     of = File(args[2], "w");
     if (git.status == 0)
-        of.writeln("// Based on grammar from dlang.org commit ", git.output.strip(), "\n");
+        of.writeln("// Based on grammar from dmd commit ", git.output.strip(), "\n");
     of.writeln("import \"grammardlex.ebnf\";");
     of.write(contextLex.nonterminals["SourceFile"]);
     foreach (name; context.nonterminalsOrder)
