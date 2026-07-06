@@ -280,23 +280,40 @@ string intToStr(long l)
     char[20] buffer;
     size_t i;
     bool negative;
+    ulong n;
     if (l < 0)
     {
         negative = true;
-        l = -l;
+        n = cast(ulong) -l;
     }
-    while (l != 0)
+    else
+        n = cast(ulong) l;
+    do
     {
         i++;
-        buffer[$ - i] = '0' + l % 10;
-        l = l / 10;
-    }
+        buffer[$ - i] = '0' + n % 10;
+        n = n / 10;
+    } while (n != 0);
     if (negative)
     {
         i++;
-        buffer[$ - 1] = '-';
+        buffer[$ - i] = '-';
     }
     return buffer[$ - i .. $].idup;
+}
+
+unittest
+{
+    import std.stdio;
+    assert(intToStr(0) == "0");
+    assert(intToStr(1) == "1");
+    assert(intToStr(-1) == "-1");
+    assert(intToStr(9) == "9");
+    assert(intToStr(-9) == "-9");
+    assert(intToStr(10) == "10");
+    assert(intToStr(-10) == "-10");
+    assert(intToStr(long.max) == "9223372036854775807");
+    assert(intToStr(long.min) == "-9223372036854775808");
 }
 
 string genCode(string code, string str, string callingFunction = __FUNCTION__,
