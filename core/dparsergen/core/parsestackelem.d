@@ -39,7 +39,7 @@ struct ParseStackElem(Location, T)
     {
         static if (is(typeof(val.inputLength)))
         {
-            static if (__traits(compiles, tree is null))
+            static if (__traits(compiles, val is null))
                 if (val is null)
                     return LocationDiff();
             return val.inputLength;
@@ -65,7 +65,7 @@ struct ParseStackElem(Location, T)
     {
         static if (is(typeof(val.end)))
         {
-            static if (__traits(compiles, tree is null))
+            static if (__traits(compiles, val is null))
                 if (val is null)
                     return Location.invalid;
             return val.end;
@@ -73,4 +73,105 @@ struct ParseStackElem(Location, T)
         else
             return start + inputLength;
     }
+}
+
+unittest
+{
+    import dparsergen.core.location;
+
+    auto e1 = ParseStackElem!(LocationBytes, string)(LocationBytes(5), null);
+    assert(e1.inputLength == LocationBytes.LocationDiff());
+    assert(e1.end == LocationBytes(5));
+
+    auto e2 = ParseStackElem!(LocationBytes, string)(LocationBytes(10), "test");
+    assert(e2.inputLength == LocationBytes.LocationDiff(4));
+    assert(e2.end == LocationBytes(14));
+}
+
+unittest
+{
+    import dparsergen.core.location;
+
+    class Tree1
+    {
+        LocationBytes.LocationDiff inputLength;
+        this(LocationBytes.LocationDiff inputLength)
+        {
+            this.inputLength = inputLength;
+        }
+    }
+
+    auto e1 = ParseStackElem!(LocationBytes, Tree1)(LocationBytes(5), null);
+    assert(e1.inputLength == LocationBytes.LocationDiff());
+    assert(e1.end == LocationBytes(5));
+
+    auto e2 = ParseStackElem!(LocationBytes, Tree1)(LocationBytes(10), new Tree1(LocationBytes.LocationDiff(2)));
+    assert(e2.inputLength == LocationBytes.LocationDiff(2));
+    assert(e2.end == LocationBytes(12));
+}
+
+unittest
+{
+    import dparsergen.core.location;
+
+    class Tree2
+    {
+        LocationBytes end;
+        this(LocationBytes end)
+        {
+            this.end = end;
+        }
+    }
+
+    auto e1 = ParseStackElem!(LocationBytes, Tree2)(LocationBytes(5), null);
+    //assert(e1.inputLength == LocationBytes.LocationDiff());
+    assert(e1.end == LocationBytes.invalid);
+
+    auto e2 = ParseStackElem!(LocationBytes, Tree2)(LocationBytes(10), new Tree2(LocationBytes(12)));
+    //assert(e2.inputLength == LocationBytes.LocationDiff(2));
+    assert(e2.end == LocationBytes(12));
+}
+
+unittest
+{
+    import dparsergen.core.location;
+
+    struct Tree3
+    {
+        LocationBytes.LocationDiff inputLength;
+        this(LocationBytes.LocationDiff inputLength)
+        {
+            this.inputLength = inputLength;
+        }
+    }
+
+    auto e1 = ParseStackElem!(LocationBytes, Tree3)(LocationBytes(5), Tree3.init);
+    assert(e1.inputLength == LocationBytes.LocationDiff());
+    assert(e1.end == LocationBytes(5));
+
+    auto e2 = ParseStackElem!(LocationBytes, Tree3)(LocationBytes(10), Tree3(LocationBytes.LocationDiff(2)));
+    assert(e2.inputLength == LocationBytes.LocationDiff(2));
+    assert(e2.end == LocationBytes(12));
+}
+
+unittest
+{
+    import dparsergen.core.location;
+
+    struct Tree4
+    {
+        LocationBytes end;
+        this(LocationBytes end)
+        {
+            this.end = end;
+        }
+    }
+
+    auto e1 = ParseStackElem!(LocationBytes, Tree4)(LocationBytes(5), Tree4.init);
+    //assert(e1.inputLength == LocationBytes.LocationDiff());
+    assert(e1.end == LocationBytes.init);
+
+    auto e2 = ParseStackElem!(LocationBytes, Tree4)(LocationBytes(10), Tree4(LocationBytes(12)));
+    //assert(e2.inputLength == LocationBytes.LocationDiff(2));
+    assert(e2.end == LocationBytes(12));
 }
