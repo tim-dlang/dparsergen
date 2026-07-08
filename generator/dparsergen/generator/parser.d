@@ -105,12 +105,7 @@ struct LRElement
         const grammar = graph.grammar;
         foreach (i, s; production.symbols[0 .. dotPos])
         {
-            if (i == dotPos)
-            {
-                app.put(".");
-                assert(false);
-            }
-            else
+            if (i)
                 app.put(" ");
 
             grammar.symbolInstanceToString(app, s, false);

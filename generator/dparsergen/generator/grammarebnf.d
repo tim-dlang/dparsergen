@@ -1726,7 +1726,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration
     // type: unknown
-    //  Declaration+ ->  Declaration. {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Declaration+ -> Declaration. {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse1(ref NonterminalType!(16) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!15/*Declaration*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -1740,20 +1740,20 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+
     // type: unknown
-    //  Declaration+      ->  Declaration+.Declaration {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  EBNF              ->  Declaration+. {$end}
-    //  Declaration       ->              .Import {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  Declaration       ->              .MatchDeclaration {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  Declaration       ->              .OptionDeclaration {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  Declaration       ->              .SymbolDeclaration {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  DeclarationType   ->              ."fragment" {Identifier}
-    //  DeclarationType   ->              ."token" {Identifier}
-    //  DeclarationType?  ->              . {Identifier}
-    //  Import            ->              ."import" StringLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  MatchDeclaration  ->              ."match" Symbol Symbol ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  OptionDeclaration ->              ."option" Identifier "=" IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  SymbolDeclaration ->              .DeclarationType? Identifier MacroParametersPart? Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  SymbolDeclaration ->              .DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Declaration+      -> Declaration+.Declaration {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  EBNF              -> Declaration+. {$end}
+    //  Declaration       ->             .Import {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Declaration       ->             .MatchDeclaration {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Declaration       ->             .OptionDeclaration {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Declaration       ->             .SymbolDeclaration {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  DeclarationType   ->             ."fragment" {Identifier}
+    //  DeclarationType   ->             ."token" {Identifier}
+    //  DeclarationType?  ->             . {Identifier}
+    //  Import            ->             ."import" StringLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  MatchDeclaration  ->             ."match" Symbol Symbol ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  OptionDeclaration ->             ."option" Identifier "=" IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration ->             .DeclarationType? Identifier MacroParametersPart? Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration ->             .DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     //  DeclarationType? ---> DeclarationType
     private int parse2(ref CreatorInstance.NonterminalUnion!([16, 19]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!16/*Declaration+*/) stack1)
     {
@@ -1907,7 +1907,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ Declaration
     // type: unknown
-    //  Declaration+ ->  Declaration+ Declaration. {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Declaration+ -> Declaration+ Declaration. {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse3(ref NonterminalType!(16) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!16/*Declaration+*/) stack2, ParseStackElem!(Location, NonterminalType!15/*Declaration*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -1921,8 +1921,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType
     // type: unknown
-    //  SymbolDeclaration ->  DeclarationType?.Identifier MacroParametersPart? Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  SymbolDeclaration ->  DeclarationType?.Identifier MacroParametersPart? Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType?.Identifier MacroParametersPart? Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType?.Identifier MacroParametersPart? Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse4(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -1958,10 +1958,10 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier
     // type: unknown
-    //  SymbolDeclaration    ->  DeclarationType? Identifier.MacroParametersPart? Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  SymbolDeclaration    ->  DeclarationType? Identifier.MacroParametersPart? Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  MacroParametersPart  ->                             ."(" MacroParameters? ")" {";", "=", "@"}
-    //  MacroParametersPart? ->                             . {";", "=", "@"}
+    //  SymbolDeclaration    -> DeclarationType? Identifier.MacroParametersPart? Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration    -> DeclarationType? Identifier.MacroParametersPart? Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  MacroParametersPart  ->                            ."(" MacroParameters? ")" {";", "=", "@"}
+    //  MacroParametersPart? ->                            . {";", "=", "@"}
     //  MacroParametersPart? ---> MacroParametersPart
     private int parse5(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
@@ -2033,12 +2033,12 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "("
     // type: unknown
-    //  MacroParametersPart ->  "(".MacroParameters? ")" {";", "=", "@"}
-    //  MacroParameter      ->     .Identifier {")", ","}
-    //  MacroParameter      ->     .Identifier "..." {")", ","}
-    //  MacroParameters     ->     .MacroParameter {")", ","}
-    //  MacroParameters     ->     .MacroParameters "," MacroParameter {")", ","}
-    //  MacroParameters?    ->     . {")"}
+    //  MacroParametersPart -> "(".MacroParameters? ")" {";", "=", "@"}
+    //  MacroParameter      ->    .Identifier {")", ","}
+    //  MacroParameter      ->    .Identifier "..." {")", ","}
+    //  MacroParameters     ->    .MacroParameter {")", ","}
+    //  MacroParameters     ->    .MacroParameters "," MacroParameter {")", ","}
+    //  MacroParameters?    ->    . {")"}
     //  MacroParameters? ---> MacroParameters
     private int parse6(ref NonterminalType!(35) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
@@ -2119,8 +2119,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" Identifier
     // type: unknown
-    //  MacroParameter ->  Identifier. {")", ","}
-    //  MacroParameter ->  Identifier."..." {")", ","}
+    //  MacroParameter -> Identifier. {")", ","}
+    //  MacroParameter -> Identifier."..." {")", ","}
     private int parse7(ref NonterminalType!(32) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2157,7 +2157,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" Identifier "..."
     // type: unknown
-    //  MacroParameter ->  Identifier "...". {")", ","}
+    //  MacroParameter -> Identifier "...". {")", ","}
     private int parse8(ref NonterminalType!(32) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2171,7 +2171,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" MacroParameter
     // type: unknown
-    //  MacroParameters ->  MacroParameter. {")", ","}
+    //  MacroParameters -> MacroParameter. {")", ","}
     private int parse9(ref NonterminalType!(33) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!32/*MacroParameter*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2185,8 +2185,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" MacroParameters
     // type: unknown
-    //  MacroParametersPart ->  "(" MacroParameters?.")" {";", "=", "@"}
-    //  MacroParameters     ->       MacroParameters."," MacroParameter {")", ","}
+    //  MacroParametersPart -> "(" MacroParameters?.")" {";", "=", "@"}
+    //  MacroParameters     ->      MacroParameters."," MacroParameter {")", ","}
     private int parse10(ref CreatorInstance.NonterminalUnion!([33, 35]) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, Location parseStart1, ParseStackElem!(Location, CreatorInstance.NonterminalArray) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2235,7 +2235,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" MacroParameters ")"
     // type: unknown
-    //  MacroParametersPart ->  "(" MacroParameters? ")". {";", "=", "@"}
+    //  MacroParametersPart -> "(" MacroParameters? ")". {";", "=", "@"}
     private int parse11(ref NonterminalType!(35) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!34/*MacroParameters?*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2249,9 +2249,9 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" MacroParameters ","
     // type: unknown
-    //  MacroParameters ->  MacroParameters ",".MacroParameter {")", ","}
-    //  MacroParameter  ->                     .Identifier {")", ","}
-    //  MacroParameter  ->                     .Identifier "..." {")", ","}
+    //  MacroParameters -> MacroParameters ",".MacroParameter {")", ","}
+    //  MacroParameter  ->                    .Identifier {")", ","}
+    //  MacroParameter  ->                    .Identifier "..." {")", ","}
     private int parse12(ref NonterminalType!(33) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!33/*MacroParameters*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2308,7 +2308,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" MacroParameters "," MacroParameter
     // type: unknown
-    //  MacroParameters ->  MacroParameters "," MacroParameter. {")", ","}
+    //  MacroParameters -> MacroParameters "," MacroParameter. {")", ","}
     private int parse13(ref NonterminalType!(33) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!33/*MacroParameters*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!32/*MacroParameter*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2322,7 +2322,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier "(" MacroParameters?
     // type: unknown
-    //  MacroParametersPart ->  "(" MacroParameters?.")" {";", "=", "@"}
+    //  MacroParametersPart -> "(" MacroParameters?.")" {";", "=", "@"}
     private int parse14(ref NonterminalType!(35) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!34/*MacroParameters?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2358,13 +2358,13 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart
     // type: unknown
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart?.Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart?.Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  Annotation        ->                                                  ."@" Identifier AnnotationParams? {";", "=", "@"}
-    //  Annotation*       ->                                                  . {";", "="}
-    //  Annotation*       ->                                                  .Annotation+ {";", "="}
-    //  Annotation+       ->                                                  .Annotation {";", "=", "@"}
-    //  Annotation+       ->                                                  .Annotation+ Annotation {";", "=", "@"}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart?.Annotation* ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart?.Annotation* "=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Annotation        ->                                                 ."@" Identifier AnnotationParams? {";", "=", "@"}
+    //  Annotation*       ->                                                 . {";", "="}
+    //  Annotation*       ->                                                 .Annotation+ {";", "="}
+    //  Annotation+       ->                                                 .Annotation {";", "=", "@"}
+    //  Annotation+       ->                                                 .Annotation+ Annotation {";", "=", "@"}
     private int parse15(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!36/*MacroParametersPart?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2444,7 +2444,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation
     // type: unknown
-    //  Annotation+ ->  Annotation. {";", "=", "@"}
+    //  Annotation+ -> Annotation. {";", "=", "@"}
     private int parse16(ref NonterminalType!(7) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!5/*Annotation*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2458,8 +2458,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation*
     // type: unknown
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart? Annotation*.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart? Annotation*."=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart? Annotation*.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart? Annotation*."=" Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse17(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart4, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack4, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!36/*MacroParametersPart?*/) stack2, ParseStackElem!(Location, NonterminalType!6/*Annotation**/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2508,7 +2508,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* ";"
     // type: unknown
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart? Annotation* ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart? Annotation* ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse18(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart5, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack5, ParseStackElem!(Location, Token) stack4, ParseStackElem!(Location, NonterminalType!36/*MacroParametersPart?*/) stack3, ParseStackElem!(Location, NonterminalType!6/*Annotation**/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2522,23 +2522,23 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "="
     // type: unknown
-    //  SymbolDeclaration               ->  DeclarationType? Identifier MacroParametersPart? Annotation* "=".Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  @regArray_ExpressionAnnotation* ->                                                                  . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Alternation                     ->                                                                  .Alternation "|" Concatenation {";", "|"}
-    //  Alternation                     ->                                                                  .Concatenation {";", "|"}
-    //  AnnotatedExpression             ->                                                                  .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", "-", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->                                                                  ."@" Identifier AnnotationParams? {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation                   ->                                                                  .@regArray_ProductionAnnotation+ {";", "|"}
-    //  Concatenation                   ->                                                                  .TokenMinus {";", "|"}
-    //  Concatenation                   ->                                                                  .TokenMinus @regArray_ProductionAnnotation+ {";", "|"}
-    //  Concatenation                   ->                                                                  .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {";", "|"}
-    //  Expression                      ->                                                                  .Alternation {";"}
-    //  NegativeLookahead               ->                                                                  ."!" Symbol {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                                                                  ."!" "anytoken" {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                                                                  .AnnotatedExpression {"!", "-", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                                                                  .TokenMinus "-" AnnotatedExpression {"!", "-", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                                                                  .$regarray_1 $regarrayedge_1_1 {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                                                                  .$regarrayedge_0_1 {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SymbolDeclaration               -> DeclarationType? Identifier MacroParametersPart? Annotation* "=".Expression ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  @regArray_ExpressionAnnotation* ->                                                                 . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Alternation                     ->                                                                 .Alternation "|" Concatenation {";", "|"}
+    //  Alternation                     ->                                                                 .Concatenation {";", "|"}
+    //  AnnotatedExpression             ->                                                                 .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", "-", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->                                                                 ."@" Identifier AnnotationParams? {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   ->                                                                 .@regArray_ProductionAnnotation+ {";", "|"}
+    //  Concatenation                   ->                                                                 .TokenMinus {";", "|"}
+    //  Concatenation                   ->                                                                 .TokenMinus @regArray_ProductionAnnotation+ {";", "|"}
+    //  Concatenation                   ->                                                                 .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {";", "|"}
+    //  Expression                      ->                                                                 .Alternation {";"}
+    //  NegativeLookahead               ->                                                                 ."!" Symbol {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->                                                                 ."!" "anytoken" {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                                                                 .AnnotatedExpression {"!", "-", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                                                                 .TokenMinus "-" AnnotatedExpression {"!", "-", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                                                                 .$regarray_1 $regarrayedge_1_1 {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                                                                 .$regarrayedge_0_1 {"!", ";", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
@@ -2687,9 +2687,9 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation*
     // type: unknown
-    //  AnnotatedExpression ->  @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName      ->                                 .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName?     ->                                 . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression -> @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName      ->                                .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName?     ->                                . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionName? ---> ExpressionName
     private int parse20(ref NonterminalType!(4) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!0/*@regArray_ExpressionAnnotation**/) stack1)
     {
@@ -2779,13 +2779,13 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName
     // type: unknown
-    //  AnnotatedExpression ->  @regArray_ExpressionAnnotation* ExpressionName?.ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix    ->                                                 ."<" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix    ->                                                 ."^" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix*   ->                                                 . {"t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix*   ->                                                 .ExpressionPrefix+ {"t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix+   ->                                                 .ExpressionPrefix {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix+   ->                                                 .ExpressionPrefix+ ExpressionPrefix {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression -> @regArray_ExpressionAnnotation* ExpressionName?.ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix    ->                                                ."<" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix    ->                                                ."^" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix*   ->                                                . {"t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix*   ->                                                .ExpressionPrefix+ {"t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix+   ->                                                .ExpressionPrefix {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix+   ->                                                .ExpressionPrefix+ ExpressionPrefix {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse21(ref NonterminalType!(4) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!0/*@regArray_ExpressionAnnotation**/) stack2, ParseStackElem!(Location, NonterminalType!26/*ExpressionName?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2876,7 +2876,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName "<"
     // type: unknown
-    //  ExpressionPrefix ->  "<". {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix -> "<". {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse22(ref NonterminalType!(27) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2890,7 +2890,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName "^"
     // type: unknown
-    //  ExpressionPrefix ->  "^". {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix -> "^". {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse23(ref NonterminalType!(27) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2904,7 +2904,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix
     // type: unknown
-    //  ExpressionPrefix+ ->  ExpressionPrefix. {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix+ -> ExpressionPrefix. {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse24(ref NonterminalType!(29) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!27/*ExpressionPrefix*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -2918,31 +2918,31 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix*
     // type: unknown
-    //  AnnotatedExpression ->  @regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix*.PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AtomExpression      ->                                                                   .ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AtomExpression      ->                                                                   .SubToken {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AtomExpression      ->                                                                   .Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AtomExpression      ->                                                                   .Tuple {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AtomExpression      ->                                                                   .UnpackVariadicList {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  MacroInstance       ->                                                                   .Identifier "(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Name                ->                                                                   .Identifier {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Optional            ->                                                                   .PostfixExpression "?" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ParenExpression     ->                                                                   ."{" Expression "}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  PostfixExpression   ->                                                                   .AtomExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  PostfixExpression   ->                                                                   .Optional {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  PostfixExpression   ->                                                                   .Repetition {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  PostfixExpression   ->                                                                   .RepetitionPlus {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Repetition          ->                                                                   .PostfixExpression "*" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  RepetitionPlus      ->                                                                   .PostfixExpression "+" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  SubToken            ->                                                                   .Symbol ">>" ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  SubToken            ->                                                                   .Symbol ">>" Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol              ->                                                                   .MacroInstance {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol              ->                                                                   .Name {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol              ->                                                                   .Token {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token               ->                                                                   .CharacterSetLiteral {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token               ->                                                                   .StringLiteral {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Tuple               ->                                                                   ."t(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  UnpackVariadicList  ->                                                                   .Identifier "..." {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression -> @regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix*.PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AtomExpression      ->                                                                  .ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AtomExpression      ->                                                                  .SubToken {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AtomExpression      ->                                                                  .Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AtomExpression      ->                                                                  .Tuple {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AtomExpression      ->                                                                  .UnpackVariadicList {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance       ->                                                                  .Identifier "(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Name                ->                                                                  .Identifier {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Optional            ->                                                                  .PostfixExpression "?" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ParenExpression     ->                                                                  ."{" Expression "}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  PostfixExpression   ->                                                                  .AtomExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  PostfixExpression   ->                                                                  .Optional {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  PostfixExpression   ->                                                                  .Repetition {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  PostfixExpression   ->                                                                  .RepetitionPlus {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Repetition          ->                                                                  .PostfixExpression "*" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  RepetitionPlus      ->                                                                  .PostfixExpression "+" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken            ->                                                                  .Symbol ">>" ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken            ->                                                                  .Symbol ">>" Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol              ->                                                                  .MacroInstance {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol              ->                                                                  .Name {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol              ->                                                                  .Token {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token               ->                                                                  .CharacterSetLiteral {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token               ->                                                                  .StringLiteral {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Tuple               ->                                                                  ."t(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  UnpackVariadicList  ->                                                                  .Identifier "..." {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse25(ref NonterminalType!(4) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!0/*@regArray_ExpressionAnnotation**/) stack3, ParseStackElem!(Location, NonterminalType!26/*ExpressionName?*/) stack2, ParseStackElem!(Location, NonterminalType!28/*ExpressionPrefix**/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3107,26 +3107,26 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t("
     // type: unknown
-    //  Tuple                           ->  "t(".ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ExpressionAnnotation* ->      . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Alternation                     ->      .Alternation "|" Concatenation {")", ",", "|"}
-    //  Alternation                     ->      .Concatenation {")", ",", "|"}
-    //  AnnotatedExpression             ->      .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->      ."@" Identifier AnnotationParams? {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation                   ->      .@regArray_ProductionAnnotation+ {")", ",", "|"}
-    //  Concatenation                   ->      .TokenMinus {")", ",", "|"}
-    //  Concatenation                   ->      .TokenMinus @regArray_ProductionAnnotation+ {")", ",", "|"}
-    //  Concatenation                   ->      .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", "|"}
-    //  Expression                      ->      .Alternation {")", ","}
-    //  ExpressionList                  ->      .Expression {")", ","}
-    //  ExpressionList                  ->      .ExpressionList "," Expression {")", ","}
-    //  ExpressionList?                 ->      . {")"}
-    //  NegativeLookahead               ->      ."!" Symbol {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->      ."!" "anytoken" {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->      .AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->      .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->      .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->      .$regarrayedge_0_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Tuple                           -> "t(".ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ExpressionAnnotation* ->     . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Alternation                     ->     .Alternation "|" Concatenation {")", ",", "|"}
+    //  Alternation                     ->     .Concatenation {")", ",", "|"}
+    //  AnnotatedExpression             ->     .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->     ."@" Identifier AnnotationParams? {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   ->     .@regArray_ProductionAnnotation+ {")", ",", "|"}
+    //  Concatenation                   ->     .TokenMinus {")", ",", "|"}
+    //  Concatenation                   ->     .TokenMinus @regArray_ProductionAnnotation+ {")", ",", "|"}
+    //  Concatenation                   ->     .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", "|"}
+    //  Expression                      ->     .Alternation {")", ","}
+    //  ExpressionList                  ->     .Expression {")", ","}
+    //  ExpressionList                  ->     .ExpressionList "," Expression {")", ","}
+    //  ExpressionList?                 ->     . {")"}
+    //  NegativeLookahead               ->     ."!" Symbol {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->     ."!" "anytoken" {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->     .AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->     .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->     .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->     .$regarrayedge_0_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionList? ---> ExpressionList
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
@@ -3311,15 +3311,15 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!"
     // type: unknown
-    //  NegativeLookahead ->  "!".Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead ->  "!"."anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  MacroInstance     ->     .Identifier "(" ExpressionList? ")" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Name              ->     .Identifier {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol            ->     .MacroInstance {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol            ->     .Name {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol            ->     .Token {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token             ->     .CharacterSetLiteral {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token             ->     .StringLiteral {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead -> "!".Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead -> "!"."anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance     ->    .Identifier "(" ExpressionList? ")" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Name              ->    .Identifier {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol            ->    .MacroInstance {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol            ->    .Name {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol            ->    .Token {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token             ->    .CharacterSetLiteral {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token             ->    .StringLiteral {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse28(ref NonterminalType!(39) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3426,7 +3426,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" "anytoken"
     // type: unknown
-    //  NegativeLookahead ->  "!" "anytoken". {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead -> "!" "anytoken". {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse29(ref NonterminalType!(39) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3440,7 +3440,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" CharacterSetLiteral
     // type: unknown
-    //  Token ->  CharacterSetLiteral. {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token -> CharacterSetLiteral. {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse30(ref NonterminalType!(51) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3454,8 +3454,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier
     // type: unknown
-    //  MacroInstance ->  Identifier."(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Name          ->  Identifier. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance -> Identifier."(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Name          -> Identifier. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse31(ref CreatorInstance.NonterminalUnion!([31, 38]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3492,26 +3492,26 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "("
     // type: unknown
-    //  MacroInstance                   ->  Identifier "(".ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ExpressionAnnotation* ->                . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Alternation                     ->                .Alternation "|" Concatenation {")", ",", "|"}
-    //  Alternation                     ->                .Concatenation {")", ",", "|"}
-    //  AnnotatedExpression             ->                .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->                ."@" Identifier AnnotationParams? {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation                   ->                .@regArray_ProductionAnnotation+ {")", ",", "|"}
-    //  Concatenation                   ->                .TokenMinus {")", ",", "|"}
-    //  Concatenation                   ->                .TokenMinus @regArray_ProductionAnnotation+ {")", ",", "|"}
-    //  Concatenation                   ->                .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", "|"}
-    //  Expression                      ->                .Alternation {")", ","}
-    //  ExpressionList                  ->                .Expression {")", ","}
-    //  ExpressionList                  ->                .ExpressionList "," Expression {")", ","}
-    //  ExpressionList?                 ->                . {")"}
-    //  NegativeLookahead               ->                ."!" Symbol {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                ."!" "anytoken" {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                .AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                .$regarrayedge_0_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance                   -> Identifier "(".ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ExpressionAnnotation* ->               . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Alternation                     ->               .Alternation "|" Concatenation {")", ",", "|"}
+    //  Alternation                     ->               .Concatenation {")", ",", "|"}
+    //  AnnotatedExpression             ->               .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->               ."@" Identifier AnnotationParams? {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   ->               .@regArray_ProductionAnnotation+ {")", ",", "|"}
+    //  Concatenation                   ->               .TokenMinus {")", ",", "|"}
+    //  Concatenation                   ->               .TokenMinus @regArray_ProductionAnnotation+ {")", ",", "|"}
+    //  Concatenation                   ->               .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", "|"}
+    //  Expression                      ->               .Alternation {")", ","}
+    //  ExpressionList                  ->               .Expression {")", ","}
+    //  ExpressionList                  ->               .ExpressionList "," Expression {")", ","}
+    //  ExpressionList?                 ->               . {")"}
+    //  NegativeLookahead               ->               ."!" Symbol {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->               ."!" "anytoken" {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->               .AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->               .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->               .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->               .$regarrayedge_0_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionList? ---> ExpressionList
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
@@ -3696,8 +3696,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation
     // type: unknown
-    //  Alternation ->  Alternation."|" Concatenation {")", ",", ";", "|", "}"}
-    //  Expression  ->  Alternation. {")", ",", ";", "}"}
+    //  Alternation -> Alternation."|" Concatenation {")", ",", ";", "|", "}"}
+    //  Expression  -> Alternation. {")", ",", ";", "}"}
     private int parse33(ref CreatorInstance.NonterminalUnion!([3, 20]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!3/*Alternation*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3734,20 +3734,20 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|"
     // type: unknown
-    //  Alternation                     ->  Alternation "|".Concatenation {")", ",", ";", "|", "}"}
-    //  @regArray_ExpressionAnnotation* ->                 . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AnnotatedExpression             ->                 .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->                 ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation                   ->                 .@regArray_ProductionAnnotation+ {")", ",", ";", "|", "}"}
-    //  Concatenation                   ->                 .TokenMinus {")", ",", ";", "|", "}"}
-    //  Concatenation                   ->                 .TokenMinus @regArray_ProductionAnnotation+ {")", ",", ";", "|", "}"}
-    //  Concatenation                   ->                 .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", ";", "|", "}"}
-    //  NegativeLookahead               ->                 ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                 ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                 .AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                 .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                 .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                 .$regarrayedge_0_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Alternation                     -> Alternation "|".Concatenation {")", ",", ";", "|", "}"}
+    //  @regArray_ExpressionAnnotation* ->                . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression             ->                .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->                ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   ->                .@regArray_ProductionAnnotation+ {")", ",", ";", "|", "}"}
+    //  Concatenation                   ->                .TokenMinus {")", ",", ";", "|", "}"}
+    //  Concatenation                   ->                .TokenMinus @regArray_ProductionAnnotation+ {")", ",", ";", "|", "}"}
+    //  Concatenation                   ->                .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", ";", "|", "}"}
+    //  NegativeLookahead               ->                ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->                ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                .AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                .$regarrayedge_0_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
@@ -3880,7 +3880,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" Annotation
     // type: unknown
-    //  $regarray_1 ->  $regarrayedge_0_1. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1 -> $regarrayedge_0_1. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse36(ref NonterminalType!(57) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!58/*$regarrayedge_0_1*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3894,7 +3894,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" Concatenation
     // type: unknown
-    //  Alternation ->  Alternation "|" Concatenation. {")", ",", ";", "|", "}"}
+    //  Alternation -> Alternation "|" Concatenation. {")", ",", ";", "|", "}"}
     private int parse37(ref NonterminalType!(3) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!3/*Alternation*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!14/*Concatenation*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3908,7 +3908,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@"
     // type: unknown
-    //  Annotation ->  "@".Identifier AnnotationParams? {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation -> "@".Identifier AnnotationParams? {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse38(ref NonterminalType!(5) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -3944,9 +3944,9 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier
     // type: unknown
-    //  Annotation        ->  "@" Identifier.AnnotationParams? {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AnnotationParams  ->                ."(" AnnotationParamsPart* ")" {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AnnotationParams? ->                . {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation        -> "@" Identifier.AnnotationParams? {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotationParams  ->               ."(" AnnotationParamsPart* ")" {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotationParams? ->               . {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  AnnotationParams? ---> AnnotationParams
     private int parse39(ref NonterminalType!(5) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
@@ -4018,30 +4018,30 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "("
     // type: unknown
-    //  AnnotationParams      ->  "(".AnnotationParamsPart* ")" {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AnnotationParamsPart  ->     ."!" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."(" AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."*" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."," {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."-" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .":" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .";" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."<<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."=" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .">" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .">>" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."?" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."{" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."}" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .CharacterSetLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .Identifier {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .IntegerLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .StringLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart* ->     . {")"}
-    //  AnnotationParamsPart* ->     .AnnotationParamsPart+ {")"}
-    //  AnnotationParamsPart+ ->     .AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart+ ->     .AnnotationParamsPart+ AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParams      -> "(".AnnotationParamsPart* ")" {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotationParamsPart  ->    ."!" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."(" AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."*" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."," {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."-" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .":" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .";" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."<<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."=" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .">" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .">>" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."?" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."{" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."}" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .CharacterSetLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .Identifier {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .IntegerLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .StringLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart* ->    . {")"}
+    //  AnnotationParamsPart* ->    .AnnotationParamsPart+ {")"}
+    //  AnnotationParamsPart+ ->    .AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart+ ->    .AnnotationParamsPart+ AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse40(ref NonterminalType!(8) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4319,7 +4319,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "!"
     // type: unknown
-    //  AnnotationParamsPart ->  "!". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "!". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse41(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4333,30 +4333,30 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "("
     // type: unknown
-    //  AnnotationParamsPart  ->  "(".AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."!" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."(" AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."*" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."," {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."-" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .":" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .";" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."<<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."=" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .">" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .">>" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."?" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."{" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     ."}" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .CharacterSetLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .Identifier {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .IntegerLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->     .StringLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart* ->     . {")"}
-    //  AnnotationParamsPart* ->     .AnnotationParamsPart+ {")"}
-    //  AnnotationParamsPart+ ->     .AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart+ ->     .AnnotationParamsPart+ AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  -> "(".AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."!" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."(" AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."*" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."," {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."-" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .":" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .";" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."<<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."=" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .">" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .">>" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."?" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."{" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    ."}" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .CharacterSetLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .Identifier {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .IntegerLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->    .StringLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart* ->    . {")"}
+    //  AnnotationParamsPart* ->    .AnnotationParamsPart+ {")"}
+    //  AnnotationParamsPart+ ->    .AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart+ ->    .AnnotationParamsPart+ AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse42(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4634,7 +4634,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" "*"
     // type: unknown
-    //  AnnotationParamsPart ->  "*". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "*". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse43(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4648,7 +4648,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" ","
     // type: unknown
-    //  AnnotationParamsPart ->  ",". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> ",". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse44(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4662,7 +4662,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" "-"
     // type: unknown
-    //  AnnotationParamsPart ->  "-". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "-". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse45(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4676,7 +4676,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" ":"
     // type: unknown
-    //  AnnotationParamsPart ->  ":". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> ":". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse46(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4690,7 +4690,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" ";"
     // type: unknown
-    //  AnnotationParamsPart ->  ";". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> ";". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse47(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4704,7 +4704,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart
     // type: unknown
-    //  AnnotationParamsPart+ ->  AnnotationParamsPart. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart+ -> AnnotationParamsPart. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse48(ref NonterminalType!(12) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!10/*AnnotationParamsPart*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4718,7 +4718,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart*
     // type: unknown
-    //  AnnotationParamsPart ->  "(" AnnotationParamsPart*.")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "(" AnnotationParamsPart*.")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse49(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!11/*AnnotationParamsPart**/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4754,7 +4754,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart* ")"
     // type: unknown
-    //  AnnotationParamsPart ->  "(" AnnotationParamsPart* ")". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "(" AnnotationParamsPart* ")". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse50(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!11/*AnnotationParamsPart**/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4768,7 +4768,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" "<"
     // type: unknown
-    //  AnnotationParamsPart ->  "<". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "<". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse51(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4782,7 +4782,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" "<<"
     // type: unknown
-    //  AnnotationParamsPart ->  "<<". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "<<". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse52(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -4796,27 +4796,27 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+
     // type: unknown
-    //  AnnotationParamsPart* ->  AnnotationParamsPart+. {")"}
-    //  AnnotationParamsPart+ ->  AnnotationParamsPart+.AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."!" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."(" AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."*" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."," {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."-" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .":" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .";" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."<<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."=" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .">" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .">>" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."?" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."{" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       ."}" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .CharacterSetLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .Identifier {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .IntegerLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
-    //  AnnotationParamsPart  ->                       .StringLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart* -> AnnotationParamsPart+. {")"}
+    //  AnnotationParamsPart+ -> AnnotationParamsPart+.AnnotationParamsPart {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."!" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."(" AnnotationParamsPart* ")" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."*" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."," {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."-" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .":" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .";" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."<<" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."=" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .">" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .">>" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."?" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."{" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      ."}" {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .CharacterSetLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .Identifier {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .IntegerLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart  ->                      .StringLiteral {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse53(ref CreatorInstance.NonterminalUnion!([11, 12]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!12/*AnnotationParamsPart+*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5072,7 +5072,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ AnnotationParamsPart
     // type: unknown
-    //  AnnotationParamsPart+ ->  AnnotationParamsPart+ AnnotationParamsPart. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart+ -> AnnotationParamsPart+ AnnotationParamsPart. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse54(ref NonterminalType!(12) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!12/*AnnotationParamsPart+*/) stack2, ParseStackElem!(Location, NonterminalType!10/*AnnotationParamsPart*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5086,7 +5086,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ "="
     // type: unknown
-    //  AnnotationParamsPart ->  "=". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "=". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse55(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5100,7 +5100,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ ">"
     // type: unknown
-    //  AnnotationParamsPart ->  ">". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> ">". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse56(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5114,7 +5114,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ ">>"
     // type: unknown
-    //  AnnotationParamsPart ->  ">>". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> ">>". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse57(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5128,7 +5128,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ "?"
     // type: unknown
-    //  AnnotationParamsPart ->  "?". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "?". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse58(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5142,7 +5142,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ "{"
     // type: unknown
-    //  AnnotationParamsPart ->  "{". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "{". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse59(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5156,7 +5156,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ "}"
     // type: unknown
-    //  AnnotationParamsPart ->  "}". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> "}". {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse60(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5170,7 +5170,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ CharacterSetLiteral
     // type: unknown
-    //  AnnotationParamsPart ->  CharacterSetLiteral. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> CharacterSetLiteral. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse61(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5184,7 +5184,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ Identifier
     // type: unknown
-    //  AnnotationParamsPart ->  Identifier. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> Identifier. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse62(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5198,7 +5198,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ IntegerLiteral
     // type: unknown
-    //  AnnotationParamsPart ->  IntegerLiteral. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> IntegerLiteral. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse63(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5212,7 +5212,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" "(" AnnotationParamsPart+ StringLiteral
     // type: unknown
-    //  AnnotationParamsPart ->  StringLiteral. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
+    //  AnnotationParamsPart -> StringLiteral. {"!", "(", ")", "*", ",", "-", ":", ";", "<", "<<", "=", ">", ">>", "?", "{", "}", CharacterSetLiteral, Identifier, IntegerLiteral, StringLiteral}
     private int parse64(ref NonterminalType!(10) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5226,7 +5226,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" AnnotationParamsPart*
     // type: unknown
-    //  AnnotationParams ->  "(" AnnotationParamsPart*.")" {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotationParams -> "(" AnnotationParamsPart*.")" {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse65(ref NonterminalType!(8) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!11/*AnnotationParamsPart**/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5262,7 +5262,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier "(" AnnotationParamsPart* ")"
     // type: unknown
-    //  AnnotationParams ->  "(" AnnotationParamsPart* ")". {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotationParams -> "(" AnnotationParamsPart* ")". {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse66(ref NonterminalType!(8) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!11/*AnnotationParamsPart**/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5276,7 +5276,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" "@" Identifier AnnotationParams
     // type: unknown
-    //  Annotation ->  "@" Identifier AnnotationParams?. {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation -> "@" Identifier AnnotationParams?. {"!", ")", ",", ";", "<", "=", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse67(ref NonterminalType!(5) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!9/*AnnotationParams?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5290,21 +5290,21 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus
     // type: unknown
-    //  Concatenation                   ->  TokenMinus. {")", ",", ";", "|", "}"}
-    //  Concatenation                   ->  TokenMinus.@regArray_ProductionAnnotation+ {")", ",", ";", "|", "}"}
-    //  Concatenation                   ->  TokenMinus.TokenMinus+ @regArray_ProductionAnnotation* {")", ",", ";", "|", "}"}
-    //  TokenMinus                      ->  TokenMinus."-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ExpressionAnnotation* ->            . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AnnotatedExpression             ->            .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->            ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->            ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->            ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->            .AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->            .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus+                     ->            .TokenMinus {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus+                     ->            .TokenMinus+ TokenMinus {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->            .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->            .$regarrayedge_0_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   -> TokenMinus. {")", ",", ";", "|", "}"}
+    //  Concatenation                   -> TokenMinus.@regArray_ProductionAnnotation+ {")", ",", ";", "|", "}"}
+    //  Concatenation                   -> TokenMinus.TokenMinus+ @regArray_ProductionAnnotation* {")", ",", ";", "|", "}"}
+    //  TokenMinus                      -> TokenMinus."-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ExpressionAnnotation* ->           . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression             ->           .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->           ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->           ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->           ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->           .AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->           .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus+                     ->           .TokenMinus {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus+                     ->           .TokenMinus+ TokenMinus {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->           .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->           .$regarrayedge_0_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
@@ -5461,14 +5461,14 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus "-"
     // type: unknown
-    //  TokenMinus                      ->  TokenMinus "-".AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ExpressionAnnotation* ->                . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  AnnotatedExpression             ->                .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->                ."@" Identifier AnnotationParams? {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                ."!" Symbol {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                ."!" "anytoken" {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                .$regarray_1 $regarrayedge_1_1 {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                .$regarrayedge_0_1 {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      -> TokenMinus "-".AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ExpressionAnnotation* ->               . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression             ->               .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->               ."@" Identifier AnnotationParams? {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->               ."!" Symbol {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->               ."!" "anytoken" {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->               .$regarray_1 $regarrayedge_1_1 {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->               .$regarrayedge_0_1 {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
     //  $regarrayedge_0_1 ---> NegativeLookahead
@@ -5584,7 +5584,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus "-" AnnotatedExpression
     // type: unknown
-    //  TokenMinus ->  TokenMinus "-" AnnotatedExpression. {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus -> TokenMinus "-" AnnotatedExpression. {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse70(ref NonterminalType!(52) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!52/*TokenMinus*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!4/*AnnotatedExpression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5598,13 +5598,13 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus "-" $regarray_1
     // type: unknown
-    //  AnnotatedExpression ->  @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1         ->                      $regarray_1.$regarrayedge_1_1 {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation          ->                                 ."@" Identifier AnnotationParams? {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName      ->                                 .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName?     ->                                 . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                 ."!" Symbol {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                 ."!" "anytoken" {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression -> @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1         ->                     $regarray_1.$regarrayedge_1_1 {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation          ->                                ."@" Identifier AnnotationParams? {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName      ->                                .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName?     ->                                . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                ."!" Symbol {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                ."!" "anytoken" {"!", "<", "@", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionName? ---> ExpressionName
     //  $regarrayedge_1_1 ---> Annotation
     //  $regarrayedge_1_1 ---> NegativeLookahead
@@ -5744,7 +5744,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus "-" $regarray_1 Annotation
     // type: unknown
-    //  $regarray_1 ->  $regarray_1 $regarrayedge_1_1. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1 -> $regarray_1 $regarrayedge_1_1. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse72(ref NonterminalType!(57) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!57/*$regarray_1*/) stack2, ParseStackElem!(Location, NonterminalType!59/*$regarrayedge_1_1*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5758,7 +5758,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus "-" $regarray_1 Identifier
     // type: unknown
-    //  ExpressionName ->  Identifier.":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName -> Identifier.":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse73(ref NonterminalType!(25) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5794,7 +5794,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus "-" $regarray_1 Identifier ":"
     // type: unknown
-    //  ExpressionName ->  Identifier ":". {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName -> Identifier ":". {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse74(ref NonterminalType!(25) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5808,8 +5808,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus TokenMinus
     // type: unknown
-    //  TokenMinus  ->  TokenMinus."-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus+ ->  TokenMinus. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus  -> TokenMinus."-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus+ -> TokenMinus. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse75(ref CreatorInstance.NonterminalUnion!([52, 53]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!52/*TokenMinus*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -5846,18 +5846,18 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus TokenMinus+
     // type: unknown
-    //  Concatenation                   ->  TokenMinus TokenMinus+.@regArray_ProductionAnnotation* {")", ",", ";", "|", "}"}
-    //  TokenMinus+                     ->             TokenMinus+.TokenMinus {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ExpressionAnnotation* ->                        . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ProductionAnnotation* ->                        . {")", ",", ";", "|", "}"}
-    //  AnnotatedExpression             ->                        .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->                        ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                        ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                        ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                        .AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                        .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                        .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                        .$regarrayedge_0_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   -> TokenMinus TokenMinus+.@regArray_ProductionAnnotation* {")", ",", ";", "|", "}"}
+    //  TokenMinus+                     ->            TokenMinus+.TokenMinus {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ExpressionAnnotation* ->                       . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ProductionAnnotation* ->                       . {")", ",", ";", "|", "}"}
+    //  AnnotatedExpression             ->                       .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->                       ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->                       ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->                       ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                       .AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                       .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                       .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                       .$regarrayedge_0_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ProductionAnnotation* ---> $regarray_1
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
@@ -6003,7 +6003,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus TokenMinus+ @regArray_ProductionAnnotation*
     // type: unknown
-    //  Concatenation ->  TokenMinus TokenMinus+ @regArray_ProductionAnnotation*. {")", ",", ";", "|", "}"}
+    //  Concatenation -> TokenMinus TokenMinus+ @regArray_ProductionAnnotation*. {")", ",", ";", "|", "}"}
     private int parse77(ref NonterminalType!(14) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!52/*TokenMinus*/) stack3, ParseStackElem!(Location, NonterminalType!53/*TokenMinus+*/) stack2, ParseStackElem!(Location, NonterminalType!1/*@regArray_ProductionAnnotation**/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6017,8 +6017,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus TokenMinus+ TokenMinus
     // type: unknown
-    //  TokenMinus+ ->  TokenMinus+ TokenMinus. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus  ->              TokenMinus."-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus+ -> TokenMinus+ TokenMinus. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus  ->             TokenMinus."-" AnnotatedExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse78(ref CreatorInstance.NonterminalUnion!([52, 53]) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!53/*TokenMinus+*/) stack2, Location parseStart1, ParseStackElem!(Location, NonterminalType!52/*TokenMinus*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6055,14 +6055,14 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus TokenMinus+ $regarray_1
     // type: unknown
-    //  Concatenation       ->  TokenMinus TokenMinus+ @regArray_ProductionAnnotation*. {")", ",", ";", "|", "}"}
-    //  AnnotatedExpression ->                         @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1         ->                                             $regarray_1.$regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation          ->                                                        ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName      ->                                                        .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName?     ->                                                        . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                                        ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                                        ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation       -> TokenMinus TokenMinus+ @regArray_ProductionAnnotation*. {")", ",", ";", "|", "}"}
+    //  AnnotatedExpression ->                        @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1         ->                                            $regarray_1.$regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation          ->                                                       ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName      ->                                                       .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName?     ->                                                       . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                                       ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                                       ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionName? ---> ExpressionName
     //  $regarrayedge_1_1 ---> Annotation
     //  $regarrayedge_1_1 ---> NegativeLookahead
@@ -6215,14 +6215,14 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" TokenMinus $regarray_1
     // type: unknown
-    //  Concatenation       ->  TokenMinus @regArray_ProductionAnnotation+. {")", ",", ";", "|", "}"}
-    //  AnnotatedExpression ->             @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1         ->                                 $regarray_1.$regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation          ->                                            ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName      ->                                            .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName?     ->                                            . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                            ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                            ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation       -> TokenMinus @regArray_ProductionAnnotation+. {")", ",", ";", "|", "}"}
+    //  AnnotatedExpression ->            @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1         ->                                $regarray_1.$regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation          ->                                           ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName      ->                                           .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName?     ->                                           . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                           ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                           ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionName? ---> ExpressionName
     //  $regarrayedge_1_1 ---> Annotation
     //  $regarrayedge_1_1 ---> NegativeLookahead
@@ -6375,14 +6375,14 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Alternation "|" $regarray_1
     // type: unknown
-    //  AnnotatedExpression ->  @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation       ->  @regArray_ProductionAnnotation+. {")", ",", ";", "|", "}"}
-    //  $regarray_1         ->                      $regarray_1.$regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation          ->                                 ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName      ->                                 .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionName?     ->                                 . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                 ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead   ->                                 ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression -> @regArray_ExpressionAnnotation*.ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation       -> @regArray_ProductionAnnotation+. {")", ",", ";", "|", "}"}
+    //  $regarray_1         ->                     $regarray_1.$regarrayedge_1_1 {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation          ->                                ."@" Identifier AnnotationParams? {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName      ->                                .Identifier ":" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionName?     ->                                . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                ."!" Symbol {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead   ->                                ."!" "anytoken" {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  ExpressionName? ---> ExpressionName
     //  $regarrayedge_1_1 ---> Annotation
     //  $regarrayedge_1_1 ---> NegativeLookahead
@@ -6535,7 +6535,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" Expression
     // type: unknown
-    //  ExpressionList ->  Expression. {")", ","}
+    //  ExpressionList -> Expression. {")", ","}
     private int parse83(ref NonterminalType!(23) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!20/*Expression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6549,8 +6549,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" ExpressionList
     // type: unknown
-    //  MacroInstance  ->  Identifier "(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionList ->                  ExpressionList."," Expression {")", ","}
+    //  MacroInstance  -> Identifier "(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionList ->                 ExpressionList."," Expression {")", ","}
     private int parse84(ref CreatorInstance.NonterminalUnion!([23, 31]) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, Token) stack2, Location parseStart1, ParseStackElem!(Location, CreatorInstance.NonterminalArray) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6599,7 +6599,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" ExpressionList ")"
     // type: unknown
-    //  MacroInstance ->  Identifier "(" ExpressionList? ")". {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance -> Identifier "(" ExpressionList? ")". {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse85(ref NonterminalType!(31) result, ref Location resultLocation, Location parseStart4, ParseStackElem!(Location, Token) stack4, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!24/*ExpressionList?*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6613,23 +6613,23 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" ExpressionList ","
     // type: unknown
-    //  ExpressionList                  ->  ExpressionList ",".Expression {")", ","}
-    //  @regArray_ExpressionAnnotation* ->                    . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Alternation                     ->                    .Alternation "|" Concatenation {")", ",", "|"}
-    //  Alternation                     ->                    .Concatenation {")", ",", "|"}
-    //  AnnotatedExpression             ->                    .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->                    ."@" Identifier AnnotationParams? {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation                   ->                    .@regArray_ProductionAnnotation+ {")", ",", "|"}
-    //  Concatenation                   ->                    .TokenMinus {")", ",", "|"}
-    //  Concatenation                   ->                    .TokenMinus @regArray_ProductionAnnotation+ {")", ",", "|"}
-    //  Concatenation                   ->                    .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", "|"}
-    //  Expression                      ->                    .Alternation {")", ","}
-    //  NegativeLookahead               ->                    ."!" Symbol {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->                    ."!" "anytoken" {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                    .AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->                    .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                    .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->                    .$regarrayedge_0_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionList                  -> ExpressionList ",".Expression {")", ","}
+    //  @regArray_ExpressionAnnotation* ->                   . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Alternation                     ->                   .Alternation "|" Concatenation {")", ",", "|"}
+    //  Alternation                     ->                   .Concatenation {")", ",", "|"}
+    //  AnnotatedExpression             ->                   .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->                   ."@" Identifier AnnotationParams? {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   ->                   .@regArray_ProductionAnnotation+ {")", ",", "|"}
+    //  Concatenation                   ->                   .TokenMinus {")", ",", "|"}
+    //  Concatenation                   ->                   .TokenMinus @regArray_ProductionAnnotation+ {")", ",", "|"}
+    //  Concatenation                   ->                   .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {")", ",", "|"}
+    //  Expression                      ->                   .Alternation {")", ","}
+    //  NegativeLookahead               ->                   ."!" Symbol {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->                   ."!" "anytoken" {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                   .AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->                   .TokenMinus "-" AnnotatedExpression {"!", ")", ",", "-", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                   .$regarray_1 $regarrayedge_1_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->                   .$regarrayedge_0_1 {"!", ")", ",", "<", "@", "^", "t(", "{", "|", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
@@ -6778,7 +6778,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" ExpressionList "," Expression
     // type: unknown
-    //  ExpressionList ->  ExpressionList "," Expression. {")", ","}
+    //  ExpressionList -> ExpressionList "," Expression. {")", ","}
     private int parse87(ref NonterminalType!(23) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!23/*ExpressionList*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!20/*Expression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6792,7 +6792,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Identifier "(" ExpressionList?
     // type: unknown
-    //  MacroInstance ->  Identifier "(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance -> Identifier "(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse88(ref NonterminalType!(31) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!24/*ExpressionList?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6828,7 +6828,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" StringLiteral
     // type: unknown
-    //  Token ->  StringLiteral. {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token -> StringLiteral. {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse90(ref NonterminalType!(51) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6842,7 +6842,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" "!" Symbol
     // type: unknown
-    //  NegativeLookahead ->  "!" Symbol. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead -> "!" Symbol. {"!", ")", ",", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse92(ref NonterminalType!(39) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6856,8 +6856,8 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" ExpressionList
     // type: unknown
-    //  Tuple          ->  "t(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionList ->        ExpressionList."," Expression {")", ","}
+    //  Tuple          -> "t(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionList ->       ExpressionList."," Expression {")", ","}
     private int parse94(ref CreatorInstance.NonterminalUnion!([23, 54]) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, Location parseStart1, ParseStackElem!(Location, CreatorInstance.NonterminalArray) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6906,7 +6906,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" ExpressionList ")"
     // type: unknown
-    //  Tuple ->  "t(" ExpressionList? ")". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Tuple -> "t(" ExpressionList? ")". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse95(ref NonterminalType!(54) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!24/*ExpressionList?*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6920,7 +6920,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "t(" ExpressionList?
     // type: unknown
-    //  Tuple ->  "t(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Tuple -> "t(" ExpressionList?.")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse96(ref NonterminalType!(54) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!24/*ExpressionList?*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -6956,23 +6956,23 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "{"
     // type: unknown
-    //  ParenExpression                 ->  "{".Expression "}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  @regArray_ExpressionAnnotation* ->     . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Alternation                     ->     .Alternation "|" Concatenation {"|", "}"}
-    //  Alternation                     ->     .Concatenation {"|", "}"}
-    //  AnnotatedExpression             ->     .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", "-", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Annotation                      ->     ."@" Identifier AnnotationParams? {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Concatenation                   ->     .@regArray_ProductionAnnotation+ {"|", "}"}
-    //  Concatenation                   ->     .TokenMinus {"|", "}"}
-    //  Concatenation                   ->     .TokenMinus @regArray_ProductionAnnotation+ {"|", "}"}
-    //  Concatenation                   ->     .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {"|", "}"}
-    //  Expression                      ->     .Alternation {"}"}
-    //  NegativeLookahead               ->     ."!" Symbol {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  NegativeLookahead               ->     ."!" "anytoken" {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->     .AnnotatedExpression {"!", "-", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  TokenMinus                      ->     .TokenMinus "-" AnnotatedExpression {"!", "-", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->     .$regarray_1 $regarrayedge_1_1 {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  $regarray_1                     ->     .$regarrayedge_0_1 {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ParenExpression                 -> "{".Expression "}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  @regArray_ExpressionAnnotation* ->    . {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Alternation                     ->    .Alternation "|" Concatenation {"|", "}"}
+    //  Alternation                     ->    .Concatenation {"|", "}"}
+    //  AnnotatedExpression             ->    .@regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression {"!", "-", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Annotation                      ->    ."@" Identifier AnnotationParams? {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Concatenation                   ->    .@regArray_ProductionAnnotation+ {"|", "}"}
+    //  Concatenation                   ->    .TokenMinus {"|", "}"}
+    //  Concatenation                   ->    .TokenMinus @regArray_ProductionAnnotation+ {"|", "}"}
+    //  Concatenation                   ->    .TokenMinus TokenMinus+ @regArray_ProductionAnnotation* {"|", "}"}
+    //  Expression                      ->    .Alternation {"}"}
+    //  NegativeLookahead               ->    ."!" Symbol {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  NegativeLookahead               ->    ."!" "anytoken" {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->    .AnnotatedExpression {"!", "-", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  TokenMinus                      ->    .TokenMinus "-" AnnotatedExpression {"!", "-", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->    .$regarray_1 $regarrayedge_1_1 {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  $regarray_1                     ->    .$regarrayedge_0_1 {"!", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     //  @regArray_ExpressionAnnotation* ---> $regarray_1
     //  @regArray_ProductionAnnotation+ ---> $regarray_1
     //  $regarrayedge_0_1 ---> Annotation
@@ -7121,7 +7121,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "{" Expression
     // type: unknown
-    //  ParenExpression ->  "{" Expression."}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ParenExpression -> "{" Expression."}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse98(ref NonterminalType!(42) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!20/*Expression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7157,7 +7157,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* "{" Expression "}"
     // type: unknown
-    //  ParenExpression ->  "{" Expression "}". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ParenExpression -> "{" Expression "}". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse99(ref NonterminalType!(42) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!20/*Expression*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7171,9 +7171,9 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* Identifier
     // type: unknown
-    //  MacroInstance      ->  Identifier."(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Name               ->  Identifier. {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  UnpackVariadicList ->  Identifier."..." {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance      -> Identifier."(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Name               -> Identifier. {"!", ")", "*", "+", ",", "-", ";", "<", ">>", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  UnpackVariadicList -> Identifier."..." {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse100(ref CreatorInstance.NonterminalUnion!([31, 38, 55]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7223,7 +7223,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* Identifier "..."
     // type: unknown
-    //  UnpackVariadicList ->  Identifier "...". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  UnpackVariadicList -> Identifier "...". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse101(ref NonterminalType!(55) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7237,10 +7237,10 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* PostfixExpression
     // type: unknown
-    //  AnnotatedExpression ->  @regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression. {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Optional            ->                                                                    PostfixExpression."?" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Repetition          ->                                                                    PostfixExpression."*" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  RepetitionPlus      ->                                                                    PostfixExpression."+" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AnnotatedExpression -> @regArray_ExpressionAnnotation* ExpressionName? ExpressionPrefix* PostfixExpression. {"!", ")", ",", "-", ";", "<", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Optional            ->                                                                   PostfixExpression."?" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Repetition          ->                                                                   PostfixExpression."*" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  RepetitionPlus      ->                                                                   PostfixExpression."+" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse104(ref CreatorInstance.NonterminalUnion!([4, 41, 46, 47]) result, ref Location resultLocation, Location parseStart4, ParseStackElem!(Location, NonterminalType!0/*@regArray_ExpressionAnnotation**/) stack4, ParseStackElem!(Location, NonterminalType!26/*ExpressionName?*/) stack3, ParseStackElem!(Location, NonterminalType!28/*ExpressionPrefix**/) stack2, Location parseStart1, ParseStackElem!(Location, NonterminalType!43/*PostfixExpression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7303,7 +7303,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* PostfixExpression "*"
     // type: unknown
-    //  Repetition ->  PostfixExpression "*". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Repetition -> PostfixExpression "*". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse105(ref NonterminalType!(46) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!43/*PostfixExpression*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7317,7 +7317,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* PostfixExpression "+"
     // type: unknown
-    //  RepetitionPlus ->  PostfixExpression "+". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  RepetitionPlus -> PostfixExpression "+". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse106(ref NonterminalType!(47) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!43/*PostfixExpression*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7331,7 +7331,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* PostfixExpression "?"
     // type: unknown
-    //  Optional ->  PostfixExpression "?". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Optional -> PostfixExpression "?". {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse107(ref NonterminalType!(41) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!43/*PostfixExpression*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7345,9 +7345,9 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* Symbol
     // type: unknown
-    //  AtomExpression ->  Symbol. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  SubToken       ->  Symbol.">>" ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  SubToken       ->  Symbol.">>" Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  AtomExpression -> Symbol. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken       -> Symbol.">>" ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken       -> Symbol.">>" Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse111(ref CreatorInstance.NonterminalUnion!([13, 48]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7384,16 +7384,16 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* Symbol ">>"
     // type: unknown
-    //  SubToken        ->  Symbol ">>".ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  SubToken        ->  Symbol ">>".Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  MacroInstance   ->             .Identifier "(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Name            ->             .Identifier {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ParenExpression ->             ."{" Expression "}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol          ->             .MacroInstance {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol          ->             .Name {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol          ->             .Token {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token           ->             .CharacterSetLiteral {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token           ->             .StringLiteral {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken        -> Symbol ">>".ParenExpression {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken        -> Symbol ">>".Symbol {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  MacroInstance   ->            .Identifier "(" ExpressionList? ")" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Name            ->            .Identifier {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ParenExpression ->            ."{" Expression "}" {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol          ->            .MacroInstance {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol          ->            .Name {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol          ->            .Token {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token           ->            .CharacterSetLiteral {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token           ->            .StringLiteral {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse112(ref NonterminalType!(48) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7511,7 +7511,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* Symbol ">>" ParenExpression
     // type: unknown
-    //  SubToken ->  Symbol ">>" ParenExpression. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken -> Symbol ">>" ParenExpression. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse113(ref NonterminalType!(48) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!42/*ParenExpression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7525,7 +7525,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix* Symbol ">>" Symbol
     // type: unknown
-    //  SubToken ->  Symbol ">>" Symbol. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
+    //  SubToken -> Symbol ">>" Symbol. {"!", ")", "*", "+", ",", "-", ";", "<", "?", "@", "^", "t(", "{", "|", "}", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse114(ref NonterminalType!(48) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7539,10 +7539,10 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix+
     // type: unknown
-    //  ExpressionPrefix* ->  ExpressionPrefix+. {"t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix+ ->  ExpressionPrefix+.ExpressionPrefix {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix  ->                   ."<" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
-    //  ExpressionPrefix  ->                   ."^" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix* -> ExpressionPrefix+. {"t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix+ -> ExpressionPrefix+.ExpressionPrefix {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix  ->                  ."<" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix  ->                  ."^" {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse117(ref CreatorInstance.NonterminalUnion!([28, 29]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!29/*ExpressionPrefix+*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7611,7 +7611,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" @regArray_ExpressionAnnotation* ExpressionName ExpressionPrefix+ ExpressionPrefix
     // type: unknown
-    //  ExpressionPrefix+ ->  ExpressionPrefix+ ExpressionPrefix. {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
+    //  ExpressionPrefix+ -> ExpressionPrefix+ ExpressionPrefix. {"<", "^", "t(", "{", CharacterSetLiteral, Identifier, StringLiteral}
     private int parse118(ref NonterminalType!(29) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!29/*ExpressionPrefix+*/) stack2, ParseStackElem!(Location, NonterminalType!27/*ExpressionPrefix*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7625,7 +7625,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" Expression
     // type: unknown
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse119(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart6, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack6, ParseStackElem!(Location, Token) stack5, ParseStackElem!(Location, NonterminalType!36/*MacroParametersPart?*/) stack4, ParseStackElem!(Location, NonterminalType!6/*Annotation**/) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!20/*Expression*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7661,7 +7661,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation* "=" Expression ";"
     // type: unknown
-    //  SymbolDeclaration ->  DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  SymbolDeclaration -> DeclarationType? Identifier MacroParametersPart? Annotation* "=" Expression ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse120(ref NonterminalType!(50) result, ref Location resultLocation, Location parseStart7, ParseStackElem!(Location, NonterminalType!18/*DeclarationType?*/) stack7, ParseStackElem!(Location, Token) stack6, ParseStackElem!(Location, NonterminalType!36/*MacroParametersPart?*/) stack5, ParseStackElem!(Location, NonterminalType!6/*Annotation**/) stack4, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!20/*Expression*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7675,9 +7675,9 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation+
     // type: unknown
-    //  Annotation* ->  Annotation+. {";", "="}
-    //  Annotation+ ->  Annotation+.Annotation {";", "=", "@"}
-    //  Annotation  ->             ."@" Identifier AnnotationParams? {";", "=", "@"}
+    //  Annotation* -> Annotation+. {";", "="}
+    //  Annotation+ -> Annotation+.Annotation {";", "=", "@"}
+    //  Annotation  ->            ."@" Identifier AnnotationParams? {";", "=", "@"}
     private int parse121(ref CreatorInstance.NonterminalUnion!([6, 7]) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!7/*Annotation+*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7735,7 +7735,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ DeclarationType Identifier MacroParametersPart Annotation+ Annotation
     // type: unknown
-    //  Annotation+ ->  Annotation+ Annotation. {";", "=", "@"}
+    //  Annotation+ -> Annotation+ Annotation. {";", "=", "@"}
     private int parse122(ref NonterminalType!(7) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, NonterminalType!7/*Annotation+*/) stack2, ParseStackElem!(Location, NonterminalType!5/*Annotation*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7749,7 +7749,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "fragment"
     // type: unknown
-    //  DeclarationType ->  "fragment". {Identifier}
+    //  DeclarationType -> "fragment". {Identifier}
     private int parse123(ref NonterminalType!(17) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7763,7 +7763,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "import"
     // type: unknown
-    //  Import ->  "import".StringLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Import -> "import".StringLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse124(ref NonterminalType!(30) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7799,7 +7799,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "import" StringLiteral
     // type: unknown
-    //  Import ->  "import" StringLiteral.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Import -> "import" StringLiteral.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse125(ref NonterminalType!(30) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7835,7 +7835,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "import" StringLiteral ";"
     // type: unknown
-    //  Import ->  "import" StringLiteral ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  Import -> "import" StringLiteral ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse126(ref NonterminalType!(30) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7849,14 +7849,14 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "match"
     // type: unknown
-    //  MatchDeclaration ->  "match".Symbol Symbol ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  MacroInstance    ->         .Identifier "(" ExpressionList? ")" {CharacterSetLiteral, Identifier, StringLiteral}
-    //  Name             ->         .Identifier {CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol           ->         .MacroInstance {CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol           ->         .Name {CharacterSetLiteral, Identifier, StringLiteral}
-    //  Symbol           ->         .Token {CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token            ->         .CharacterSetLiteral {CharacterSetLiteral, Identifier, StringLiteral}
-    //  Token            ->         .StringLiteral {CharacterSetLiteral, Identifier, StringLiteral}
+    //  MatchDeclaration -> "match".Symbol Symbol ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  MacroInstance    ->        .Identifier "(" ExpressionList? ")" {CharacterSetLiteral, Identifier, StringLiteral}
+    //  Name             ->        .Identifier {CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol           ->        .MacroInstance {CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol           ->        .Name {CharacterSetLiteral, Identifier, StringLiteral}
+    //  Symbol           ->        .Token {CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token            ->        .CharacterSetLiteral {CharacterSetLiteral, Identifier, StringLiteral}
+    //  Token            ->        .StringLiteral {CharacterSetLiteral, Identifier, StringLiteral}
     private int parse127(ref NonterminalType!(37) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -7950,14 +7950,14 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "match" Symbol
     // type: unknown
-    //  MatchDeclaration ->  "match" Symbol.Symbol ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
-    //  MacroInstance    ->                .Identifier "(" ExpressionList? ")" {";"}
-    //  Name             ->                .Identifier {";"}
-    //  Symbol           ->                .MacroInstance {";"}
-    //  Symbol           ->                .Name {";"}
-    //  Symbol           ->                .Token {";"}
-    //  Token            ->                .CharacterSetLiteral {";"}
-    //  Token            ->                .StringLiteral {";"}
+    //  MatchDeclaration -> "match" Symbol.Symbol ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  MacroInstance    ->               .Identifier "(" ExpressionList? ")" {";"}
+    //  Name             ->               .Identifier {";"}
+    //  Symbol           ->               .MacroInstance {";"}
+    //  Symbol           ->               .Name {";"}
+    //  Symbol           ->               .Token {";"}
+    //  Token            ->               .CharacterSetLiteral {";"}
+    //  Token            ->               .StringLiteral {";"}
     private int parse128(ref NonterminalType!(37) result, ref Location resultLocation, Location parseStart2, ParseStackElem!(Location, Token) stack2, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -8051,7 +8051,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "match" Symbol Symbol
     // type: unknown
-    //  MatchDeclaration ->  "match" Symbol Symbol.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  MatchDeclaration -> "match" Symbol Symbol.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse129(ref NonterminalType!(37) result, ref Location resultLocation, Location parseStart3, ParseStackElem!(Location, Token) stack3, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack2, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -8087,7 +8087,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "match" Symbol Symbol ";"
     // type: unknown
-    //  MatchDeclaration ->  "match" Symbol Symbol ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  MatchDeclaration -> "match" Symbol Symbol ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse130(ref NonterminalType!(37) result, ref Location resultLocation, Location parseStart4, ParseStackElem!(Location, Token) stack4, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack3, ParseStackElem!(Location, NonterminalType!49/*Symbol*/) stack2, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -8101,7 +8101,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "option"
     // type: unknown
-    //  OptionDeclaration ->  "option".Identifier "=" IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  OptionDeclaration -> "option".Identifier "=" IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse131(ref NonterminalType!(40) result, ref Location resultLocation, Location parseStart1/+, ParseStackElem!(Location, Token) stack1+/)
     {
         alias ThisParseResult = typeof(result);
@@ -8137,7 +8137,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "option" Identifier
     // type: unknown
-    //  OptionDeclaration ->  "option" Identifier."=" IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  OptionDeclaration -> "option" Identifier."=" IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse132(ref NonterminalType!(40) result, ref Location resultLocation, Location parseStart2/+, ParseStackElem!(Location, Token) stack2+/, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -8173,7 +8173,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "option" Identifier "="
     // type: unknown
-    //  OptionDeclaration ->  "option" Identifier "=".IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  OptionDeclaration -> "option" Identifier "=".IntegerLiteral ";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse133(ref NonterminalType!(40) result, ref Location resultLocation, Location parseStart3/+, ParseStackElem!(Location, Token) stack3+/, ParseStackElem!(Location, Token) stack2/+, ParseStackElem!(Location, Token) stack1+/)
     {
         alias ThisParseResult = typeof(result);
@@ -8209,7 +8209,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "option" Identifier "=" IntegerLiteral
     // type: unknown
-    //  OptionDeclaration ->  "option" Identifier "=" IntegerLiteral.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  OptionDeclaration -> "option" Identifier "=" IntegerLiteral.";" {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse134(ref NonterminalType!(40) result, ref Location resultLocation, Location parseStart4/+, ParseStackElem!(Location, Token) stack4+/, ParseStackElem!(Location, Token) stack3/+, ParseStackElem!(Location, Token) stack2+/, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -8245,7 +8245,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "option" Identifier "=" IntegerLiteral ";"
     // type: unknown
-    //  OptionDeclaration ->  "option" Identifier "=" IntegerLiteral ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
+    //  OptionDeclaration -> "option" Identifier "=" IntegerLiteral ";". {$end, "fragment", "import", "match", "option", "token", Identifier}
     private int parse135(ref NonterminalType!(40) result, ref Location resultLocation, Location parseStart5/+, ParseStackElem!(Location, Token) stack5+/, ParseStackElem!(Location, Token) stack4/+, ParseStackElem!(Location, Token) stack3+/, ParseStackElem!(Location, Token) stack2/+, ParseStackElem!(Location, Token) stack1+/)
     {
         alias ThisParseResult = typeof(result);
@@ -8259,7 +8259,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF Declaration+ "token"
     // type: unknown
-    //  DeclarationType ->  "token". {Identifier}
+    //  DeclarationType -> "token". {Identifier}
     private int parse136(ref NonterminalType!(17) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, Token) stack1)
     {
         alias ThisParseResult = typeof(result);
@@ -8273,7 +8273,7 @@ struct Parser(CreatorInstance, alias L)
     }
     // path: EBNF EBNF
     // type: unknown
-    //  EBNF ->  EBNF. {$end} startElement
+    //  EBNF -> EBNF. {$end} startElement
     private int parse141(ref NonterminalType!(19) result, ref Location resultLocation, Location parseStart1, ParseStackElem!(Location, NonterminalType!19/*EBNF*/) stack1)
     {
         alias ThisParseResult = typeof(result);
