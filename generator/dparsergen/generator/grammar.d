@@ -512,38 +512,6 @@ class EBNFGrammar
         return false;
     }
 
-    BitSet!NonterminalID[FirstSetsKey] firstSetsNonterminalCache;
-    private BitSet!NonterminalID firstSetNonterminal(const(NonterminalID) x,
-            immutable(Symbol)[] negLookaheads)
-    {
-        if (FirstSetsKey(x.toNonterminalID, negLookaheads) in firstSetsNonterminalCache)
-            return firstSetsNonterminalCache[FirstSetsKey(x.toNonterminalID, negLookaheads)];
-
-        BitSet!NonterminalID result;
-        result.length = nonterminals.vals.length;
-
-        firstSetsNonterminalCache[FirstSetsKey(x, negLookaheads)] = result;
-
-        foreach (p; getProductions(x.toNonterminalID))
-        {
-            if (p.symbols.length)
-            {
-                immutable(Symbol)[] nextNegLookaheads = negLookaheads;
-                const(SymbolInstance)[] symbols = p.symbols[];
-                if (negLookaheads.canFind(symbols[0].symbol))
-                    continue;
-                if (symbols[0].isToken)
-                    continue;
-
-                nextNegLookaheads.addOnce(symbols[0].negLookaheads);
-                result |= firstSetNonterminal(symbols[0].toNonterminalID, nextNegLookaheads);
-            }
-        }
-
-        firstSetsNonterminalCache[FirstSetsKey(x, negLookaheads)] = result;
-        return result;
-    }
-
     bool[NonterminalID][TokenID] hasExactTokenCache;
     bool hasExactToken(Symbol symbol, TokenID currentToken)
     {
