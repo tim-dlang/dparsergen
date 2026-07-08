@@ -53,11 +53,13 @@ enum StdAnnotations = [
 mixin(() {
     import std.string;
 
+    static assert(StdAnnotations.length <= 31);
+
     string r = "enum AnnotationFlags {";
     r ~= "NONE = 0, ";
     foreach (i, a; StdAnnotations)
         r ~= format("%s = %d, ", a, 1 << i);
-    r ~= format("ALL = %d", (1 >> StdAnnotations.length) - 1);
+    r ~= format("ALL = %d", (1 << StdAnnotations.length) - 1);
     r ~= "}";
     return r;
 }());
