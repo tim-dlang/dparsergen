@@ -1909,8 +1909,6 @@ struct Action
             return elementNr < other.elementNr ? -1 : 1;
         if (nonterminalID != other.nonterminalID)
             return nonterminalID < other.nonterminalID ? -1 : 1;
-        if (nonterminalID != other.nonterminalID)
-            return nonterminalID < other.nonterminalID ? -1 : 1;
         return 0;
     }
 }
