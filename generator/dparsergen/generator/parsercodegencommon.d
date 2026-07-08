@@ -528,7 +528,6 @@ void filterTagsForShift(ref CodeWriter code, LRGraph graph, string tagsVar, size
     bool isEmpty = true;
     foreach (t; relevantTags)
     {
-        bool isRelevant = relevantTags.canFind(t);
         if (!isEmpty)
             code.write(" | ");
         code.write("Tag.", grammar.tags[t].name);
