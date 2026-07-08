@@ -994,25 +994,25 @@ private void printTree(Location, alias LocationRangeImpl)
 {
     import std.stdio;
 
-    write(appIndent.data);
-    write("+-");
+    file.write(appIndent.data);
+    file.write("+-");
     if (tree is null)
     {
-        writeln("null");
+        file.writeln("null");
         return;
     }
     if (tree.nodeType == NodeType.token)
-        write("\"", tree.content.escapeD, "\"");
+        file.write("\"", tree.content.escapeD, "\"");
     else
     {
         if (tree.nodeType == NodeType.merged)
-            write("Merged:");
-        write(tree.name);
+            file.write("Merged:");
+        file.write(tree.name);
     }
     if (tree.start == Location.invalid)
-        writeln(" <???>");
+        file.writeln(" <???>");
     else
-        writeln(" <", tree.start.toPrettyString, ">");
+        file.writeln(" <", tree.start.toPrettyString, ">");
     size_t indentLength = appIndent.data.length;
     if (!isLast)
         appIndent.put("| ");
