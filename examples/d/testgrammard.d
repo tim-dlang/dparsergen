@@ -83,7 +83,7 @@ struct LexerWrapper
                 lexer.input = input;
                 return;
             }
-            if (stringType != '`' && input[0] == '\\')
+            if (stringType != '`' && input[i] == '\\')
             {
                 i += 2;
                 continue;
