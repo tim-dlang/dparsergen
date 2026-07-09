@@ -149,7 +149,7 @@ string readSourceFile(string filename)
     case BOM.utf32le:
         if (IsBigEndian != (bom.schema == BOM.utf32be))
         {
-            for (size_t j = 0; j + 3 < input.length; j++)
+            for (size_t j = 0; j + 3 < input.length; j += 4)
             {
                 auto tmp = input[j];
                 input[j] = input[j + 3];
@@ -165,7 +165,7 @@ string readSourceFile(string filename)
     case BOM.utf16le:
         if (IsBigEndian != (bom.schema == BOM.utf16be))
         {
-            for (size_t j = 0; j + 1 < input.length; j++)
+            for (size_t j = 0; j + 1 < input.length; j += 2)
             {
                 auto tmp = input[j];
                 input[j] = input[j + 1];
