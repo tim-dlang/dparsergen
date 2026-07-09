@@ -147,6 +147,8 @@ string readSourceFile(string filename)
     {
     case BOM.utf32be:
     case BOM.utf32le:
+        if (input.length % 4 != 0)
+            throw new Exception("UTF-32 input size can not be divided by 4 bytes");
         if (IsBigEndian != (bom.schema == BOM.utf32be))
         {
             for (size_t j = 0; j + 3 < input.length; j += 4)
@@ -163,6 +165,8 @@ string readSourceFile(string filename)
         break;
     case BOM.utf16be:
     case BOM.utf16le:
+        if (input.length % 2 != 0)
+            throw new Exception("UTF-16 input size can not be divided by 2 bytes");
         if (IsBigEndian != (bom.schema == BOM.utf16be))
         {
             for (size_t j = 0; j + 1 < input.length; j += 2)
