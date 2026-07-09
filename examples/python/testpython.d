@@ -86,7 +86,6 @@ struct LexerWrapper
 
     bool hasIndentDedentToken;
     typeof(lexer.front) indentDedentToken;
-    string lastSpace;
     string currentSpace;
     Appender!(string[]) indentStack;
     size_t parenDepth;
