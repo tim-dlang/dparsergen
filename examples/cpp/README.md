@@ -11,7 +11,7 @@ two grammars and an additional file with shared rules:
 
 The grammar is for C++11, but also contains some newer constructs and
 extensions supported by GCC or MSVC. It is possible to extract the
-grammar from the LaTeX source of different versions of the stardard
+grammar from the LaTeX source of different versions of the standard
 draft in https://github.com/cplusplus/draft using the D program
 grammarcppgen.d, but the extracted grammar also needs some manual
 modifications.

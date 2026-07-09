@@ -1,6 +1,6 @@
 # Example grammar for arithmetic expressions
 
-This example contains a grammer for arithmetic expressions in
+This example contains a grammar for arithmetic expressions in
 grammarcalc.ebnf. The application testgrammarcalc.d reads expressions
 from the standard input and tries to parse them. The expressions
 are directly evaluated and the result is printed. Expressions
