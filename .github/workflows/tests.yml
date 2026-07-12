@@ -49,7 +49,7 @@ jobs:
         compiler: ${{ matrix.dc }}
 
     - name: Checkout DMD
-      if: ${{ matrix.extra_args != 'win32' }}
+      if: ${{ matrix.platform != 'win32' }}
       uses: actions/checkout@v6
       with:
         path: dmd
