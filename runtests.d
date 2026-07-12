@@ -491,7 +491,7 @@ int main(string[] args)
     else static if (size_t.sizeof == 4)
         model = "32";
     else
-        static assert("Unknown size of size_t");
+        static assert(false, "Unknown size of size_t");
 
     string compiler = "dmd";
     string jsonTestDir = absolutePath("examples/json/JSONTestSuite/test_parsing");
