@@ -623,10 +623,14 @@ TuplePatternComponent
     | StorageClasses? TuplePattern
     ;*/
 AliasDeclaration
-    = AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType IdentifierInitializers ";"
+    = AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType Identifiers ";"
     | AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType FuncDeclarator ";" // legacy
-    | AttributesNoPragmaEmpty "alias" "this" IdentifierInitializers ";"   // something different from alias .. this;
+    | AttributesNoPragmaEmpty "alias" "this" Identifiers ";"   // something different from alias .. this;
     | AttributesNoPragmaEmpty "alias" AliasAssignments ";"
+    ;
+Identifiers @array @regArray
+    = Identifier
+    | Identifier "," Identifiers
     ;
 AliasAssignments @array @regArray
     = AliasAssignment
