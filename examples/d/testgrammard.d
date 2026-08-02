@@ -215,6 +215,7 @@ immutable string[] syntaxErrorExceptions = [
     "`pragma(mangle)` expects string literal argument for mangled name",
     "`string` expected for pragma mangle argument",
     "Argument is expected to be non-null but was null",
+    "for non-variadic function type",
 ];
 
 immutable string[] syntaxErrorExtra = [
