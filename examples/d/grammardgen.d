@@ -78,67 +78,7 @@ void printSymbol(Tree tree, ref Symbol[] output)
             foreach (c; content)
                 printSymbol(c, output);
         }
-        else if (tree.childs[1].content == "RELATIVE_LINK2")
-        {
-            size_t paramStart = 0;
-            foreach (i, c; content)
-                if (c.name == "Comma")
-                {
-                    paramStart = i + 1;
-                    break;
-                }
-            foreach (c; content[paramStart .. $])
-                printSymbol(c, output);
-        }
-        else if (tree.childs[1].content == "GLINK2")
-        {
-            size_t paramStart = 0;
-            foreach (i, c; content)
-                if (c.name == "Comma")
-                {
-                    paramStart = i + 1;
-                    break;
-                }
-            foreach (c; content[paramStart .. $])
-                printSymbol(c, output);
-        }
-        else if (tree.childs[1].content == "LINK2")
-        {
-            size_t paramStart = 0;
-            foreach (i, c; content)
-                if (c.name == "Comma")
-                {
-                    paramStart = i + 1;
-                    break;
-                }
-            foreach (c; content[paramStart .. $])
-                printSymbol(c, output);
-        }
-        else if (tree.childs[1].content == "GLINK")
-        {
-            size_t paramStart = 0;
-            foreach (i, c; content)
-                if (c.name == "Comma")
-                {
-                    paramStart = i + 1;
-                    break;
-                }
-            foreach (c; content[paramStart .. $])
-                printSymbol(c, output);
-        }
-        else if (tree.childs[1].content == "GSELF")
-        {
-            size_t paramStart = 0;
-            foreach (i, c; content)
-                if (c.name == "Comma")
-                {
-                    paramStart = i + 1;
-                    break;
-                }
-            foreach (c; content[paramStart .. $])
-                printSymbol(c, output);
-        }
-        else if (tree.childs[1].content == "DDSUBLINK")
+        else if (tree.childs[1].content.among("RELATIVE_LINK2", "GLINK2", "LINK2", "GLINK", "GSELF", "DDLINK", "DDSUBLINK"))
         {
             size_t paramStart = 0;
             foreach (i, c; content)
