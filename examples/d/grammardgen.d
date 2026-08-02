@@ -272,6 +272,7 @@ class Context
     string[string] nonterminals;
     string[] nonterminalsOrder;
     bool[string] tokens;
+    bool[string] keywords;
     bool isLexer;
 }
 
@@ -506,6 +507,10 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
                 {
                     code ~= " IntegerLiteral>>\"" ~ s.name ~ "\"";
                 }
+                else if (!context.isLexer && s.name[0].inCharSet!"a-zA-Z_" && s.name !in context.keywords)
+                {
+                    code ~= " Identifier>>\"" ~ s.name ~ "\"";
+                }
                 else
                 {
                     string tname = s.name;
@@ -540,6 +545,13 @@ void analyzeNonterminal(Tree[] trees, Context context, bool isLexer, bool isToke
     else
         context.nonterminalsOrder ~= name;
     context.nonterminals[name] = code;
+
+    if (isLexer && name == "Keyword")
+    {
+        foreach (p; productions)
+            if (p.comment != "deprecated" && p.symbols.length == 1 && p.symbols[0].isToken)
+                context.keywords[p.symbols[0].name] = true;
+    }
 }
 
 void analyzeGrammar(Tree tree, Context context)
@@ -628,6 +640,7 @@ int main(string[] args)
 
     Context context = new Context();
     context.tokens = contextLex.tokens;
+    context.keywords = contextLex.keywords;
 
     foreach (f; [
             "module", "editions", "expression", "declaration", "attribute",
