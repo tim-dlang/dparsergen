@@ -1062,6 +1062,7 @@ TemplateSingleArgument @directUnwrap
     | "null"
     | "this"
     | <SpecialKeyword
+    | <Vector
     ;
 TemplateArgument @backtrack
     = <Type
