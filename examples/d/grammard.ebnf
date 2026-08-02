@@ -409,8 +409,8 @@ FunctionLiteralBody2
 AssertExpression
     = "assert" "(" AssertArguments ")"
     ;
-AssertArguments
-    = <AssignExpression
+AssertArguments @array @regArray
+    = AssignExpression
     | AssignExpression ","
     | AssignExpression "," AssignExpression
     | AssignExpression "," AssignExpression ","
@@ -612,7 +612,7 @@ AutoAssignment
 /*TuplePattern
     = "(" TuplePatternComponents ")"
     ;
-TuplePatternComponents
+TuplePatternComponents @array @regArray
     = TuplePatternComponent ","
     | TuplePatternComponent "," TuplePatternComponent
     | TuplePatternComponent "," TuplePatternComponents
@@ -874,8 +874,8 @@ IfConditionDecl
     = IfConditionStorageClasses Identifier "=" Expression
     | IfConditionStorageClasses? PostfixType Declarator "=" Expression
     ;
-IfConditionStorageClasses
-    = <IfConditionStorageClass
+IfConditionStorageClasses @array @regArray
+    = IfConditionStorageClass
     | IfConditionStorageClass IfConditionStorageClasses
     ;
 IfConditionStorageClass
@@ -948,7 +948,7 @@ ForeachAggregate
 /*ForeachTuplePattern
     = "(" ForeachTupleComponents ")"
     ;
-ForeachTupleComponents
+ForeachTupleComponents @array @regArray
     = ForeachTupleComponent ","
     | ForeachTupleComponent "," ForeachTupleComponent
     | ForeachTupleComponent "," ForeachTupleComponents
@@ -1430,7 +1430,7 @@ OutStatement
 /*ParameterTuplePattern
     = "(" ParameterTupleComponents ")"
     ;
-ParameterTupleComponents
+ParameterTupleComponents @array @regArray
     = ParameterTupleComponent ","
     | ParameterTupleComponent "," ParameterTupleComponent
     | ParameterTupleComponent "," ParameterTupleComponents
@@ -1715,8 +1715,9 @@ ArithmeticType
     | "cdouble"
     | "creal"
     ;
-TypeSuffixes
-    = TypeSuffix TypeSuffixes?
+TypeSuffixes @array @regArray
+    = TypeSuffix
+    | TypeSuffixes TypeSuffix
     ;
 PostfixType @directUnwrap
     = <BasicType

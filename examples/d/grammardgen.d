@@ -219,9 +219,13 @@ class Context
 bool isArrayNonterminal(string name)
 {
     bool isArray;
-    if (name.endsWith("List") || name.endsWith("Array") || name.endsWith("Attributes") || name.endsWith("Empty"))
+    if (name.endsWith("List") || name.endsWith("Array") || name.endsWith("Attributes") || name.endsWith("Empty") || name.endsWith("Components"))
         isArray = true;
-    if (name.among("AliasAssignments", "AnonymousEnumMembers", "ArrayMemberInitializations", "AttributesNoPragma", "AutoAssignments", "Declarators", "DeclDefs", "EnumMembers", "FunctionContracts", "FunctionContractsEndingInOutContractExpression", "FunctionContractsEndingInOutStatement", "InOutContractExpressions", "Interfaces", "KeyValuePairs", "Slice", "Slice2", "StatementListNoCaseNoDefault", "StorageClasses", "StorageClassesAttributesNoPragma", "StructMemberInitializers", "TraitsArguments", "TypeCtors"))
+    if (name.among("AliasAssignments", "AnonymousEnumMembers", "ArrayMemberInitializations", "AttributesNoPragma",
+        "AutoAssignments", "Declarators", "DeclDefs", "EnumMembers", "FunctionContracts", "FunctionContractsEndingInOutContractExpression",
+        "FunctionContractsEndingInOutStatement", "InOutContractExpressions", "Interfaces", "KeyValuePairs", "Slice", "Slice2",
+        "StatementListNoCaseNoDefault", "StorageClasses", "StorageClassesAttributesNoPragma", "StructMemberInitializers", "TraitsArguments", "TypeCtors",
+        "IdentifierInitializers", "IfConditionStorageClasses", "Catches", "TypeSuffixes", "AssertArguments"))
         isArray = true;
     return isArray;
 }
