@@ -1,4 +1,4 @@
-// Based on grammar from dmd commit f7328c546350775ad5e9f657a663c6c0b2b9a1fd
+// Based on grammar from dmd commit f7ad41d70a6a251cabaf88d71b6e730b24c3e2e6
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -19,9 +19,9 @@ DeclDef @directUnwrap
     = <AttributeSpecifier
     | <Declaration
     | <Constructor
+    | <NewDeclaration
     | <Destructor
     // | <Postblit
-    | <Allocator
     | <Invariant
     | <UnitTest
     | <AliasThis
@@ -1193,10 +1193,6 @@ Invariant
     | AttributesNoPragmaEmpty "invariant" BlockStatement
     | AttributesNoPragmaEmpty "invariant" "(" AssertArguments ")" ";"
     ;
-Allocator // Removed in dlang.org commit e0f9fecab151613f7c21d13f83f462cf20b98056
-    = AttributesNoPragmaEmpty "new" Parameters FunctionBody
-    | AttributesNoPragmaEmpty "new" Parameters MissingFunctionBody
-    ;
 NewAnonClassExpression
     = "new" PlacementExpression? "class" ConstructorArgs? AnonBaseClassList? AggregateBody
     ;
@@ -1422,6 +1418,9 @@ AnonStructDeclaration
     ;
 AggregateBody
     = "{" DeclDefs? "}"
+    ;
+NewDeclaration
+    = AttributesNoPragmaEmpty "new" "(" ")" ";"
     ;
 UnionDeclaration
     = AttributesNoPragmaEmpty "union" Identifier ";"

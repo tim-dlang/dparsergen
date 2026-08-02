@@ -1,4 +1,4 @@
-// Based on grammar from dmd commit f7328c546350775ad5e9f657a663c6c0b2b9a1fd
+// Based on grammar from dmd commit f7ad41d70a6a251cabaf88d71b6e730b24c3e2e6
 
 token ByteOrderMark
     = "\uFEFF"
