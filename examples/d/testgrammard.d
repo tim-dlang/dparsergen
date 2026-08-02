@@ -255,7 +255,6 @@ immutable string[] syntaxErrorExtra = [
     "use `{ }` for an empty statement, not `;`",
     "must have at least one member",
     "statement must be inside function scope",
-    "undefined identifier `this`, did you mean `typeof(this)`",
 ];
 
 size_t[syntaxErrorExceptions.length] syntaxErrorExceptionsUsed;
