@@ -630,7 +630,7 @@ int main(string[] args)
     context.tokens = contextLex.tokens;
 
     foreach (f; [
-            "module", "editions", "expression", "declaration", "iasm", "attribute",
+            "module", "editions", "expression", "declaration", "attribute",
             "statement", "template", "class", "traits", "function", "struct",
             "unittest", "version", "template-mixin", "enum", "pragma", "interface",
             "type"
