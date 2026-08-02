@@ -596,6 +596,7 @@ ArrayMemberInitialization @backtrack
     ;
 AutoDeclaration
     = StorageClassesAttributesNoPragma AutoAssignments ";"
+    | StorageClassesAttributesNoPragma ArrayTypeSuffix TypeSuffixes? @inheritTag(Bitfield) IdentifierInitializers ";"
     ;
 AutoAssignments @array @regArray
     = AutoAssignment
@@ -1670,12 +1671,15 @@ PostfixType @directUnwrap
     = <BasicType
     | PostfixType TypeSuffix
     ;
-TypeSuffix
+TypeSuffix @directUnwrap
     = "*"
-    | "[" "]"
-    | "[" ArrayTypeSuffixContent "]"
+    | <ArrayTypeSuffix
     | "delegate" Parameters MemberFunctionAttributes?
     | "function" Parameters FunctionAttributes?
+    ;
+ArrayTypeSuffix
+    = "[" "]"
+    | "[" ArrayTypeSuffixContent "]"
     ;
 ArrayTypeSuffixContent @backtrack
     = <Type
