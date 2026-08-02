@@ -1,4 +1,4 @@
-// Based on grammar from dmd commit f7ad41d70a6a251cabaf88d71b6e730b24c3e2e6
+// Based on grammar from dmd commit c343b1503d263750b08d7148f46fc077dde90f32
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -8,8 +8,7 @@ SourceFile @start
     ;
 Module
     = ModuleDeclaration
-    | ModuleDeclaration DeclDefs
-    | DeclDefs
+    | ModuleDeclaration? DeclDefs
     ;
 DeclDefs @array @regArray
     = DeclDef
@@ -17,14 +16,10 @@ DeclDefs @array @regArray
     ;
 DeclDef @directUnwrap
     = <AttributeSpecifier
+    // | <AliasAssign
     | <Declaration
-    | <Constructor
-    | <NewDeclaration
-    | <Destructor
-    // | <Postblit
-    | <Invariant
+    | <AggregateMember
     | <UnitTest
-    | <AliasThis
     // | <StaticConstructor
     // | <StaticDestructor
     // | <SharedStaticConstructor
@@ -37,6 +32,14 @@ DeclDef @directUnwrap
     | <PragmaDeclaration
     | <AliasReassignment
     | <StaticForeachDeclaration
+    ;
+AggregateMember @directUnwrap
+    = <Constructor
+    | <NewDeclaration
+    | <Destructor
+    // | <Postblit
+    | <Invariant
+    | <AliasThis
     ;
 EmptyDeclaration
     = ";"
@@ -482,7 +485,6 @@ Declaration @directUnwrap
     = <FuncDeclaration
     | @inheritTag(Bitfield) <VarDeclarations
     | <AliasDeclaration
-    // | <AliasAssign
     | <AggregateDeclaration
     | <EnumDeclaration
     | <ImportDeclaration
