@@ -1,4 +1,4 @@
-// Based on grammar from dmd commit c343b1503d263750b08d7148f46fc077dde90f32
+// Based on grammar from dmd commit e34032267c94b801eb5f4db9f7fcb11a84f5b400
 
 import "grammardlex.ebnf";
 SourceFile @start
@@ -504,6 +504,7 @@ AggregateDeclaration
 VarDeclarations
     = StorageClassesAttributesNoPragmaEmpty PostfixType @inheritTag(Bitfield) IdentifierInitializers ";"
     | <AutoDeclaration
+    // | TuplePattern "=" AssignExpression
     ;
 IdentifierInitializers @array @regArray
     = @inheritTag(Bitfield) IdentifierInitializer
@@ -606,7 +607,21 @@ AutoAssignments @array @regArray
     ;
 AutoAssignment
     = IdentifierExpression @lookahead TemplateParameters? "=" Initializer
+    // | TuplePattern "=" AssignExpression
     ;
+/*TuplePattern
+    = "(" TuplePatternComponents ")"
+    ;
+TuplePatternComponents
+    = TuplePatternComponent ","
+    | TuplePatternComponent "," TuplePatternComponent
+    | TuplePatternComponent "," TuplePatternComponents
+    ;
+TuplePatternComponent
+    = StorageClasses? Identifier
+    | StorageClasses? PostfixType Identifier
+    | StorageClasses? TuplePattern
+    ;*/
 AliasDeclaration
     = AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType IdentifierInitializers ";"
     | AttributesNoPragmaEmpty "alias" StorageClassesAttributesEmpty PostfixType FuncDeclarator ";" // legacy
@@ -908,6 +923,7 @@ ForeachType
     = ForeachTypeAttributes? PostfixType Declarator
     | ForeachTypeAttributes? Identifier
     | ForeachTypeAttributes? "alias" Identifier
+    // | ForeachTypeAttributes? ForeachTuplePattern
     ;
 ForeachTypeAttributes @array @regArray
     = ForeachTypeAttribute
@@ -925,6 +941,19 @@ Ref
 ForeachAggregate
     = <Expression
     ;
+/*ForeachTuplePattern
+    = "(" ForeachTupleComponents ")"
+    ;
+ForeachTupleComponents
+    = ForeachTupleComponent ","
+    | ForeachTupleComponent "," ForeachTupleComponent
+    | ForeachTupleComponent "," ForeachTupleComponents
+    ;
+ForeachTupleComponent
+    = ForeachTypeAttributes? Identifier
+    | ForeachTypeAttributes? PostfixType Identifier
+    | ForeachTypeAttributes? ForeachTuplePattern
+    ;*/
 RangeForeach
     = Foreach "(" ForeachTypeList ";" LwrExpression ".." UprExpression ")"
     ;
@@ -1272,6 +1301,8 @@ Parameter
     | ParameterDeclaration "..."
     | ParameterDeclaration "=" AssignExpression
     | ParameterDeclaration "=" AssignExpression "..."
+    // | ParameterAttributes? ParameterTuplePattern
+    // | ParameterAttributes? ParameterTuplePattern "=" AssignExpression
     ;
 ParameterDeclaration
     = ParameterAttributes? PostfixType Declarator
@@ -1392,6 +1423,19 @@ OutStatement
     = "out" BlockStatement
     | "out" "(" Identifier ")" BlockStatement
     ;
+/*ParameterTuplePattern
+    = "(" ParameterTupleComponents ")"
+    ;
+ParameterTupleComponents
+    = ParameterTupleComponent ","
+    | ParameterTupleComponent "," ParameterTupleComponent
+    | ParameterTupleComponent "," ParameterTupleComponents
+    ;
+ParameterTupleComponent
+    = ParameterAttributes? Identifier
+    | ParameterAttributes? PostfixType Identifier
+    | ParameterAttributes? ParameterTuplePattern
+    ;*/
 /*MainFunction
     = MainReturnDecl "main()" FunctionBody
     | MainReturnDecl "main(string[]" "Identifier)" FunctionBody

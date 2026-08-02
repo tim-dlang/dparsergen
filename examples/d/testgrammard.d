@@ -399,6 +399,9 @@ bool runTests(TestDirType testDirType, string testDir)
                 "fail54.d",
                 "ident_all.d",
                 "ident_c11.d",
+                "unpacking.d", // TODO
+                "unpack_semantic.d", // TODO
+                "unpacking_extern.d", // TODO
                 ))
         {
             if (expectFailure)
