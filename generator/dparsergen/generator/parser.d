@@ -380,6 +380,7 @@ do
     }
 
     BitSet!NonterminalID nonterminalsAdded;
+    BitSet!NonterminalID nonterminalsInTodo;
     NonterminalID[] nonterminalsTodo;
     bool[NonterminalID] preventDescent;
     bool[NonterminalID] enforceDescent;
@@ -427,7 +428,7 @@ do
         {
             if (n2.nonterminalID == n)
                 continue;
-            if (change == -1 && nonterminalsAdded[n2.nonterminalID] && nonterminalsTodo.canFind(n2.nonterminalID) && nonterminalsInDirectUnwrapClosures[n2.nonterminalID.id] == 0)
+            if (change == -1 && nonterminalsAdded[n2.nonterminalID] && nonterminalsInTodo[n2.nonterminalID] && nonterminalsInDirectUnwrapClosures[n2.nonterminalID.id] == 0)
                 changeNonterminalFirstSet(n2.nonterminalID, 1);
         }
     }
@@ -466,6 +467,7 @@ do
                     }
                 }
                 nonterminalsAdded[n.nonterminalID] = true;
+                nonterminalsInTodo[n.nonterminalID] = true;
                 nonterminalsTodo ~= n.nonterminalID;
             }
 
@@ -496,6 +498,7 @@ do
         nonterminalsTodo.sort!(compareNonterminals, SwapStrategy.stable);
         auto n = nonterminalsTodo[0];
         nonterminalsTodo = nonterminalsTodo[1 .. $];
+        nonterminalsInTodo[n] = false;
 
         if (graph.globalOptions.optimizationDescent)
         {
