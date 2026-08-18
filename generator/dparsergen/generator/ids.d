@@ -142,14 +142,21 @@ struct BitSet(I)
     bool addOnce(I)(BitSet!I src)
     {
         bool r = false;
-        foreach (s; src.bitsSet)
+
+        if (length < src.length)
+            length = src.length;
+
+        auto dstData = cast(size_t[]) this.arr;
+        auto srcData = cast(size_t[]) src.arr;
+
+        assert(dstData.length >= srcData.length);
+        foreach (i; 0 .. srcData.length)
         {
-            if (!this[s])
-            {
-                this[s] = true;
+            if (~dstData[i] & srcData[i])
                 r = true;
-            }
+            dstData[i] |= srcData[i];
         }
+
         return r;
     }
 
