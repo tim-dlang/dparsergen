@@ -9,6 +9,7 @@ import dparsergen.core.utils;
 import dparsergen.generator.globaloptions;
 import dparsergen.generator.grammar;
 import dparsergen.generator.ids;
+import dparsergen.generator.priorityqueue;
 import dparsergen.generator.production;
 import std.algorithm;
 import std.bitmanip;
@@ -383,7 +384,7 @@ do
     nonterminalsAdded.length = grammar.nonterminals.vals.length;
     BitSet!NonterminalID nonterminalsInTodo;
     nonterminalsInTodo.length = grammar.nonterminals.vals.length;
-    NonterminalID[] nonterminalsTodo;
+    StablePriorityQueue!(NonterminalID, size_t) nonterminalsTodo;
     bool[NonterminalID] preventDescent;
     bool[NonterminalID] enforceDescent;
 
@@ -470,7 +471,8 @@ do
                 }
                 nonterminalsAdded[n.nonterminalID] = true;
                 nonterminalsInTodo[n.nonterminalID] = true;
-                nonterminalsTodo ~= n.nonterminalID;
+                nonterminalsTodo.insert(n.nonterminalID,
+                        grammar.directUnwrapClosureFull(n.nonterminalID, [], []).length);
             }
 
             if (result.data[i].isStartElement
@@ -486,20 +488,9 @@ do
     foreach (i; 0 .. result.data.length)
         addedElement(i);
 
-    bool compareNonterminals(NonterminalID a, NonterminalID b)
-    {
-        auto ca = grammar.directUnwrapClosureFull(a, [], []);
-        auto cb = grammar.directUnwrapClosureFull(b, [], []);
-        if (ca.length > cb.length)
-            return true;
-        return false;
-    }
-
     while (nonterminalsTodo.length)
     {
-        nonterminalsTodo.sort!(compareNonterminals, SwapStrategy.stable);
-        auto n = nonterminalsTodo[0];
-        nonterminalsTodo = nonterminalsTodo[1 .. $];
+        auto n = nonterminalsTodo.removeFront();
         nonterminalsInTodo[n] = false;
 
         if (graph.globalOptions.optimizationDescent)
