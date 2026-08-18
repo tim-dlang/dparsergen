@@ -380,7 +380,9 @@ do
     }
 
     BitSet!NonterminalID nonterminalsAdded;
+    nonterminalsAdded.length = grammar.nonterminals.vals.length;
     BitSet!NonterminalID nonterminalsInTodo;
+    nonterminalsInTodo.length = grammar.nonterminals.vals.length;
     NonterminalID[] nonterminalsTodo;
     bool[NonterminalID] preventDescent;
     bool[NonterminalID] enforceDescent;
