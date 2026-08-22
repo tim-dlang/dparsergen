@@ -747,8 +747,6 @@ class EBNFGrammar
     {
         foreach (i2; 0 .. symbolNr)
         {
-            if (i2 == symbolNr)
-                continue;
             if (p.symbols[i2].isToken)
                 return false;
             if (!canBeEmpty(p.symbols[i2]))
@@ -1777,12 +1775,6 @@ EBNFGrammar createGrammar(EBNF ebnf)
 
 void checkGrammar(EBNFGrammar grammar)
 {
-    foreach (p; grammar.productions)
-    {
-        if (p is null)
-            continue;
-    }
-
     string cycleString(alias successors)(const typeof(NonterminalID.id)[] sccs, NonterminalID from, NonterminalID to)
     {
         void successorsFiltered(typeof(NonterminalID.id) nonterminalID, scope void delegate(typeof(NonterminalID.id)) sink)
