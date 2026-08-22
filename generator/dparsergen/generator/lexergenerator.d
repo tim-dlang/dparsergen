@@ -8,6 +8,7 @@ module dparsergen.generator.lexergenerator;
 import dparsergen.core.utils;
 import dparsergen.generator.codewriter;
 import dparsergen.generator.grammar;
+import dparsergen.generator.graphalgo;
 import dparsergen.generator.nfa;
 import dparsergen.generator.parsercodegencommon;
 import dparsergen.generator.production;
@@ -683,10 +684,36 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
         edgesPerNode[n] = edges;
     }
 
-    LexerAction[][G.NodeID] reachableResultsPerNode;
-    foreach (n; dfa.nodeIDs)
+    // All nodes in a strongly connected component can reach the same results.
+    // Components are numbered in reverse topological order, so the results of
+    // all successors are already known.
+    auto sccs = findSCCsAsArray!(typeof(NodeID.id))(dfa.nodes.length, (typeof(NodeID.id) n, scope void delegate(typeof(NodeID.id)) sink) {
+        foreach (e; dfa.get(NodeID(n, dfa.graphPointer)).edges)
+            sink(e.next.id);
+    });
+    auto nodeComponents = sccsArrayToComponentIndices(sccs, dfa.nodes.length);
+    LexerAction[][] reachableResultsPerComponent = new LexerAction[][](sccs.length);
+    foreach (i, component; sccs)
     {
-        reachableResultsPerNode[n] = reachableResults(dfa, n);
+        bool[LexerAction] results;
+        foreach (n; component)
+        {
+            foreach (res; dfa.get(NodeID(n, dfa.graphPointer)).results)
+                results[res] = true;
+            foreach (e; dfa.get(NodeID(n, dfa.graphPointer)).edges)
+            {
+                if (nodeComponents[e.next.id] == i)
+                    continue;
+                foreach (res; reachableResultsPerComponent[nodeComponents[e.next.id]])
+                    results[res] = true;
+            }
+        }
+        reachableResultsPerComponent[i] = results.keys;
+    }
+
+    LexerAction[] reachableResultsFor(NodeID n)
+    {
+        return reachableResultsPerComponent[nodeComponents[n.id]];
     }
 
     // Calculate, which results have to be saved, because it's
@@ -705,7 +732,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
                 {
                     resNext[res] = true;
                 }
-                foreach (res; reachableResultsPerNode[e.next])
+                foreach (res; reachableResultsFor(e.next))
                 {
                     reachableNext[res] = true;
                 }
@@ -719,7 +746,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
                     if (e.next == NodeID.invalid || res in resNext2)
                         resNext[res] = true;
                 }
-                foreach (res; reachableResultsPerNode[e.next2])
+                foreach (res; reachableResultsFor(e.next2))
                 {
                     reachableNext[res] = true;
                 }
@@ -791,7 +818,7 @@ void generateStateMachine(ref CodeWriter code, const EBNFGrammar lexerGrammar,
             resultsComment ~= " " ~ (res.isNegLookahead
                     ? "!" : "") ~ lexerGrammar.getSymbolName(res.nonterminal);
         }
-        auto tmpReachableResults = reachableResultsPerNode[n];
+        auto tmpReachableResults = reachableResultsFor(n);
         sort!((a, b) => a.nonterminal.id < b.nonterminal.id)(tmpReachableResults);
         foreach (res; tmpReachableResults)
         {
