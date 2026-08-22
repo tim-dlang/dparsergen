@@ -8,6 +8,7 @@ module dparsergen.generator.regexlookahead;
 import dparsergen.core.utils;
 import dparsergen.generator.codewriter;
 import dparsergen.generator.grammar;
+import dparsergen.generator.graphalgo;
 import dparsergen.generator.nfa;
 import dparsergen.generator.parser;
 import dparsergen.generator.parsercodegencommon;
@@ -912,6 +913,34 @@ class RegexLookahead
 
         auto dfa = regexLookaheadGraph.dfa;
 
+        // All nodes in a strongly connected component can reach the same
+        // results. Components are numbered in reverse topological order, so
+        // the results of all successors are already known.
+        auto sccs = findSCCsAsArray!(typeof(NodeID.id))(dfa.nodes.length, (typeof(NodeID.id) n, scope void delegate(typeof(NodeID.id)) sink) {
+            foreach (e; dfa.get(NodeID(n, dfa.graphPointer)).edges)
+                sink(e.next.id);
+        });
+        auto nodeComponents = sccsArrayToComponentIndices(sccs, dfa.nodes.length);
+        size_t[][] reachableResultsPerComponent = new size_t[][](sccs.length);
+        foreach (i, component; sccs)
+        {
+            bool[size_t] results;
+            foreach (n; component)
+            {
+                foreach (res; dfa.get(NodeID(n, dfa.graphPointer)).results)
+                    results[res] = true;
+                foreach (e; dfa.get(NodeID(n, dfa.graphPointer)).edges)
+                {
+                    if (nodeComponents[e.next.id] == n)
+                        continue;
+                    foreach (res; reachableResultsPerComponent[nodeComponents[e.next.id]])
+                        results[res] = true;
+                }
+            }
+            reachableResultsPerComponent[i] = results.keys;
+            sort(reachableResultsPerComponent[i]);
+        }
+
         code.writeln("Lexer tmpLexer = *lexer;");
         assert(dfa.get(dfa.start).results.length > 1);
         code.writeln("goto state", dfa.start.id, "b;");
@@ -933,8 +962,7 @@ class RegexLookahead
                 resultDone[res] = true;
                 resultsComment ~= " " ~ resultString(res);
             }
-            auto tmpReachableResults = reachableResults(dfa, n);
-            sort!((a, b) => a < b)(tmpReachableResults);
+            auto tmpReachableResults = reachableResultsPerComponent[nodeComponents[n.id]];
             foreach (res; tmpReachableResults)
             {
                 if (res in resultDone)
