@@ -525,8 +525,8 @@ class EBNFGrammar
             hasExactTokenCache[currentToken] = null;
             hasExactTokenCacheHere = currentToken in hasExactTokenCache;
         }
-        if (symbol.toNonterminalID in *hasExactTokenCacheHere)
-            return (*hasExactTokenCacheHere)[symbol.toNonterminalID];
+        if (auto inCache = symbol.toNonterminalID in *hasExactTokenCacheHere)
+            return *inCache;
 
         (*hasExactTokenCacheHere)[symbol.toNonterminalID] = false;
 
@@ -786,9 +786,9 @@ class EBNFGrammar
     immutable(NonterminalWithConstraint)[][NonterminalWithConstraint] directUnwrapClosureCacheFull;
     immutable(NonterminalWithConstraint)[] directUnwrapClosureFull(NonterminalWithConstraint n)
     {
-        if (n in directUnwrapClosureCacheFull)
+        if (auto inCache = n in directUnwrapClosureCacheFull)
         {
-            auto r = directUnwrapClosureCacheFull[n];
+            auto r = *inCache;
             enforce(r.length, getSymbolName(n.nonterminalID));
             return r;
         }
@@ -881,9 +881,9 @@ class EBNFGrammar
     immutable(Symbol)[][NonterminalID][NonterminalWithConstraint] directUnwrapClosureMapCache;
     immutable(Symbol)[][NonterminalID] directUnwrapClosureMap(NonterminalWithConstraint n)
     {
-        if (n in directUnwrapClosureMapCache)
+        if (auto inCache = n in directUnwrapClosureMapCache)
         {
-            return directUnwrapClosureMapCache[n];
+            return *inCache;
         }
 
         auto r = directUnwrapClosure(n);

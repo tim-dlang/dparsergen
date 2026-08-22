@@ -669,8 +669,9 @@ Graph!(Symbol, Result, EdgeExtra) minimizeDFA(Symbol, Result, EdgeExtra)(
                             foreach (e; g.get(node).edges)
                             {
                                 auto key = Key(e.symbol, e.flags & EdgeFlags.matchingFlags);
-                                if (key in partitionEdges[i]
-                                        && partitionEdges[i][key] != partitionIDs[e.next])
+                                auto keyInPartitionEdges = key in partitionEdges[i];
+                                if (keyInPartitionEdges
+                                        && (*keyInPartitionEdges) != partitionIDs[e.next])
                                 {
                                     good = false;
                                     break;

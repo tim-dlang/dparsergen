@@ -501,10 +501,10 @@ Graph!(DCharToken, LexerAction) genGraphForNonterminal(const EBNFGrammar lexerGr
     alias G = Graph!(DCharToken, LexerAction);
     alias NodeID = G.NodeID;
 
-    if (currentNonterminal in graphByNonterminal)
+    if (auto inCache = currentNonterminal in graphByNonterminal)
     {
-        enforce(graphByNonterminal[currentNonterminal]!is null);
-        return graphByNonterminal[currentNonterminal];
+        enforce(*inCache !is null);
+        return *inCache;
     }
 
     graphByNonterminal[currentNonterminal] = null;

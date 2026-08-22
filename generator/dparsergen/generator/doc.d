@@ -59,8 +59,8 @@ void genDoc(EBNF ebnf, string docfilename, DocType docType)
 
     string anchorName(string name)
     {
-        if (name in firstNamePerBlock)
-            name = firstNamePerBlock[name];
+        if (auto nameInFirstNamePerBlock = name in firstNamePerBlock)
+            name = *nameInFirstNamePerBlock;
         return nameWithSpace(name).replace(" ", "-").toLower;
     }
 

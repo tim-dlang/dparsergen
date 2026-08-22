@@ -292,8 +292,8 @@ class RegexLookahead
     {
         startNonterminal = normalizeNonterminalID(grammar2, startNonterminal);
 
-        if (startNonterminal in nonterminalGraphCache)
-            return nonterminalGraphCache[startNonterminal];
+        if (auto startNonterminalInNonterminalGraphCache = startNonterminal in nonterminalGraphCache)
+            return *startNonterminalInNonterminalGraphCache;
 
         immutable endTok = grammar.tokens.getID("$end");
 
@@ -308,8 +308,8 @@ class RegexLookahead
         NodeID[2][NonterminalID] done;
         NodeID[2] genSubgraph(NonterminalID nonterminal)
         {
-            if (nonterminal in done)
-                return done[nonterminal];
+            if (auto nonterminalInDone = nonterminal in done)
+                return *nonterminalInDone;
             NodeID[2] nonterminalNodes = [
                 g.addNode("start " ~ grammar2.getSymbolName(nonterminal)),
                 g.addNode("end " ~ grammar2.getSymbolName(nonterminal))
@@ -326,11 +326,11 @@ class RegexLookahead
                     NodeID n = g.addNode("x");
                     if (s.isToken)
                     {
-                        if (s.toTokenID in subGraphTokens)
+                        if (auto sInSubGraphTokens = s.toTokenID in subGraphTokens)
                         {
                             g.addEdge(current, n, subGraphToken, EdgeFlags.none,
                                     RegexLookaheadEdgeExtra([
-                                        subGraphTokens[s.toTokenID]
+                                        *sInSubGraphTokens
                                     ]));
                         }
                         else
@@ -369,8 +369,8 @@ class RegexLookahead
     {
         startNonterminal = normalizeNonterminalID(grammar2, startNonterminal);
 
-        if (startNonterminal in nonterminalGraphSimpleCache)
-            return nonterminalGraphSimpleCache[startNonterminal];
+        if (auto inCache = startNonterminal in nonterminalGraphSimpleCache)
+            return *inCache;
 
         Appender!(Symbol[][]) sequences;
 
@@ -658,9 +658,9 @@ class RegexLookahead
 
     Graph!(TokenID[2], size_t).NodeID buildMatchGraph(immutable(SymbolInstance)[][] sequences)
     {
-        if (sequences in matchGraphStates)
+        if (auto inCache = sequences in matchGraphStates)
         {
-            return matchGraphStates[sequences];
+            return *inCache;
         }
         else
         {
@@ -689,8 +689,8 @@ class RegexLookahead
                 {
                     if (s.toTokenID in matchingTokensAll)
                     {
-                        if (s.toTokenID in usedAlone)
-                            enforce(usedAlone[s.toTokenID]);
+                        if (auto sInUsedAlone = s.toTokenID in usedAlone)
+                            enforce(*sInUsedAlone);
                         else
                         {
                             usedAlone[s.toTokenID] = true;
@@ -712,13 +712,13 @@ class RegexLookahead
                                 auto t1 = p.symbols[i].toTokenID;
                                 auto t2 = p.symbols[i + 2].toTokenID;
 
-                                if (t1 in usedAlone)
-                                    enforce(!usedAlone[t1]);
+                                if (auto t1InUsedAlone = t1 in usedAlone)
+                                    enforce(!*t1InUsedAlone);
                                 else
                                     usedAlone[t1] = false;
 
-                                if (t2 in usedAlone)
-                                    enforce(!usedAlone[t2]);
+                                if (auto t2InUsedAlone = t2 in usedAlone)
+                                    enforce(!*t2InUsedAlone);
                                 else
                                     usedAlone[t2] = false;
 

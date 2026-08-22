@@ -920,7 +920,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     foreach (nextNonterminal; e.nextNonterminals(grammar,
                             graph.globalOptions.directUnwrap))
                     {
-                        if (nextNonterminal.nonterminalID in descentActionByNonterminal)
+                        if (auto nextNonterminalInDescentActionByNonterminal = nextNonterminal.nonterminalID in descentActionByNonterminal)
                         {
                             size_t lookaheadUntil = e.dotPos + 1;
                             while (lookaheadUntil < e.production.symbols.length /* && e.production.symbols[lookaheadUntil].annotations.contains!"lookahead"*/ )
@@ -940,7 +940,7 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                                     SymbolInstance(regexLookahead.grammar2.tokens.id("$anything"))
                                 ];
                             regexLookaheadGraph.sequences.addOnce(tuple!(immutable(SymbolInstance)[], size_t)(symbols,
-                                    descentActionByNonterminal[nextNonterminal.nonterminalID]));
+                                    *nextNonterminalInDescentActionByNonterminal));
                         }
                     }
                 }
@@ -1248,8 +1248,8 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                     Action action = Action(ActionType.reduce, 0, element.production,
                             k, NonterminalID.invalid, element.ignoreInConflict);
                     size_t id;
-                    if (action in actionIds)
-                        id = actionIds[action];
+                    if (auto actionInActionIds = action in actionIds)
+                        id = *actionInActionIds;
                     else
                     {
                         id = actions.length;
@@ -1274,8 +1274,8 @@ void createParseFunction(ref CodeWriter code, LRGraph graph, size_t stateNr, con
                             nextState = edge.next;
                     Action action = Action(ActionType.shift, nextState);
                     size_t id;
-                    if (action in actionIds)
-                        id = actionIds[action];
+                    if (auto actionInActionIds = action in actionIds)
+                        id = *actionInActionIds;
                     else
                     {
                         id = actions.length;

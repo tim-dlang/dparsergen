@@ -18,8 +18,8 @@ struct IDMap(I, T, string idMember = "name")
 
     I id(IdType val)
     {
-        if (val in ids)
-            return I(ids[val]);
+        if (auto inCache = val in ids)
+            return I(*inCache);
         typeof(I.init.id) newID = vals.length.to!(typeof(I.init.id));
         T x;
         __traits(getMember, x, idMember) = val;
