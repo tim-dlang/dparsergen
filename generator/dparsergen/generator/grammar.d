@@ -1066,54 +1066,35 @@ class EBNFGrammar
         return Constraint(newNegLookahead, nextTags, a.disabled && b.disabled);
     }
 
-    bool[NonterminalID] isMutuallyLeftRecursiveCache;
+    private bool[] isMutuallyLeftRecursiveData;
     bool isMutuallyLeftRecursive(NonterminalID nonterminalID)
     {
-        auto entry = nonterminalID in isMutuallyLeftRecursiveCache;
-        if (entry)
-            return *entry;
-        bool[NonterminalID] visited;
-        bool findLeftRecursion(NonterminalID n)
+        if (isMutuallyLeftRecursiveData.length == 0)
         {
-            if (n in visited)
-                return false;
-            visited[n] = true;
-            if (n == nonterminalID)
-                return true;
-            foreach (p; getProductions(n))
-            {
-                foreach (s; p.symbols)
-                {
-                    if (!s.isToken)
-                    {
-                        if (findLeftRecursion(s.toNonterminalID))
-                            return true;
-                    }
-                    if (!canBeEmpty(s))
-                        break;
-                }
-            }
-            return false;
-        }
+            isMutuallyLeftRecursiveData = new bool[nonterminals.vals.length];
 
-        foreach (p; getProductions(nonterminalID))
-        {
-            foreach (s; p.symbols)
+            void nextSymbols(typeof(NonterminalID.id) n,
+                    scope void delegate(typeof(NonterminalID.id)) sink)
             {
-                if (!s.isToken && s.toNonterminalID != nonterminalID)
-                {
-                    if (findLeftRecursion(s.toNonterminalID))
+                foreach (p; getProductions(NonterminalID(n)))
+                    foreach (s; p.symbols)
                     {
-                        isMutuallyLeftRecursiveCache[nonterminalID] = true;
-                        return true;
+                        if (!s.isToken)
+                            sink(s.toNonterminalID.id);
+                        if (!canBeEmpty(s))
+                            break;
                     }
-                }
-                if (!canBeEmpty(s))
-                    break;
             }
+            void onComponent(typeof(NonterminalID.id) index, const scope typeof(NonterminalID.id)[] component)
+            {
+                // Left recursion using only this nonterminal is not mutual recursion.
+                if (component.length > 1)
+                    foreach (n; component)
+                        isMutuallyLeftRecursiveData[n] = true;
+            }
+            findSCCs!(typeof(NonterminalID.id))(nonterminals.vals.length, &nextSymbols, &onComponent);
         }
-        isMutuallyLeftRecursiveCache[nonterminalID] = false;
-        return false;
+        return isMutuallyLeftRecursiveData[nonterminalID.id];
     }
 }
 
