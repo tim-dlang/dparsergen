@@ -9,6 +9,7 @@ import dparsergen.core.nodetype;
 import dparsergen.core.utils;
 import dparsergen.generator.ebnf;
 import dparsergen.generator.grammarebnf;
+import dparsergen.generator.graphalgo;
 import dparsergen.generator.ids;
 import dparsergen.generator.nfa;
 import dparsergen.generator.production;
@@ -1801,65 +1802,70 @@ void checkGrammar(EBNFGrammar grammar)
             continue;
     }
 
-    Appender!(NonterminalID[]) path;
-    bool[NonterminalID] inPath;
-    void checkCycles2(NonterminalID nonterminalID)
+    string cycleString(alias successors)(const typeof(NonterminalID.id)[] sccs, NonterminalID from, NonterminalID to)
     {
-        if (nonterminalID in inPath)
-            throw new Exception(text("cycle ", path.data.map!(n => grammar.getSymbolName(n))
-                    .array, grammar.getSymbolName(nonterminalID)));
-        foreach (p; grammar.getProductions(nonterminalID))
+        void successorsFiltered(typeof(NonterminalID.id) nonterminalID, scope void delegate(typeof(NonterminalID.id)) sink)
         {
-            foreach (i; 0 .. p.symbols.length)
+            successors(nonterminalID, (typeof(NonterminalID.id) succ)
             {
-                if (p.symbols[i].isToken)
-                    continue;
-                if (!grammar.canForward(p, i))
-                    continue;
-                path.put(nonterminalID);
-                inPath[nonterminalID] = true;
-                checkCycles2(p.symbols[i].toNonterminalID);
-                inPath.remove(nonterminalID);
-                path.shrinkTo(path.data.length - 1);
-            }
+                if (sccs[nonterminalID] == sccs[succ])
+                    sink(succ);
+            });
         }
+
+        typeof(NonterminalID.id)[] cycle = [from.id];
+        if (to != from)
+            cycle ~= shortestPath(to.id, from.id, cast(typeof(NonterminalID.id)) grammar.nonterminals.vals.length, &successorsFiltered)[0 .. $ - 1];
+        cycle ~= from.id;
+        return text(cycle.map!(n => grammar.getSymbolName(NonterminalID(n))).array);
     }
 
-    foreach (i, ref nonterminal; grammar.nonterminals.vals)
+    // Detect cycles in grammar.
+    void nextForwardSymbols(typeof(NonterminalID.id) nonterminalID, scope void delegate(typeof(NonterminalID.id)) sink)
     {
-        checkCycles2(NonterminalID(i.to!SymbolID));
-    }
-
-    void checkCycles3(NonterminalID nonterminalID, bool hasDirectProd)
-    {
-        if (nonterminalID in inPath)
-        {
-            if (path.data[0] == nonterminalID && hasDirectProd)
-                throw new Exception(text("cycle3 ", path.data.map!(n => grammar.getSymbolName(n))
-                        .array, grammar.getSymbolName(nonterminalID)));
-            else
-                return;
-        }
-        foreach (p; grammar.getProductions(nonterminalID))
-        {
+        foreach (p; grammar.getProductions(NonterminalID(nonterminalID)))
             foreach (i; 0 .. p.symbols.length)
-            {
-                if (p.symbols[i].isToken)
-                    continue;
-                if (!grammar.canForwardPrefix(p, i))
-                    continue;
-                path.put(nonterminalID);
-                inPath[nonterminalID] = true;
-                checkCycles3(p.symbols[i].toNonterminalID, hasDirectProd || i > 0);
-                inPath.remove(nonterminalID);
-                path.shrinkTo(path.data.length - 1);
-            }
-        }
+                if (!p.symbols[i].isToken && grammar.canForward(p, i))
+                    sink(p.symbols[i].toNonterminalID.id);
     }
 
-    foreach (i, ref nonterminal; grammar.nonterminals.vals)
+    auto forwardSCCs = findSCCsAsComponentIndices!(typeof(NonterminalID.id))(grammar.nonterminals.vals.length, &nextForwardSymbols);
+
+    foreach (nonterminalID; grammar.nonterminals.allIDs)
     {
-        checkCycles3(NonterminalID(i.to!SymbolID), false);
+        nextForwardSymbols(nonterminalID.id, (typeof(NonterminalID.id) target)
+            {
+                if (forwardSCCs[nonterminalID.id] == forwardSCCs[target])
+                    throw new Exception(text("cycle ", cycleString!nextForwardSymbols(forwardSCCs,
+                            nonterminalID, NonterminalID(target))));
+            });
+    }
+
+    // Detect hidden left recursion, which can't be handled by some parsers.
+    // TODO: Allow it when possible, like with optempty.
+    void nextPrefixForwardSymbols(typeof(NonterminalID.id) nonterminalID, scope void delegate(typeof(NonterminalID.id)) sink)
+    {
+        foreach (p; grammar.getProductions(NonterminalID(nonterminalID)))
+            foreach (i; 0 .. p.symbols.length)
+                if (!p.symbols[i].isToken && grammar.canForwardPrefix(p, i))
+                    sink(p.symbols[i].toNonterminalID.id);
+    }
+
+    auto prefixSCCs = findSCCsAsComponentIndices!(typeof(NonterminalID.id))(grammar.nonterminals.vals.length, &nextPrefixForwardSymbols);
+
+    foreach (p; grammar.productions)
+    {
+        // The cycle needs at least one edge, where the production is not the first symbol.
+        foreach (i; 1 .. p.symbols.length)
+        {
+            if (p.symbols[i].isToken)
+                continue;
+            if (!grammar.canForwardPrefix(p, i))
+                continue;
+            if (prefixSCCs[p.nonterminalID.id] == prefixSCCs[p.symbols[i].toNonterminalID.id])
+                throw new Exception(text("Hidden left recursion ", cycleString!nextPrefixForwardSymbols(prefixSCCs,
+                        p.nonterminalID, p.symbols[i].toNonterminalID)));
+        }
     }
 
     struct SymbolKey

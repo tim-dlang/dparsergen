@@ -1,0 +1,15 @@
+/*
+GENERATOR_OUTPUT:
+---
+cycle ["A", "B", "C", "D", "A"]
+---
+*/
+S = A;
+
+MaybeX = "x" | @empty;
+
+A = B;
+B = C;
+C = <D MaybeX;
+D = A | E;
+E = "e";

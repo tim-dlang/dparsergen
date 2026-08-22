@@ -1,0 +1,10 @@
+/*
+GENERATOR_OUTPUT:
+---
+Hidden left recursion ["A", "A"]
+---
+*/
+S = A;
+A = E A "y"
+  | "z";
+E = @empty;

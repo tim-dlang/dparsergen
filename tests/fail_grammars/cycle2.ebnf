@@ -1,0 +1,10 @@
+/*
+GENERATOR_OUTPUT:
+---
+cycle ["A", "B", "A"]
+---
+*/
+S = A;
+
+A = B;
+B = A | "x";
