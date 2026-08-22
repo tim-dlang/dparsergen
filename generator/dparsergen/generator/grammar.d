@@ -784,35 +784,32 @@ class EBNFGrammar
     }
 
     immutable(NonterminalWithConstraint)[][NonterminalWithConstraint] directUnwrapClosureCacheFull;
-    immutable(NonterminalWithConstraint)[] directUnwrapClosureFull(NonterminalID s,
-            immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
+    immutable(NonterminalWithConstraint)[] directUnwrapClosureFull(NonterminalWithConstraint n)
     {
-        if (NonterminalWithConstraint(s, Constraint(negLookaheads, tags)) in directUnwrapClosureCacheFull)
+        if (n in directUnwrapClosureCacheFull)
         {
-            auto r = directUnwrapClosureCacheFull[NonterminalWithConstraint(s,
-                        Constraint(negLookaheads, tags))];
-            enforce(r.length, getSymbolName(s));
+            auto r = directUnwrapClosureCacheFull[n];
+            enforce(r.length, getSymbolName(n.nonterminalID));
             return r;
         }
 
-        if (getProductions(s).length == 0)
+        if (getProductions(n.nonterminalID).length == 0)
         {
             return [];
         }
 
-        if (negLookaheads.canFind(s))
+        if (n.constraint.negLookaheads.canFind(n.nonterminalID))
         {
             return [];
         }
 
-        foreach (t; tags)
+        foreach (t; n.constraint.tags)
         {
-            if (t.needed && !nonterminals[s].possibleTags.canFind(t.tag))
+            if (t.needed && !nonterminals[n.nonterminalID].possibleTags.canFind(t.tag))
                 return [];
         }
 
-        directUnwrapClosureCacheFull[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = [
-        ];
+        directUnwrapClosureCacheFull[n] = [];
 
         NonterminalWithConstraint[] r;
         void addNonterminal(NonterminalWithConstraint n)
@@ -834,87 +831,72 @@ class EBNFGrammar
             r ~= n;
         }
 
-        addNonterminal(NonterminalWithConstraint(s, Constraint(negLookaheads, tags)));
+        addNonterminal(n);
 
-        foreach (p; getProductions(s))
+        foreach (p; getProductions(n.nonterminalID))
         {
             if (isDirectUnwrapProduction(*p))
             {
-                if (negLookaheads.canFind(p.symbols[0]))
+                if (n.constraint.negLookaheads.canFind(p.symbols[0]))
                     continue;
-                immutable(Symbol)[] nextNegLookaheads = negLookaheads;
+                immutable(Symbol)[] nextNegLookaheads = n.constraint.negLookaheads;
                 nextNegLookaheads.addOnce(p.symbols[0].negLookaheads);
-                auto nextTags = tags;
-                foreach (n; directUnwrapClosureFull(p.symbols[0].symbol.toNonterminalID,
-                        nextNegLookaheads, nextTags))
+                auto nextTags = n.constraint.tags;
+                foreach (n2; directUnwrapClosureFull(NonterminalWithConstraint(p.symbols[0].symbol.toNonterminalID,
+                        Constraint(nextNegLookaheads, nextTags))))
                 {
-                    Constraint constraint = n.constraint;
-                    if (p.symbols[0].annotations.contains!"excludeDirectUnwrap" && n.nonterminalID != p.symbols[0].symbol.toNonterminalID)
+                    Constraint constraint = n2.constraint;
+                    if (p.symbols[0].annotations.contains!"excludeDirectUnwrap" && n2.nonterminalID != p.symbols[0].symbol.toNonterminalID)
                         constraint.disabled = true;
-                    addNonterminal(NonterminalWithConstraint(n.nonterminalID, constraint,
-                            n.hasLookaheadAnnotation
+                    addNonterminal(NonterminalWithConstraint(n2.nonterminalID, constraint,
+                            n2.hasLookaheadAnnotation
                             || p.symbols[0].annotations.contains!"lookahead"));
                 }
             }
         }
 
-        enforce(r.length, getSymbolName(s));
+        enforce(r.length, getSymbolName(n.nonterminalID));
 
         auto r2 = r.idup;
 
-        directUnwrapClosureCacheFull[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = r2;
+        directUnwrapClosureCacheFull[n] = r2;
 
         return r2;
     }
 
-    auto directUnwrapClosure(NonterminalID s,
-            immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
+    auto directUnwrapClosure(NonterminalWithConstraint n)
     {
         bool needsNonterminal(NonterminalWithConstraint n)
         {
             return !n.constraint.disabled && directUnwrapClosureHasSelf(n);
         }
-        return directUnwrapClosureFull(s, negLookaheads, tags).filter!needsNonterminal;
+        return directUnwrapClosureFull(n).filter!needsNonterminal;
     }
 
     auto directUnwrapClosure(const SymbolInstance s)
     {
-        return directUnwrapClosure(s.toNonterminalID, s.negLookaheads, s.tags);
-    }
-
-    auto directUnwrapClosure(NonterminalWithConstraint n)
-    {
-        return directUnwrapClosure(n.nonterminalID, n.constraint.negLookaheads, n.constraint.tags);
+        return directUnwrapClosure(NonterminalWithConstraint(s.toNonterminalID, Constraint(s.negLookaheads, s.tags)));
     }
 
     immutable(Symbol)[][NonterminalID][NonterminalWithConstraint] directUnwrapClosureMapCache;
-    immutable(Symbol)[][NonterminalID] directUnwrapClosureMap(NonterminalID s,
-            immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
+    immutable(Symbol)[][NonterminalID] directUnwrapClosureMap(NonterminalWithConstraint n)
     {
-        if (NonterminalWithConstraint(s, Constraint(negLookaheads,
-                tags)) in directUnwrapClosureMapCache)
+        if (n in directUnwrapClosureMapCache)
         {
-            return directUnwrapClosureMapCache[NonterminalWithConstraint(s,
-                        Constraint(negLookaheads, tags))];
+            return directUnwrapClosureMapCache[n];
         }
 
-        auto r = directUnwrapClosure(s, negLookaheads, tags);
+        auto r = directUnwrapClosure(n);
         if (r.empty)
             return null;
 
-        immutable(Symbol)[][NonterminalID] n;
+        immutable(Symbol)[][NonterminalID] n2;
         foreach (x; r)
-            n[x.nonterminalID] = x.constraint.negLookaheads;
+            n2[x.nonterminalID] = x.constraint.negLookaheads;
 
-        directUnwrapClosureMapCache[NonterminalWithConstraint(s, Constraint(negLookaheads, tags))] = n;
+        directUnwrapClosureMapCache[n] = n2;
 
-        return n;
-    }
-
-    immutable(Symbol)[][NonterminalID] directUnwrapClosureMap(NonterminalWithConstraint n)
-    {
-        return directUnwrapClosureMap(n.nonterminalID,
-                n.constraint.negLookaheads, n.constraint.tags);
+        return n2;
     }
 
     bool[NonterminalWithConstraint] directUnwrapClosureHasSelfCache;

@@ -619,7 +619,7 @@ void createWrapperParseFunction(ref CodeWriter code, LRGraph graph, size_t state
                     NonterminalType!($(node.elements[0].production.symbols[0].id + grammar.startNonterminalID)) pt;
                     switch (prev.data.nonterminal.nonterminalID)
                     {
-                        $$foreach (n; grammar.directUnwrapClosure(node.elements[0].production.symbols[0].toNonterminalID, [], [])) {
+                        $$foreach (n; grammar.directUnwrapClosure(NonterminalWithConstraint(node.elements[0].production.symbols[0].toNonterminalID, Constraint([], [])))) {
                             case $(grammar.nonterminalIDCode(n.nonterminalID)):
                                 pt = prev.data.nonterminal.get!($(grammar.nonterminalIDCode(n.nonterminalID)));
                                 break;
@@ -1489,7 +1489,7 @@ const(char)[] createParserModule(LRGraph graph, string modulename,
             immutable nonterminalClosures = [
                 $$foreach (i, n; grammar.nonterminals.vals) {
                     /*$(i) $(grammar.getSymbolName(NonterminalID(i.to!SymbolID)))*/ [  _
-                    $$foreach (m2; grammar.directUnwrapClosure(NonterminalID(i.to!SymbolID), [], [])) {
+                    $$foreach (m2; grammar.directUnwrapClosure(NonterminalWithConstraint(NonterminalID(i.to!SymbolID), Constraint([], [])))) {
                         $(grammar.nonterminalIDCode(m2.nonterminalID)),   _
                     $$}
                     ],

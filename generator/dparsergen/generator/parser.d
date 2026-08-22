@@ -299,8 +299,8 @@ struct LRElement
 
             if (directUnwrap)
             {
-                r = grammar.directUnwrapClosureFull(n.toNonterminalID,
-                        n2.constraint.negLookaheads, n2.constraint.tags);
+                r = grammar.directUnwrapClosureFull(NonterminalWithConstraint(n.toNonterminalID,
+                        n2.constraint));
             }
             else
                 r = [
@@ -417,7 +417,7 @@ do
         {
             firstSetCounts[token.id] += change;
         }
-        foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+        foreach (n2; grammar.directUnwrapClosureFull(NonterminalWithConstraint(n, Constraint([], []))))
         {
             if (n2.nonterminalID == n)
                 continue;
@@ -427,7 +427,7 @@ do
             }
             nonterminalsInDirectUnwrapClosures[n2.nonterminalID.id] += change;
         }
-        foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+        foreach (n2; grammar.directUnwrapClosureFull(NonterminalWithConstraint(n, Constraint([], []))))
         {
             if (n2.nonterminalID == n)
                 continue;
@@ -450,7 +450,7 @@ do
             {
                 auto n = result.data[i].next(grammar).toNonterminalID;
 
-                foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+                foreach (n2; grammar.directUnwrapClosureFull(NonterminalWithConstraint(n, Constraint([], []))))
                 {
                     nonterminalsInDirectUnwrapClosures2[n2.nonterminalID.id]++;
                 }
@@ -472,7 +472,7 @@ do
                 nonterminalsAdded[n.nonterminalID] = true;
                 nonterminalsInTodo[n.nonterminalID] = true;
                 nonterminalsTodo.insert(n.nonterminalID,
-                        grammar.directUnwrapClosureFull(n.nonterminalID, [], []).length);
+                        grammar.directUnwrapClosureFull(NonterminalWithConstraint(n.nonterminalID, Constraint([], []))).length);
             }
 
             if (result.data[i].isStartElement
@@ -519,7 +519,7 @@ do
                     uniqueFirstSet = false;
             }
 
-            foreach (n2; grammar.directUnwrapClosureFull(n, [], []))
+            foreach (n2; grammar.directUnwrapClosureFull(NonterminalWithConstraint(n, Constraint([], []))))
             {
                 if (nonterminalsInDirectUnwrapClosures2[n2.nonterminalID.id] != nonterminalsInDirectUnwrapClosures2[n.id])
                     uniqueFirstSet = false;
@@ -1764,9 +1764,9 @@ LRGraph makeLRGraph(EBNFGrammar grammar, GlobalOptions globalOptions, LRGraph or
             {
                 if (e.dotPos < i + 1)
                     continue;
-                if (n in grammar.directUnwrapClosureMap(e.production.symbols[e.dotPos - i - 1].toNonterminalID,
-                        e.production.symbols[e.dotPos - i - 1].negLookaheads,
-                        e.production.symbols[e.dotPos - i - 1].tags))
+                if (n in grammar.directUnwrapClosureMap(NonterminalWithConstraint(e.production.symbols[e.dotPos - i - 1].toNonterminalID,
+                        Constraint(e.production.symbols[e.dotPos - i - 1].negLookaheads,
+                        e.production.symbols[e.dotPos - i - 1].tags))))
                     return true;
             }
             return false;
