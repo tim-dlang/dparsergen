@@ -919,28 +919,28 @@ class EBNFGrammar
                 n.constraint.negLookaheads, n.constraint.tags);
     }
 
-    bool directUnwrapClosureHasSelf(NonterminalID s,
-            immutable(Symbol)[] negLookaheads, immutable(TagUsage)[] tags)
+    bool[NonterminalWithConstraint] directUnwrapClosureHasSelfCache;
+    bool directUnwrapClosureHasSelf(NonterminalWithConstraint n)
     {
-        if (negLookaheads.canFind(s))
+        auto inCache = n in directUnwrapClosureHasSelfCache;
+        if (inCache)
+        {
+            return *inCache;
+        }
+
+        if (n.constraint.negLookaheads.canFind(n.nonterminalID))
             return false;
 
         bool needsNonterminal;
-        foreach (p; getProductions(s))
+        foreach (p; getProductions(n.nonterminalID))
         {
-            if (!isProductionAllowed(NonterminalWithConstraint(s,
-                    Constraint(negLookaheads, tags)), p))
+            if (!isProductionAllowed(n, p))
                 continue;
             if (!isDirectUnwrapProduction(*p))
                 needsNonterminal = true;
         }
+        directUnwrapClosureHasSelfCache[n] = needsNonterminal;
         return needsNonterminal;
-    }
-
-    bool directUnwrapClosureHasSelf(NonterminalWithConstraint n)
-    {
-        return directUnwrapClosureHasSelf(n.nonterminalID,
-                n.constraint.negLookaheads, n.constraint.tags);
     }
 
     bool isProductionAllowed(NonterminalWithConstraint n, const Production* p)
