@@ -190,12 +190,25 @@ struct Annotations
     }
 }
 
+enum TagUsageFlags : ubyte
+{
+    none = 0,
+    inherit = 1,
+    needed = 2,
+    reject = 4
+}
+
 struct TagUsage
 {
     TagID tag;
-    bool inherit;
-    bool needed;
-    bool reject;
+    TagUsageFlags flags;
+
+    bool inherit() pure nothrow const { return (flags & TagUsageFlags.inherit) != 0; }
+    void inherit(bool v) pure nothrow { if (v) flags |= TagUsageFlags.inherit; else flags &= ~TagUsageFlags.inherit; }
+    bool needed() pure nothrow const { return (flags & TagUsageFlags.needed) != 0; }
+    void needed(bool v) pure nothrow { if (v) flags |= TagUsageFlags.needed; else flags &= ~TagUsageFlags.needed; }
+    bool reject() pure nothrow const { return (flags & TagUsageFlags.reject) != 0; }
+    void reject(bool v) pure nothrow { if (v) flags |= TagUsageFlags.reject; else flags &= ~TagUsageFlags.reject; }
 
     int opCmp(TagUsage other) const pure nothrow
     {
