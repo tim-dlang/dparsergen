@@ -826,6 +826,13 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
             }
         }
         void pushToken(size_t tokenId, Token tokenContent, Location start, Location end)
+        {
+            ParseException exception;
+            pushToken(tokenId, tokenContent, start, end, exception);
+            if (exception !is null)
+                throw exception;
+        }
+        void pushToken(size_t tokenId, Token tokenContent, Location start, Location end, ref ParseException exception)
         in
         {
             assert(start.isValid);
@@ -841,11 +848,17 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
             if (stackTops.length == 0)
             {
                 if (acceptedStackTops.length == 0)
-                    throw new SingleParseException!Location("no more stackTops",
+                {
+                    exception = new SingleParseException!Location("no more stackTops",
                                 start, end);
+                    return;
+                }
                 else
-                    throw new SingleParseException!Location("no more stackTops (but acceptedStackTops)",
+                {
+                    exception = new SingleParseException!Location("no more stackTops (but acceptedStackTops)",
                                 start, end);
+                    return;
+                }
             }
             StackNode*[] savedStackTops = stackTops;
             assert(savedStackTops);
@@ -889,10 +902,9 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                                             $$if (e.production.symbols.length && e.production.symbols[$ - 1].isToken) {
                                                 // Nothing to do for token
                                             $$} else {
-                                                ParseException exception;
                                                 $(reduceFunctionName(graph, e.production))(stackNode, start, end, end, true, exception);
                                                 if (exception !is null)
-                                                    throw exception;
+                                                    return;
                                             $$}
                                         $$}
                                     $$}
@@ -907,17 +919,17 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
             {
                 foreach (stackNode; savedStackTops)
                 {
-                    ParseException exception;
+                    ParseException exception2;
                     try
                     {
-                        pushToken(stackNode, tokenId, tokenContent, start, end, exception);
+                        pushToken(stackNode, tokenId, tokenContent, start, end, exception2);
                     }
                     catch(ParseException e)
                     {
                         assert(false, e.toString);
                     }
-                    if (exception !is null)
-                        exceptions ~= exception;
+                    if (exception2 !is null)
+                        exceptions ~= exception2;
                 }
             }
 
@@ -940,12 +952,14 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                                                     $$if (e.production.symbols.length && e.production.symbols[$ - 1].isToken) {
                                                         // Nothing to do for token
                                                     $$} else {
-                                                        ParseException exception;
-                                                        $(reduceFunctionName(graph, e.production))(tmpData.pendingReduces.data[i].stackNode, start, end, end, true, exception);
-                                                        if (exception !is null)
                                                         {
-                                                            exceptions ~= exception;
-                                                            break;
+                                                            ParseException exception2;
+                                                            $(reduceFunctionName(graph, e.production))(tmpData.pendingReduces.data[i].stackNode, start, end, end, true, exception2);
+                                                            if (exception2 !is null)
+                                                            {
+                                                                exceptions ~= exception2;
+                                                                break;
+                                                            }
                                                         }
                                                     $$}
                                                 $$}
@@ -964,10 +978,10 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
                         continue;
                     }
 
-                    ParseException exception;
-                    pushToken(tmpData.pendingReduces.data[i].stackNode, tokenId, tokenContent, start, end, exception);
-                    if (exception !is null)
-                        exceptions ~= exception;
+                    ParseException exception2;
+                    pushToken(tmpData.pendingReduces.data[i].stackNode, tokenId, tokenContent, start, end, exception2);
+                    if (exception2 !is null)
+                        exceptions ~= exception2;
                 }
             } while (hasAddedPendingReduce);
 
@@ -980,13 +994,16 @@ void createParseFunctions(ref CodeWriter code, LRGraph graph,
             if (stackTops.length == 0 && acceptedStackTops.length == 0)
             {
                 if (exceptions.length > 0)
+                {
                     if (exceptions.length == 1)
-                        throw exceptions[0];
+                        exception = exceptions[0];
                     else
-                        throw new MultiParseException("", exceptions);
+                        exception = new MultiParseException("", exceptions);
+                }
                 else
-                    throw new SingleParseException!Location(text("no stackTops ", tmpData.pendingReduces.data.length),
+                    exception = new SingleParseException!Location(text("no stackTops ", tmpData.pendingReduces.data.length),
                                 start, end);
+                return;
             }
         }
     }));
