@@ -349,8 +349,8 @@ void createReduceFunction(ref CodeWriter code, LRGraph graph, const Production* 
                 cacheKey.parameters = parameterEdgesData;
 
                 Cache *cache2;
-                if (lastTokenEnd in this_.cacheByLoc)
-                    cache2 = this_.cacheByLoc[lastTokenEnd];
+                if (auto inCache = lastTokenEnd in this_.cacheByLoc)
+                    cache2 = *inCache;
                 else
                 {
                     cache2 = new Cache;
@@ -1424,8 +1424,8 @@ const(char)[] createParserModule(LRGraph graph, string modulename,
             $$if (glrGlobalCache) {
                 void setCacheStart(Location start)
                 {
-                    if (start in cacheByLoc)
-                        cache = cacheByLoc[start];
+                    if (auto inCache = start in cacheByLoc)
+                        cache = *inCache;
                     else
                     {
                         cache = new Cache;
